@@ -9,6 +9,4 @@ int main(void) {
     }
     if(!b) printf("PROSTOE");
     else printf("HE PROSTOE");
-
-
 }
