@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "complex.h": "c",
+        "complex": "c",
+        "random": "c",
+        "templates.h": "c",
+        "all_possible_sums.h": "c",
+        "sum_as_template.h": "c"
+    }
+}
