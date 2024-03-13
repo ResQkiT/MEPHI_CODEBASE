@@ -16,3 +16,8 @@ void set(Matrix*, int, int, void*);
 void printMatrix(Matrix*);
 void readMatrix(Matrix*);
 void zeros(Matrix *);
+
+Matrix* addMatrix(Matrix*, Matrix*);
+Matrix* multMatrix(Matrix*, Matrix*);
+Matrix* multMatrixToNumber(Matrix*, void*);
+

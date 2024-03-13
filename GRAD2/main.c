@@ -19,7 +19,8 @@ int main(void)
   readMatrix(matrixB);
   printMatrix(matrixB);
 
-  
+  Matrix* matrixC = addMatrix(matrixA, matrixB);
+  printMatrix(matrixC);
   printf("point!");
   fgetchar();
   

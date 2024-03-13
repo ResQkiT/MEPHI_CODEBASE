@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 
+#include <assert.h>
 typedef struct
 {
     int m;
@@ -33,12 +34,12 @@ void* get(Matrix* self, int i , int j){
 }
 //добавить проверку на валидность
 void set(Matrix* self, int i, int j, void *data){
-   memcpy( ((void*)((char*)(self->data)) +(i*self->n + j)*self->impl->allocsize), data, self->impl->allocsize );
+   memcpy( (void*)((char*)self->data +(i*(self->n) + j)*self->impl->allocsize), data, self->impl->allocsize );
 }
 void zeros(Matrix *self){
     int zero = 0;
     void* zeroP = (void*)(&zero);
-    memset((void*)(self->data), 0xf000, (self->m * self->n) * self->impl->allocsize);
+    memset((void*)(self->data), 0, (self->m * self->n) * self->impl->allocsize);
 }
 
 void printMatrix(Matrix* matrix){
@@ -63,3 +64,35 @@ void readMatrix(Matrix *matrix)
         }
     }
 }
+
+Matrix* addMatrix(Matrix* matrixA, Matrix* matrixB){
+    //Проверим что сигнатуры совпадают, иначе накричим на пользователя
+    assert(matrixA->m == matrixB->m && matrixA->n == matrixB->n && memcmp(matrixA, matrixB, sizeof(FieldInfo)));
+    int m = matrixA->m;
+    int n = matrixA->n;
+    FieldInfo* impl = malloc(sizeof(FieldInfo));
+    memcpy((void*) impl, (void*) matrixA->impl, sizeof(FieldInfo));
+    Matrix* result = newMatrix(m, n, impl);
+    
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            void* arg1 = get(matrixA, i, j);
+            void* arg2 = get(matrixB, i, j);
+            set(result,i,j, (void*)(result->impl->addition(arg1, arg2)));
+            free(arg1);
+            free(arg2);
+        }
+    }
+    free(impl);
+    return result;
+}
+Matrix* multMatrix(Matrix* matrixA, Matrix* matrixB){
+
+}
+Matrix* multMatrixToNumber(Matrix*, void*){
+
+
+}
+
