@@ -3,6 +3,10 @@
         "matrix.h": "c",
         "stdio.h": "c",
         "assert.h": "c",
-        "integer.h": "c"
+        "integer.h": "c",
+        "fieldinfo.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
     }
 }

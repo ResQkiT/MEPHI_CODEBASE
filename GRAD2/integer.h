@@ -1,5 +1,8 @@
-#include "matrix.h"
+#pragma once
+#include "fieldinfo.h"
 
-void setInteger(void* , int , int , void *);
-int getInteger(void* , int  , int );
-FieldInfo INTEGER_IMPL  = {setInteger, getInteger , sizeof(int)};
+FieldInfo* newIntegerImpl();
+void* integerAddition(void*, void*);
+void* integerMultiplication(void*, void*);
+void* integerPrint(void*);
+void* integerInput();

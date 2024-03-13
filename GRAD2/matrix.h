@@ -1,11 +1,5 @@
-#ifndef _MATRIX
-#define _MATRIX
-typedef struct {
-    void* (*set)(void* , int, int, void*);
-    void* (*get)(void*, int, int);
-    int allocsize;
-} FieldInfo;
-
+#pragma once
+#include "fieldinfo.h"
 typedef struct
 {
     int m;
@@ -13,6 +7,12 @@ typedef struct
     int* data;
     FieldInfo* impl;
 } Matrix;
-
+//Аргументы: (Количество строк, количество столбцов, имплементация )
 Matrix* newMatrix(int, int, FieldInfo*);
-#endif
+
+void* get(Matrix*, int, int);
+void set(Matrix*, int, int, void*);
+
+void printMatrix(Matrix*);
+void readMatrix(Matrix*);
+void zeros(Matrix *);
