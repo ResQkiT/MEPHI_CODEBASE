@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "matrix.h": "c",
+        "stdio.h": "c",
+        "assert.h": "c",
+        "integer.h": "c"
+    }
+}

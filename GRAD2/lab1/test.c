@@ -1,58 +1,53 @@
 #include <stdio.h>
+#include <stdlib.h>
+typedef struct {
+    void* (*set)(void* , int*, int* , void*);
+    void* (*get)(void*);
+} FieldInfo;
+typedef struct
+{
+    int m;
+    int n;
+    void* data;
+    FieldInfo* impl;
+} Matrix;
+typedef struct 
+{
+    double re;
+    double im;
+}Complex;
 
-typedef struct DataImpl {
-  void* (*add)(void*, void*);
-  void* (*sub)(void*, void*);
-  void* (*mul)(void*, void*);
-  void* (*div)(void*, void*);
-} DataImplType;
 
-int addInt(int* a, int* b) { 
-  int* result = malloc(sizeof(int));
-  *result = *a + *b;
-  return result;
+
+Matrix* newMatrix(int n, int m , void* data, FieldInfo* impl){
+    Matrix *new = malloc(sizeof(Matrix));
+    new->m = m;
+    new->n = n;
+    new->data = data;
+    new->impl = impl;
+    return new;
 }
-
-int subInt(int* a, int* b) { 
-  int* result = malloc(sizeof(int));
-  *result = *a - *b;
-  return result;
+void* setInteger(void* self, int* i, int* j, void *data){
+    ((Matrix*)(self))->data = ((int*)(data));
 }
-
-int mulInt(int* a, int* b) { 
-  int* result = malloc(sizeof(int));
-  *result = *a * *b;
-  return result;
+void* setComplex(void* self, int* i, int* j, void *data ){
+    ((Matrix*)(self))->data = ((Complex*)(data));
 }
-
-int divInt(int* a, int* b) { 
-  int* result = malloc(sizeof(int));
-  *result = *a / *b;
-  return result;
+void* printInt(void* self){
+    printf("%d" , *((int* )(((Matrix*)(self))->data)));
 }
-
-int main() {
-  DataImplType dataImpl;
-  dataImpl.add = addInt;
-  dataImpl.sub = subInt;
-  dataImpl.mul = mulInt;
-  dataImpl.div = divInt;
-
-  int num1 = 10, num2 = 5;
-  int* resultAdd = dataImpl.add(&num1, &num2);
-  int* resultSub = dataImpl.sub(&num1, &num2);
-  int* resultMul = dataImpl.mul(&num1, &num2);
-  int* resultDiv = dataImpl.div(&num1, &num2);
-
-  printf("Addition: %d\n", *resultAdd);
-  printf("Subtraction: %d\n", *resultSub);
-  printf("Multiplication: %d\n", *resultMul);
-  printf("Division: %d\n", *resultDiv);
-
-  free(resultAdd);
-  free(resultSub);
-  free(resultMul);
-  free(resultDiv);
-
-  return 0;
+void* printComplex(void* self){
+    printf("%.2f+i%.2f", (((Complex*)(((Matrix*)(self))->data))->re), (((Complex*)(((Matrix*)(self))->data))->im) );
+}
+FieldInfo INTEGER_IMPL = {setInteger, printInt};
+FieldInfo COMPLEX_IMPL = {setComplex, printComplex};
+int main(void*){
+    int a = 2;
+    Complex complex ={5.9, 6.1};
+    Matrix *first = newMatrix(&a , &INTEGER_IMPL);
+    Matrix *second = newMatrix(&complex , &COMPLEX_IMPL);
+    first->impl->set(first, &a , &a, (void *)(&a));
+    first->impl->get(first);
+    second->impl->set(second,&a , &a, (void *)(&complex));
+    second->impl->get(second);
 }

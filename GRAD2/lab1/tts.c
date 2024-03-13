@@ -49,6 +49,7 @@ typedef struct {
         int integer;
         double complex complexValue;
     } value;
+    
 } Number;
 
 typedef struct {
