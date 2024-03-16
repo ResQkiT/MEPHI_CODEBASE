@@ -1,10 +1,8 @@
-#include "matrix.h"
-typedef struct 
-{
-    double re;
-    double im;
-}Complex;
+#pragma once
+#include "fieldinfo.h"
 
-void setComplex(void* , int , int , void *);
-void getComplex(void* , int  , int );
-extern FieldInfo INTEGER_IMPL  = {setComplex, getComplex , sizeof(int)};
+FieldInfo* newComplexImpl();
+void* complexAddition(void*, void*);
+void* complexMultiplication(void*, void*);
+void* complexPrint(void*);
+void* complexInput();

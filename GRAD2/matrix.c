@@ -68,7 +68,7 @@ void readMatrix(Matrix *matrix)
 
 Matrix* addMatrix(Matrix* matrixA, Matrix* matrixB){
     //Проверим что сигнатуры совпадают, иначе накричим на пользователя
-    assert(matrixA->m == matrixB->m && matrixA->n == matrixB->n && memcmp(matrixA, matrixB, sizeof(FieldInfo)));
+    assert(matrixA->m == matrixB->n && matrixA->impl->allocsize == matrixB->impl->allocsize);
     int m = matrixA->m;
     int n = matrixA->n;
     Matrix* result = newMatrix(m, n, matrixA->impl);
@@ -88,7 +88,7 @@ Matrix* addMatrix(Matrix* matrixA, Matrix* matrixB){
     return result;
 }
 Matrix* multMatrix(Matrix* matrixA, Matrix* matrixB){
-    assert(matrixA->m == matrixB->n);
+    assert(matrixA->m == matrixB->n && matrixA->impl->allocsize == matrixB->impl->allocsize);
     Matrix* result = newMatrix(matrixA->m, matrixB->n, matrixA->impl);
     for (int i = 0; i < matrixA->m; i++)
     {
@@ -109,8 +109,15 @@ Matrix* multMatrix(Matrix* matrixA, Matrix* matrixB){
     }
     return result;
 }
-Matrix* multMatrixToNumber(Matrix*, void*){
-
-
+Matrix* multMatrixToNumber(Matrix* matrix, void* number){
+    Matrix* result = newMatrix(matrix->m, matrix->n, matrix->impl);
+    for (int i = 0; i < result->m; i++)
+    {
+        for (int j  = 0; j< result->n;  j++){
+            set(result,i, j, result->impl->multiply(get(matrix, i, j), number));
+        }
+    }
+    return result;
+    
 }
 

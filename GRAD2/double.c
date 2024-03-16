@@ -1,17 +1,17 @@
-#pragma once
+
 #include "fieldinfo.h"
 #include "double.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 FieldInfo* newDoubleImpl(){
-    FieldInfo* integerImpl = malloc(sizeof(FieldInfo));
-    integerImpl->allocsize = sizeof(double);
-    integerImpl->addition = doubleAddition;
-    integerImpl->multiply = doubleMultiplication;
-    integerImpl->printElement = doublePrint;
-    integerImpl->input = doubleInput;
-    return integerImpl;
+    FieldInfo* impl = malloc(sizeof(FieldInfo));
+    impl->allocsize = sizeof(double);
+    impl->addition = doubleAddition;
+    impl->multiply = doubleMultiplication;
+    impl->printElement = doublePrint;
+    impl->input = doubleInput;
+    return impl;
 }
 
 void* doubleAddition(void* v1, void* v2){

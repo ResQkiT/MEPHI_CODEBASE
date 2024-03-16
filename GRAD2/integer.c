@@ -1,4 +1,3 @@
-#pragma once
 #include "fieldinfo.h"
 #include "integer.h"
 #include <stdlib.h>

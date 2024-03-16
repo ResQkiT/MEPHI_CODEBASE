@@ -8,17 +8,18 @@
 #include "fieldinfo.h"
 #include "integer.h"
 #include "double.h"
-
+#include "complex.h"
 int main(void)
 {
   //printf("End!");
-  Matrix* matrixA = newMatrix(1, 3, newDoubleImpl());
+  Matrix* matrixA = newMatrix(1, 3,newComplexImpl());
   readMatrix(matrixA);
-  //printMatrix(matrixA);
+  printMatrix(matrixA);
 
-  Matrix* matrixB = newMatrix(3, 1, newDoubleImpl());
+  Matrix* matrixB = newMatrix(3, 1, newComplexImpl());
   readMatrix(matrixB);
   //printMatrix(matrixB);
+  double a = 12.2;
 
   Matrix* matrixC = multMatrix(matrixA, matrixB);
   printMatrix(matrixC);
