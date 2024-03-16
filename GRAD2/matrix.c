@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include <assert.h>
+#include "integer.h"
 typedef struct
 {
     int m;
@@ -70,26 +71,43 @@ Matrix* addMatrix(Matrix* matrixA, Matrix* matrixB){
     assert(matrixA->m == matrixB->m && matrixA->n == matrixB->n && memcmp(matrixA, matrixB, sizeof(FieldInfo)));
     int m = matrixA->m;
     int n = matrixA->n;
-    FieldInfo* impl = malloc(sizeof(FieldInfo));
-    memcpy((void*) impl, (void*) matrixA->impl, sizeof(FieldInfo));
-    Matrix* result = newMatrix(m, n, impl);
-    
-    for (int i = 0; i < m; i++)
+    Matrix* result = newMatrix(m, n, matrixA->impl);
+    void * temp;
+    for (int i = 0; i < matrixA->m; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < matrixA->n; j++)
         {
             void* arg1 = get(matrixA, i, j);
             void* arg2 = get(matrixB, i, j);
-            set(result,i,j, (void*)(result->impl->addition(arg1, arg2)));
+            temp = result->impl->addition(arg1, arg2);
+            set(result,i,j,temp);
             free(arg1);
             free(arg2);
         }
     }
-    free(impl);
     return result;
 }
 Matrix* multMatrix(Matrix* matrixA, Matrix* matrixB){
-
+    assert(matrixA->m == matrixB->n);
+    Matrix* result = newMatrix(matrixA->m, matrixB->n, matrixA->impl);
+    for (int i = 0; i < matrixA->m; i++)
+    {
+        for (int j = 0; j < matrixB->n; j++)
+        {
+            void* sum;
+            void* temp;
+            for (int k = 0; k < matrixA->n; k++)
+            {
+                void* arg1 = get(matrixA, i, k);
+                void* arg2 = get(matrixB, k, j);
+                temp = matrixA->impl->multiply(arg1, arg2);                
+                set(result, i, j, matrixA->impl->addition(get(result, i, j) ,  temp));
+                free(arg1);
+                free(arg2);
+            }
+        }
+    }
+    return result;
 }
 Matrix* multMatrixToNumber(Matrix*, void*){
 

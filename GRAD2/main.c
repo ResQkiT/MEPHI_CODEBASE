@@ -7,19 +7,20 @@
 #include "matrix.h"
 #include "fieldinfo.h"
 #include "integer.h"
+#include "double.h"
 
 int main(void)
 {
   //printf("End!");
-  Matrix* matrixA = newMatrix(2, 3, newIntegerImpl());
+  Matrix* matrixA = newMatrix(1, 3, newDoubleImpl());
   readMatrix(matrixA);
-  printMatrix(matrixA);
+  //printMatrix(matrixA);
 
-  Matrix* matrixB = newMatrix(2, 3, newIntegerImpl());
+  Matrix* matrixB = newMatrix(3, 1, newDoubleImpl());
   readMatrix(matrixB);
-  printMatrix(matrixB);
+  //printMatrix(matrixB);
 
-  Matrix* matrixC = addMatrix(matrixA, matrixB);
+  Matrix* matrixC = multMatrix(matrixA, matrixB);
   printMatrix(matrixC);
   printf("point!");
   fgetchar();
