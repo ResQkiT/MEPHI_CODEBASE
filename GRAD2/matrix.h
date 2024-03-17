@@ -20,4 +20,4 @@ void zeros(Matrix *);
 Matrix* addMatrix(Matrix*, Matrix*);
 Matrix* multMatrix(Matrix*, Matrix*);
 Matrix* multMatrixToNumber(Matrix*, void*);
-
+Matrix* transposeMatrix(Matrix*);

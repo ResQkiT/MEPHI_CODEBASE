@@ -68,7 +68,7 @@ void readMatrix(Matrix *matrix)
 
 Matrix* addMatrix(Matrix* matrixA, Matrix* matrixB){
     //Проверим что сигнатуры совпадают, иначе накричим на пользователя
-    assert(matrixA->m == matrixB->n && matrixA->impl->allocsize == matrixB->impl->allocsize);
+    assert(matrixA->m == matrixB->m && matrixA->n == matrixB->n && matrixA->impl->allocsize == matrixB->impl->allocsize);
     int m = matrixA->m;
     int n = matrixA->n;
     Matrix* result = newMatrix(m, n, matrixA->impl);
@@ -121,3 +121,14 @@ Matrix* multMatrixToNumber(Matrix* matrix, void* number){
     
 }
 
+Matrix* transposeMatrix(Matrix* target){
+    Matrix* result = newMatrix(target->n, target->m, target->impl);
+    for (int i = 0; i < target->m; i++)
+    {
+        for (int j = 0; j < target->n; j++)
+        {
+            set(result, j, i, get(target, i, j));
+        }
+    }
+    return result;
+}

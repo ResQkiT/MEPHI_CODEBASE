@@ -13,6 +13,8 @@
         "istream": "c",
         "functional": "c",
         "tuple": "c",
-        "utility": "c"
+        "utility": "c",
+        "compare": "c",
+        "type_traits": "c"
     }
 }
