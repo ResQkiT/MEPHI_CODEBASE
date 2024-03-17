@@ -1,4 +1,3 @@
-#pragma once
 #include "fieldinfo.h"
 #include "complex.h"
 #include <stdlib.h>

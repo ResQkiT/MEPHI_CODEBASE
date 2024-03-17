@@ -16,6 +16,7 @@ void set(Matrix*, int, int, void*);
 void printMatrix(Matrix*);
 void readMatrix(Matrix*);
 void zeros(Matrix *);
+void delete(Matrix*);
 
 Matrix* addMatrix(Matrix*, Matrix*);
 Matrix* multMatrix(Matrix*, Matrix*);

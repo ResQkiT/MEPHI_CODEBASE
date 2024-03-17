@@ -48,28 +48,31 @@ Matrix* createMatrixInterface(){
   return matrix;
 }
 void sumMatrix(){
-  printf("Option: sum of 2 matrix\n");
-  printf("Enter first matrix\n");
+  printf("Option: sum of 2 matrix\nEnter first matrix\n");
   Matrix* matrixA = createMatrixInterface();
   printf("Enter second matrix:\n");
   Matrix* matrixB = createMatrixInterface();
   Matrix* matrixC = addMatrix(matrixA, matrixB);
   printf("Sum of two matrix:\n");
   printMatrix(matrixC);
+  delete(matrixA);
+  delete(matrixB);
+  delete(matrixC);
 }
 void multyplyMatrix(){
-  printf("Option: multiplication of 2 matrix\n");
-  printf("Enter first matrix\n");
+  printf("Option: multiplication of 2 matrix\nEnter first matrix\n");
   Matrix* matrixA = createMatrixInterface();
   printf("Enter second matrix:\n");
   Matrix* matrixB = createMatrixInterface();
   Matrix* matrixC = multMatrix(matrixA, matrixB);
   printf("Result of multiplication:\n");
   printMatrix(matrixC);
+  delete(matrixA);
+  delete(matrixB);
+  delete(matrixC);
 }
 void multiplyMatrixbyNumber(){
-  printf("Option: multiplication matrix to nuber");
-  printf("Enter matrix\n");
+  printf("Option: multiplication matrix to nuber\nEnter matrix\n");
   Matrix* matrixA = createMatrixInterface();
   printf("Enter number (number must have same type as matrix): \n");
   void* number = malloc(matrixA->impl->allocsize);
@@ -80,18 +83,22 @@ void multiplyMatrixbyNumber(){
   Matrix *res = multMatrixToNumber(matrixA, number);
   printf("Result of multiplication:\n");
   printMatrix(res);
+  delete(matrixA);
+  free(number);
 }
 void transMatrix(){
-  printf("Option: transpose matrix");
-  printf("Enter matrix\n");
+  printf("Option: transpose matrix \nEnter matrix\n");
   Matrix* matrix = createMatrixInterface();
   Matrix* res = transposeMatrix(matrix);
+  printf("Result of transpose\n");
   printMatrix(res);
+  delete(matrix);
+  delete(res);
 }
 int main(void)
 {
   printf("by: Safronov Ilya B23-554");
-  printf("Choose an option: \n1) Sum two matrix \n2) Multiply two matrix \n3)Multiply by number\n4)Transpose matrix\n");
+  printf("Choose an option: \n1) Sum two matrix \n2) Multiply two matrix \n3) Multiply by number \n4) Transpose matrix\n");
   switch (fgetchar()-'0')
   {
   case '1'-'0':
