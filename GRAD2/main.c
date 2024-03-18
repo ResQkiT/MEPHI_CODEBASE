@@ -1,30 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <complex.h>
 #include <assert.h>
 #include <string.h>
+
 #include "matrix.h"
 #include "fieldinfo.h"
 #include "integer.h"
 #include "double.h"
 #include "complex.h"
-Matrix* createMatrixInterface(){
+
+Matrix *createMatrixInterface()
+{
   int m, n;
   char type;
-  Matrix* matrix;
-  _start:
+  Matrix *matrix;
+_start:
   printf("Input matrix\n");
   printf("Input dimensions of the matrix (m, n) : ");
   scanf("%d %d", &m, &n);
-  printf("Input the matrix type\n ('i' for integer, 'r' for real, 'c' for complex'):");\
+  printf("Input the matrix type\n ('i' for integer, 'r' for real, 'c' for complex'):");
   fgetchar();
   type = fgetchar();
+
   switch (type - '0')
   {
   case 'i' - '0':
     printf("The type is Integer\n");
-    matrix = newMatrix(m, n , newIntegerImpl());
+    matrix = newMatrix(m, n, newIntegerImpl());
     break;
   case 'r' - '0':
     printf("The type is Real\n");
@@ -37,7 +40,7 @@ Matrix* createMatrixInterface(){
     break;
   default:
     printf("Unsupported value type. You wil be departed to beggining \n");
-    goto _start;
+    goto _start; // переписать на цикле
     return createPolynomial();
   }
 
@@ -47,75 +50,79 @@ Matrix* createMatrixInterface(){
   printMatrix(matrix);
   return matrix;
 }
-void sumMatrix(){
+void sumMatrix()
+{
   printf("Option: sum of 2 matrix\nEnter first matrix\n");
-  Matrix* matrixA = createMatrixInterface();
+  Matrix *matrixA = createMatrixInterface();
   printf("Enter second matrix:\n");
-  Matrix* matrixB = createMatrixInterface();
-  Matrix* matrixC = addMatrix(matrixA, matrixB);
+  Matrix *matrixB = createMatrixInterface();
+  Matrix *matrixC = addMatrix(matrixA, matrixB);
   printf("Sum of two matrix:\n");
   printMatrix(matrixC);
-  delete(matrixA);
-  delete(matrixB);
-  delete(matrixC);
+  delete (matrixA);
+  delete (matrixB);
+  delete (matrixC);
 }
-void multyplyMatrix(){
+void multyplyMatrix()
+{
   printf("Option: multiplication of 2 matrix\nEnter first matrix\n");
-  Matrix* matrixA = createMatrixInterface();
+  Matrix *matrixA = createMatrixInterface();
   printf("Enter second matrix:\n");
-  Matrix* matrixB = createMatrixInterface();
-  Matrix* matrixC = multMatrix(matrixA, matrixB);
+  Matrix *matrixB = createMatrixInterface();
+  Matrix *matrixC = multMatrix(matrixA, matrixB);
   printf("Result of multiplication:\n");
   printMatrix(matrixC);
-  delete(matrixA);
-  delete(matrixB);
-  delete(matrixC);
+  delete (matrixA);
+  delete (matrixB);
+  delete (matrixC);
 }
-void multiplyMatrixbyNumber(){
+void multiplyMatrixbyNumber()
+{
   printf("Option: multiplication matrix to nuber\nEnter matrix\n");
-  Matrix* matrixA = createMatrixInterface();
+  Matrix *matrixA = createMatrixInterface();
   printf("Enter number (number must have same type as matrix): \n");
-  void* number = malloc(matrixA->impl->allocsize);
-  memcpy(number,  matrixA->impl->input(), matrixA->impl->allocsize);
+  void *number = malloc(matrixA->impl->allocsize);
+  memcpy(number, matrixA->impl->input(), matrixA->impl->allocsize);
   printf("The entered number is: ");
   matrixA->impl->printElement(number);
   printf("\n");
   Matrix *res = multMatrixToNumber(matrixA, number);
   printf("Result of multiplication:\n");
   printMatrix(res);
-  delete(matrixA);
+  delete (matrixA);
   free(number);
 }
-void transMatrix(){
+void transMatrix()
+{
   printf("Option: transpose matrix \nEnter matrix\n");
-  Matrix* matrix = createMatrixInterface();
-  Matrix* res = transposeMatrix(matrix);
+  Matrix *matrix = createMatrixInterface();
+  Matrix *res = transposeMatrix(matrix);
   printf("Result of transpose\n");
   printMatrix(res);
-  delete(matrix);
-  delete(res);
+  delete (matrix);
+  delete (res);
 }
-int main(void)
+int main(int argc, const char **argv)
 {
-  printf("by: Safronov Ilya B23-554");
+  printf("by: Safronov Ilya B23-554 \n");
   printf("Choose an option: \n1) Sum two matrix \n2) Multiply two matrix \n3) Multiply by number \n4) Transpose matrix\n");
-  switch (fgetchar()-'0')
+  switch (fgetchar() - '0')
   {
-  case '1'-'0':
-      sumMatrix();
-      break;
-  case '2'-'0':
-      multyplyMatrix();
-      break;
-  case '3'-'0':
-      multiplyMatrixbyNumber();
-      break;
-  case '4'-'0':
-      transMatrix();
-      break;
+  case '1' - '0':
+    sumMatrix();
+    break;
+  case '2' - '0':
+    multyplyMatrix();
+    break;
+  case '3' - '0':
+    multiplyMatrixbyNumber();
+    break;
+  case '4' - '0':
+    transMatrix();
+    break;
   default:
-      printf("UNKNOWN CODE OF OPERATION");
-      break;
+    printf("UNKNOWN CODE ");
+    break;
   }
   return 0;
 }

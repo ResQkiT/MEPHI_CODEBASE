@@ -1,14 +1,16 @@
 #pragma once
 #include "fieldinfo.h"
-typedef struct
+//перенести реализацию в с файл
+
+typedef struct 
 {
     int m;
     int n;
     int* data;
     FieldInfo* impl;
 } Matrix;
-//Аргументы: (Количество строк, количество столбцов, имплементация )
-Matrix* newMatrix(int, int, FieldInfo*);
+
+Matrix* newMatrix(int, int,const FieldInfo*, const void* Initializer);
 
 void* get(Matrix*, int, int);
 void set(Matrix*, int, int, void*);

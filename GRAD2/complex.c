@@ -2,14 +2,15 @@
 #include "complex.h"
 #include <stdlib.h>
 #include <stdio.h>
-typedef struct 
+typedef struct
 {
     double re;
     double im;
-}Complex;
+} Complex;
 
-FieldInfo* newComplexImpl(){
-    FieldInfo* impl = malloc(sizeof(FieldInfo));
+FieldInfo *newComplexImpl()
+{
+    FieldInfo *impl = malloc(sizeof(FieldInfo));
     impl->allocsize = sizeof(Complex);
     impl->addition = complexAddition;
     impl->multiply = complexMultiplication;
@@ -18,34 +19,58 @@ FieldInfo* newComplexImpl(){
     return impl;
 }
 
-void* complexAddition(void* v1, void* v2){
-    Complex* res = malloc(sizeof(Complex));
-    res->re = ((Complex*)v1)->re + ((Complex*)v2)->re;
-    res->im = ((Complex*)v1)->im + ((Complex*)v2)->im;
-    return (void*) res;
+void *complexAddition(void *v1, void *v2)
+{
+    Complex *res = malloc(sizeof(Complex));
+    res->re = ((Complex *)v1)->re + ((Complex *)v2)->re;
+    res->im = ((Complex *)v1)->im + ((Complex *)v2)->im;
+    return (void *)res;
 }
 
-void* complexMultiplication(void* v1, void* v2){
-    Complex* res = malloc(sizeof(Complex));
-    res->re = (((Complex *)v1)->re * ((Complex *)v2)->re) - \
+void *complexMultiplication(void *v1, void *v2)
+{
+    Complex *res = malloc(sizeof(Complex));
+    res->re = (((Complex *)v1)->re * ((Complex *)v2)->re) -
               (((Complex *)v1)->im * ((Complex *)v2)->im);
 
-    res->im = (((Complex *)v1)->re * ((Complex *)v2)->im) + \
+    res->im = (((Complex *)v1)->re * ((Complex *)v2)->im) +
               (((Complex *)v1)->im * ((Complex *)v2)->re);
 
-    return (void*) res;
+    return (void *)res;
 }
 
-void* complexPrint(void * v){
-    Complex* c = (Complex*)v; 
+void *complexPrint(void *v)
+{
+    Complex *c = (Complex *)v;
     printf("%.2lf", c->re);
-    if (c->im > 0) printf("+");
-    printf("%.2lf", c->im );
+    if (c->im > 0)
+        printf("+");
+    printf("%.2lf", c->im);
     printf("i ");
-    return (void* ) c;
+    return (void *)c;
 }
-void* complexInput(){
-    Complex* c = malloc(sizeof(Complex));
+void *complexInput()
+{
+    Complex *c = malloc(sizeof(Complex));
     scanf("%lf %lf", &(c->re), &(c->im));
-    return (void*) c;
+    return (void *)c;
+}
+
+void zeroComplexInplace(void *ptrToZero)
+{
+    Complex *theZero = (Complex *)ptrToZero;
+    // здесь добавить инициализацию нужных нулей
+}
+
+const void *zeroComplex()
+{
+    static Complex *theZero = NULL;
+
+    if (theZero == NULL)
+    {
+        theZero = malloc(sizeof(Complex));
+        zeroComplexInplace(theZero);
+    }
+
+    return (void *)theZero;
 }

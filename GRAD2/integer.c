@@ -12,8 +12,8 @@ FieldInfo* newIntegerImpl(){
     integerImpl->input = integerInput;
     return integerImpl;
 }
-
-void* integerAddition(void* v1, void* v2){
+//переделать в глобальную переменную
+void* integerAddition(const void* v1, const  void* v2){
     int temp = (*((int* ) v1))+(*((int* ) v2));
     int* res = &temp;
     return (void*) res;
@@ -35,3 +35,4 @@ void* integerInput(){
     int* res = &d;
     return (void*) res;
 }
+

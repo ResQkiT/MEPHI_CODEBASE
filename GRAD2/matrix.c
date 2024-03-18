@@ -6,11 +6,12 @@
 
 #include <assert.h>
 #include "integer.h"
+//
 typedef struct
 {
     int m;
     int n;
-    int *data;
+    void *data;
     FieldInfo *impl;
 } Matrix;
 
@@ -28,6 +29,7 @@ Matrix *newMatrix(int m, int n, FieldInfo *impl)
 }
 
 // добавить проверку на валидность
+// ууказатель на элемен тв матрице
 void *get(Matrix *self, int i, int j)
 {
     assert(self != NULL && i < self->m && j < self->n);
@@ -35,18 +37,38 @@ void *get(Matrix *self, int i, int j)
     memcpy(val, (char *)self->data + (i * (self->n) + j) * self->impl->allocsize, self->impl->allocsize);
     return val;
 }
-// добавить проверку на валидность
+
+// добавить проверку на валидност
+// row col
+// переименовать переменные
 void set(Matrix *self, int i, int j, void *data)
 {
     assert(self != NULL && data != NULL && i < self->m && j < self->n);
-    memcpy((void *)((char *)self->data + (i * (self->n) + j) * self->impl->allocsize), data, self->impl->allocsize);
+    memcpy((void *)((char *)self->data + (i * (self->n) + j) * self->impl->allocsize),
+           data,
+           self->impl->allocsize);
 }
+// переписать все через set
 void zeros(Matrix *self)
 {
     assert(self != NULL);
-    int zero = 0;
-    void *zeroP = (void *)(&zero);
     memset((void *)(self->data), 0, (self->m * self->n) * self->impl->allocsize);
+}
+
+void zeros_(Matrix *self)
+{
+    void *zeroValue = malloc(self->impl->allocsize);
+    (*self->impl->zero)(zeroValue);
+
+    for (int row = 0; row < self->m; ++row)
+    {
+        for (int col = 0; col < self->n; ++col)
+        {
+            set(self, row, col, zeroValue);
+        }
+    }
+
+    free(zeroValue);
 }
 
 void printMatrix(Matrix *self)
@@ -93,6 +115,7 @@ Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB)
     {
         for (int j = 0; j < matrixA->n; j++)
         {
+            // перенести временные переменные
             void *arg1 = get(matrixA, i, j);
             void *arg2 = get(matrixB, i, j);
             temp = result->impl->addition(arg1, arg2);
@@ -127,6 +150,7 @@ Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB)
     }
     return result;
 }
+
 Matrix *multMatrixToNumber(Matrix *matrix, void *number)
 {
     assert(matrix != NULL && number != NULL);

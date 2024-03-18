@@ -1,4 +1,3 @@
-
 #include "fieldinfo.h"
 #include "double.h"
 #include <stdlib.h>
