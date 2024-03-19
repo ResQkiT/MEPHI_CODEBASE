@@ -15,6 +15,9 @@
         "tuple": "c",
         "utility": "c",
         "compare": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "stdlib.h": "c",
+        "crtdbg.h": "c",
+        "string.h": "c"
     }
 }

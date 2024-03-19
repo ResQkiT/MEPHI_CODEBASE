@@ -7,78 +7,64 @@
 #include <assert.h>
 #include "integer.h"
 //
-typedef struct
+struct matrix
 {
-    int m;
-    int n;
+    int rows;
+    int cols;
     void *data;
     FieldInfo *impl;
-} Matrix;
-
-Matrix *newMatrix(int m, int n, FieldInfo *impl)
+};
+typedef struct matrix Matrix;
+Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
 {
     Matrix *matrix = malloc(sizeof(Matrix));
-    matrix->data = malloc(m * n * impl->allocsize);
+    matrix->data = malloc(rows * cols * impl->allocsize);
 
     matrix->impl = impl;
-    matrix->m = m;
-    matrix->n = n;
+    matrix->rows = rows;
+    matrix->cols = cols;
 
     zeros(matrix);
     return matrix;
 }
 
-// добавить проверку на валидность
-// ууказатель на элемен тв матрице
-void *get(Matrix *self, int i, int j)
+// ууказатель на элемен тв матрице, а не ноовый
+void *get(Matrix *self, int rowIndex, int colIndex)
 {
-    assert(self != NULL && i < self->m && j < self->n);
-    void *val = malloc(self->impl->allocsize);
-    memcpy(val, (char *)self->data + (i * (self->n) + j) * self->impl->allocsize, self->impl->allocsize);
-    return val;
+    assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
+    //printf("adres: %d\n", (void *)((char *)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize));
+    return (void *)((char *)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize);
 }
 
-// добавить проверку на валидност
-// row col
-// переименовать переменные
-void set(Matrix *self, int i, int j, void *data)
+void set(Matrix *self, int rowIndex, int colIndex,void *data)
 {
-    assert(self != NULL && data != NULL && i < self->m && j < self->n);
-    memcpy((void *)((char *)self->data + (i * (self->n) + j) * self->impl->allocsize),
+    // printf("%d %d", row, col);
+    assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
+    memcpy(get(self, rowIndex, colIndex),
            data,
            self->impl->allocsize);
 }
-// переписать все через set
+
 void zeros(Matrix *self)
 {
-    assert(self != NULL);
-    memset((void *)(self->data), 0, (self->m * self->n) * self->impl->allocsize);
-}
-
-void zeros_(Matrix *self)
-{
-    void *zeroValue = malloc(self->impl->allocsize);
-    (*self->impl->zero)(zeroValue);
-
-    for (int row = 0; row < self->m; ++row)
+    Matrix *matrix = self;
+    for (int i = 0; i < matrix->rows; i++)
     {
-        for (int col = 0; col < self->n; ++col)
+        for (int j = 0; j < matrix->cols; j++)
         {
-            set(self, row, col, zeroValue);
+            set(self, i, j, matrix->impl->zero_());
         }
     }
-
-    free(zeroValue);
 }
 
 void printMatrix(Matrix *self)
 {
     assert(self != NULL);
-    for (int i = 0; i < self->m; i++)
+    for (int row = 0; row < self->rows; row++)
     {
-        for (int j = 0; j < self->n; j++)
+        for (int j = 0; j < self->cols; j++)
         {
-            self->impl->printElement(get(self, i, j));
+            self->impl->printElement(get(self, row, j));
             printf(" ");
         }
         printf("\n");
@@ -87,11 +73,13 @@ void printMatrix(Matrix *self)
 void readMatrix(Matrix *self)
 {
     assert(self != NULL);
-    for (int i = 0; i < self->m; i++)
+    void * temp ;
+    for (int i = 0; i < self->rows; i++)
     {
-        for (int j = 0; j < self->n; j++)
+        for (int j = 0; j < self->cols; j++)
         {
-            set(self, i, j, self->impl->input());
+            self->impl->input(temp);
+            set(self, i, j, temp);
         }
     }
 }
@@ -106,20 +94,22 @@ void delete(Matrix *target)
 Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB)
 {
     // Проверим что сигнатуры совпадают, иначе накричим на пользователя
-    assert(matrixA->m == matrixB->m && matrixA->n == matrixB->n && matrixA->impl->allocsize == matrixB->impl->allocsize);
-    int m = matrixA->m;
-    int n = matrixA->n;
+    assert(matrixA->rows == matrixB->rows && matrixA->cols == matrixB->cols && matrixA->impl->allocsize == matrixB->impl->allocsize);
+    int m = matrixA->rows;
+    int n = matrixA->cols;
     Matrix *result = newMatrix(m, n, matrixA->impl);
     void *temp;
-    for (int i = 0; i < matrixA->m; i++)
+    void *arg1;
+    void *arg2;
+    for (int row = 0; row < matrixA->rows; row++)
     {
-        for (int j = 0; j < matrixA->n; j++)
+        for (int j = 0; j < matrixA->cols; j++)
         {
             // перенести временные переменные
-            void *arg1 = get(matrixA, i, j);
-            void *arg2 = get(matrixB, i, j);
+            arg1 = get(matrixA, row, j);
+            arg2 = get(matrixB, row, j);
             temp = result->impl->addition(arg1, arg2);
-            set(result, i, j, temp);
+            set(result, row, j, temp);
             free(arg1);
             free(arg2);
         }
@@ -129,19 +119,19 @@ Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB)
 Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB)
 {
     assert(matrixA != NULL && matrixB != NULL);
-    assert(matrixA->m == matrixB->n && matrixA->impl->allocsize == matrixB->impl->allocsize);
-    Matrix *result = newMatrix(matrixA->m, matrixB->n, matrixA->impl);
-    for (int i = 0; i < matrixA->m; i++)
+    assert(matrixA->rows == matrixB->cols && matrixA->impl->allocsize == matrixB->impl->allocsize);
+    Matrix *result = newMatrix(matrixA->rows, matrixB->cols, matrixA->impl);
+    for (int i = 0; i < matrixA->rows; i++)
     {
-        for (int j = 0; j < matrixB->n; j++)
+        for (int j = 0; j < matrixB->cols; j++)
         {
             void *sum;
             void *temp;
-            for (int k = 0; k < matrixA->n; k++)
+            for (int k = 0; k < matrixA->cols; k++)
             {
                 void *arg1 = get(matrixA, i, k);
                 void *arg2 = get(matrixB, k, j);
-                temp = matrixA->impl->multiply(arg1, arg2);
+                temp = matrixA->impl->multiplication(arg1, arg2);
                 set(result, i, j, matrixA->impl->addition(get(result, i, j), temp));
                 free(arg1);
                 free(arg2);
@@ -154,12 +144,12 @@ Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB)
 Matrix *multMatrixToNumber(Matrix *matrix, void *number)
 {
     assert(matrix != NULL && number != NULL);
-    Matrix *result = newMatrix(matrix->m, matrix->n, matrix->impl);
-    for (int i = 0; i < result->m; i++)
+    Matrix *result = newMatrix(matrix->rows, matrix->cols, matrix->impl);
+    for (int i = 0; i < result->rows; i++)
     {
-        for (int j = 0; j < result->n; j++)
+        for (int j = 0; j < result->cols; j++)
         {
-            set(result, i, j, result->impl->multiply(get(matrix, i, j), number));
+            set(result, i, j, result->impl->multiplication(get(matrix, i, j), number));
         }
     }
     return result;
@@ -168,12 +158,12 @@ Matrix *multMatrixToNumber(Matrix *matrix, void *number)
 Matrix *transposeMatrix(Matrix *target)
 {
     assert(target != NULL);
-    Matrix *result = newMatrix(target->n, target->m, target->impl);
-    for (int i = 0; i < target->m; i++)
+    Matrix *result = newMatrix(target->cols, target->rows, target->impl);
+    for (int row = 0; row < target->rows; row++)
     {
-        for (int j = 0; j < target->n; j++)
+        for (int col = 0; col < target->cols; col++)
         {
-            set(result, j, i, get(target, i, j));
+            set(result, col, row, get(target, row, col));
         }
     }
     return result;

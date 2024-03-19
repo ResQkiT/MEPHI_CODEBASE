@@ -13,21 +13,21 @@ FieldInfo* newDoubleImpl(){
     return impl;
 }
 
-void* doubleAddition(void* v1, void* v2){
-    double temp = (*((double* ) v1))+(*((double* ) v2));
+void* doubleAddition(void* arg1, void*  arg2){
+    double temp = (*((double* )  arg1))+(*((double* ) arg2));
     double* res = &temp;
     return (void*) res;
 }
 
-void* doubleMultiplication(void* v1, void* v2){
-    double temp = (*((double* ) v1)) * (*((double* ) v2));
+void* doubleMultiplication(void*  arg1, void* arg2){
+    double temp = (*((double* )  arg1)) * (*((double* ) arg2));
     double* res = &temp;
     return (void*) res;
 }
 
-void* doublePrint(void * v){
-    printf("%lf", *(double*)v);
-    return (void* ) v;
+void* doublePrint(void * arg){
+    printf("%lf", *(double*)arg);
+    return (void* ) arg;
 }
 void* doubleInput(){
     double d;

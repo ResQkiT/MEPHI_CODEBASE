@@ -3,36 +3,59 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-FieldInfo* newIntegerImpl(){
-    FieldInfo* integerImpl = malloc(sizeof(FieldInfo));
-    integerImpl->allocsize = sizeof(int);
-    integerImpl->addition = integerAddition;
-    integerImpl->multiply = integerMultiplication;
-    integerImpl->printElement = integerPrint;
-    integerImpl->input = integerInput;
-    return integerImpl;
+FieldInfo* getIntegetImplimentationInstance(){
+    static FieldInfo * integerImplementationInstance = NULL;
+    if (integerImplementationInstance == NULL)
+    {
+        integerImplementationInstance = malloc(sizeof(FieldInfo));
+        integerImplementationInstance->allocsize = sizeof(int);
+        integerImplementationInstance->addition = integerAddition;
+        integerImplementationInstance->multiplication = integerMultiplication;
+        integerImplementationInstance->printElement = integerPrint;
+        integerImplementationInstance->input = integerInput;
+        integerImplementationInstance->zero_ = zeroInteger;
+    }
+    
+    return integerImplementationInstance;
 }
 //переделать в глобальную переменную
-void* integerAddition(const void* v1, const  void* v2){
-    int temp = (*((int* ) v1))+(*((int* ) v2));
-    int* res = &temp;
-    return (void*) res;
+void* integerAddition(const void* arg1, const void* arg2, void* result){
+    int temp = (*((int* ) arg1))+(*((int* ) arg2));
+    *(int*)result = temp; 
+    return result;
 }
 
-void* integerMultiplication(void* v1, void* v2){
-    int temp = (*((int* ) v1)) * (*((int* ) v2));
-    int* res = &temp;
-    return (void*) res;
+void* integerMultiplication(const void* arg1,const void* arg2, void* result){
+    int temp = (*((int* ) arg1)) * (*((int* ) arg2));
+    *(int*)result = temp; 
+    return result;
 }
 
-void* integerPrint(void * v){
-    printf("%d", *(int*)v);
-    return (void* ) v;
+void* integerPrint(void * arg){
+    printf("%d", *(int*)arg);
+    return arg;
 }
-void* integerInput(){
+void* integerInput(void* target){
     int d;
     scanf("%d", &d);
-    int* res = &d;
-    return (void*) res;
+    *(int*)target = d;
+    return target;
+}
+void zeroIntegerInplace(void *ptrToZero)
+{
+    int *theZero = (int *)ptrToZero;
+    *theZero = 0;
+}
+
+const void* zeroInteger(){
+    static int * zero = NULL;
+
+    if (zero == NULL)
+    {
+        zero = malloc(sizeof(int));
+        zeroIntegerInplace(zero);
+    }
+
+    return (void *)zero;
 }
 

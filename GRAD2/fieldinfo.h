@@ -3,14 +3,14 @@ typedef struct {
     //поправить перевод все в глаголы
     //третий аргумент - не константный
     
-    void* (*addition)(void*, void*);
-    void* (*multiply)(void*, void*);
-    void* (*printElement)(void*);
-    void* (*input)();
+    void* (*addition)(const void*,const void*);
+    void* (*multiplication)(const void*,const void*);
+    void* (*printElement)(const void*);
+    void* (*input)(void*);
     //size_t
     int allocsize;
 
-    void (*zero)(void*);
+    void (*zero)(const void*);
     const void *(*zero_)();
     
 } FieldInfo;

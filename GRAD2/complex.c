@@ -8,58 +8,65 @@ typedef struct
     double im;
 } Complex;
 
-FieldInfo *newComplexImpl()
+FieldInfo *getComplexImplimentationInstance()
 {
-    FieldInfo *impl = malloc(sizeof(FieldInfo));
-    impl->allocsize = sizeof(Complex);
-    impl->addition = complexAddition;
-    impl->multiply = complexMultiplication;
-    impl->printElement = complexPrint;
-    impl->input = complexInput;
-    return impl;
+    static FieldInfo * complexImplementatinInstance = NULL;
+    if (complexImplementatinInstance == NULL)
+    {
+        complexImplementatinInstance = malloc(sizeof(FieldInfo));
+        complexImplementatinInstance->allocsize = sizeof(Complex);
+        complexImplementatinInstance->addition = complexAddition;
+        complexImplementatinInstance->multiplication = complexMultiplication;
+        complexImplementatinInstance->printElement = complexPrint;
+        complexImplementatinInstance->input = complexInput;
+        complexImplementatinInstance->zero_ = zeroComplex;
+        complexImplementatinInstance->zero = zeroComplexInplace;
+    }
+    return complexImplementatinInstance;
 }
 
-void *complexAddition(void *v1, void *v2)
+void *complexAddition(const void *arg1,const void *arg2, void* result)
 {
-    Complex *res = malloc(sizeof(Complex));
-    res->re = ((Complex *)v1)->re + ((Complex *)v2)->re;
-    res->im = ((Complex *)v1)->im + ((Complex *)v2)->im;
+    Complex *res = (Complex*)result;
+    res->re = ((Complex *)arg1)->re + ((Complex *)arg2)->re;
+    res->im = ((Complex *)arg1)->im + ((Complex *)arg2)->im;
     return (void *)res;
 }
 
-void *complexMultiplication(void *v1, void *v2)
+void *complexMultiplication(const void *arg1,const void *arg2, void* result)
 {
-    Complex *res = malloc(sizeof(Complex));
-    res->re = (((Complex *)v1)->re * ((Complex *)v2)->re) -
-              (((Complex *)v1)->im * ((Complex *)v2)->im);
+    Complex *res = (Complex*)result;
+    res->re = (((Complex *)arg1)->re * ((Complex *)arg2)->re) -
+              (((Complex *)arg1)->im * ((Complex *)arg2)->im);
 
-    res->im = (((Complex *)v1)->re * ((Complex *)v2)->im) +
-              (((Complex *)v1)->im * ((Complex *)v2)->re);
+    res->im = (((Complex *)arg1)->re * ((Complex *)arg2)->im) +
+              (((Complex *)arg1)->im * ((Complex *)arg2)->re);
 
     return (void *)res;
 }
 
-void *complexPrint(void *v)
+void *complexPrint(const void *arg)
 {
-    Complex *c = (Complex *)v;
+    Complex *c = (Complex *)arg;
     printf("%.2lf", c->re);
-    if (c->im > 0)
+    if (c->im >= 0)
         printf("+");
     printf("%.2lf", c->im);
     printf("i ");
     return (void *)c;
 }
-void *complexInput()
+void *complexInput(void* target)
 {
-    Complex *c = malloc(sizeof(Complex));
+    Complex *c = (Complex*) target;
     scanf("%lf %lf", &(c->re), &(c->im));
     return (void *)c;
 }
 
-void zeroComplexInplace(void *ptrToZero)
+void zeroComplexInplace(const void *ptrToZero)
 {
     Complex *theZero = (Complex *)ptrToZero;
-    // здесь добавить инициализацию нужных нулей
+    theZero->re = 0;
+    theZero->im = 0;
 }
 
 const void *zeroComplex()

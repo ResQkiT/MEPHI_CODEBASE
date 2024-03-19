@@ -2,17 +2,11 @@
 #include "fieldinfo.h"
 //перенести реализацию в с файл
 
-typedef struct 
-{
-    int m;
-    int n;
-    int* data;
-    FieldInfo* impl;
-} Matrix;
+typedef struct matrix Matrix;
 
-Matrix* newMatrix(int, int,const FieldInfo*, const void* Initializer);
+Matrix* newMatrix(int, int,const FieldInfo*);
 
-void* get(Matrix*, int, int);
+void *get(Matrix*, int, int);
 void set(Matrix*, int, int, void*);
 
 void printMatrix(Matrix*);
