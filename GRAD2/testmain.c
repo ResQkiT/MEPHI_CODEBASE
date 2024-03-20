@@ -3,9 +3,6 @@
 #include <locale.h>
 #include <assert.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 #include "matrix.h"
 #include "fieldinfo.h"
 #include "integer.h"
@@ -16,15 +13,15 @@
 int main(){
     int m, n;
     scanf("%d %d" , &m, &n);
-    Matrix* matrix = newMatrix(m, n,getIntegerImplimentationInstance());
-    Matrix* matrix2 = newMatrix(m, n, getDoubleImplimentationInstance());
+    Matrix* matrix = newMatrix(m, n,getComplexImplimentationInstance());
     printMatrix(matrix);
     readMatrix(matrix);
     printMatrix(matrix);
-
-    readMatrix(matrix2);
-    printMatrix(matrix);
+    Matrix* matrix2 = newMatrix(m, n, getDoubleImplimentationInstance());
     printMatrix(matrix2);
+    readMatrix(matrix2);
+    printMatrix(matrix2);
+    //readMatrix(matrix2);
 
     //Matrix* a = malloc(sizeof(Matrix));
     return 0;

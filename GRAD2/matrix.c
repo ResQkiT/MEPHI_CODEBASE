@@ -33,8 +33,8 @@ Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
 void *get(Matrix *self, int rowIndex, int colIndex)
 {
     assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
-    //printf("adres: %d\n", (void *)(self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize));
-    return (void *)(self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize);
+    //printf("adres: %d\n", (void *)((char*)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize));
+    return (void *)((char*)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize);
 }
 
 void set(Matrix *self, int rowIndex, int colIndex, void *data)
@@ -61,11 +61,13 @@ void zeros(Matrix *self)
 void printMatrix(Matrix *self)
 {
     assert(self != NULL);
-    for (int row = 0; row < self->rows; row++)
+    void * temp; //без этого не работает
+    for (int i = 0; i < self->rows; i++)
     {
         for (int j = 0; j < self->cols; j++)
         {
-            self->impl->printElement(get(self, row, j));
+            temp = get(self, i, j);
+            self->impl->printElement(temp);
             printf(" ");
         }
         printf("\n");
@@ -79,7 +81,7 @@ void readMatrix(Matrix *self)
     {
         for (int j = 0; j < self->cols; j++)
         {
-            
+            //printf("%d %d\n",i, j );
             self->impl->input(temp);
             set(self, i, j, temp);
         }
