@@ -6,19 +6,20 @@
 
 #include <assert.h>
 #include "integer.h"
-//
-struct matrix
+#include "matrix.h"
+
+struct Matrix
 {
     int rows;
     int cols;
     void *data;
     FieldInfo *impl;
 };
-typedef struct matrix Matrix;
+
 Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
 {
     Matrix *matrix = malloc(sizeof(Matrix));
-    matrix->data = malloc(rows * cols * impl->allocsize);
+    matrix->data = calloc(rows * cols, impl->allocsize);
 
     matrix->impl = impl;
     matrix->rows = rows;
@@ -32,14 +33,14 @@ Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
 void *get(Matrix *self, int rowIndex, int colIndex)
 {
     assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
-    //printf("adres: %d\n", (void *)((char *)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize));
-    return (void *)((char *)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize);
+    //printf("adres: %d\n", (void *)(self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize));
+    return (void *)(self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize);
 }
 
-void set(Matrix *self, int rowIndex, int colIndex,void *data)
+void set(Matrix *self, int rowIndex, int colIndex, void *data)
 {
     // printf("%d %d", row, col);
-    assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
+    assert(self != NULL && data != NULL && rowIndex < self->rows && colIndex < self->cols);
     memcpy(get(self, rowIndex, colIndex),
            data,
            self->impl->allocsize);
@@ -52,7 +53,7 @@ void zeros(Matrix *self)
     {
         for (int j = 0; j < matrix->cols; j++)
         {
-            set(self, i, j, matrix->impl->zero_());
+            set(self, i, j, (void*)matrix->impl->zero_());
         }
     }
 }
@@ -73,15 +74,17 @@ void printMatrix(Matrix *self)
 void readMatrix(Matrix *self)
 {
     assert(self != NULL);
-    void * temp ;
+    void * temp;
     for (int i = 0; i < self->rows; i++)
     {
         for (int j = 0; j < self->cols; j++)
         {
+            
             self->impl->input(temp);
             set(self, i, j, temp);
         }
     }
+    printf("end read\n");
 }
 void delete(Matrix *target)
 {

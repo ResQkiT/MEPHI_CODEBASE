@@ -10,13 +10,22 @@
 #include "fieldinfo.h"
 #include "integer.h"
 #include "complex.h"
+#include "double.h"
+
 #include <string.h>
 int main(){
-    Matrix* matrix = newMatrix(2, 2,getIntegetImplimentationInstance());
+    int m, n;
+    scanf("%d %d" , &m, &n);
+    Matrix* matrix = newMatrix(m, n,getIntegerImplimentationInstance());
+    Matrix* matrix2 = newMatrix(m, n, getDoubleImplimentationInstance());
     printMatrix(matrix);
     readMatrix(matrix);
-    
     printMatrix(matrix);
+
+    readMatrix(matrix2);
+    printMatrix(matrix);
+    printMatrix(matrix2);
+
     //Matrix* a = malloc(sizeof(Matrix));
     return 0;
 }

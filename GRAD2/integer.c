@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-FieldInfo* getIntegetImplimentationInstance(){
-    static FieldInfo * integerImplementationInstance = NULL;
+FieldInfo *getIntegerImplimentationInstance()
+{
+    static FieldInfo *integerImplementationInstance = NULL;
     if (integerImplementationInstance == NULL)
     {
         integerImplementationInstance = malloc(sizeof(FieldInfo));
@@ -15,40 +16,44 @@ FieldInfo* getIntegetImplimentationInstance(){
         integerImplementationInstance->input = integerInput;
         integerImplementationInstance->zero_ = zeroInteger;
     }
-    
+
     return integerImplementationInstance;
 }
-//переделать в глобальную переменную
-void* integerAddition(const void* arg1, const void* arg2, void* result){
-    int temp = (*((int* ) arg1))+(*((int* ) arg2));
-    *(int*)result = temp; 
+// переделать в глобальную переменную
+void *integerAddition(const void *arg1, const void *arg2, void *result)
+{
+    int temp = (*((int *)arg1)) + (*((int *)arg2));
+    *(int *)result = temp;
     return result;
 }
 
-void* integerMultiplication(const void* arg1,const void* arg2, void* result){
-    int temp = (*((int* ) arg1)) * (*((int* ) arg2));
-    *(int*)result = temp; 
+void *integerMultiplication(const void *arg1, const void *arg2, void *result)
+{
+    int temp = (*((int *)arg1)) * (*((int *)arg2));
+    *(int *)result = temp;
     return result;
 }
 
-void* integerPrint(void * arg){
-    printf("%d", *(int*)arg);
+void *integerPrint(void *arg)
+{
+    printf("%d", *(int *)arg);
     return arg;
 }
-void* integerInput(void* target){
-    int d;
-    scanf("%d", &d);
-    *(int*)target = d;
-    return target;
+void *integerInput(void *target)
+{
+    int* ptr = (int*)target;
+    scanf("%d", ptr);
+    *(int*)target = *ptr;
+    return ptr;
 }
 void zeroIntegerInplace(void *ptrToZero)
 {
-    int *theZero = (int *)ptrToZero;
-    *theZero = 0;
+    *(int *)ptrToZero = 0;
 }
 
-const void* zeroInteger(){
-    static int * zero = NULL;
+void *zeroInteger()
+{
+    static void *zero = NULL;
 
     if (zero == NULL)
     {
@@ -58,4 +63,3 @@ const void* zeroInteger(){
 
     return (void *)zero;
 }
-

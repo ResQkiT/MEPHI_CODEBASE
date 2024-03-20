@@ -5,7 +5,7 @@ typedef struct {
     
     void* (*addition)(const void*,const void*);
     void* (*multiplication)(const void*,const void*);
-    void* (*printElement)(const void*);
+    void* (*printElement)(void*);
     void* (*input)(void*);
     //size_t
     int allocsize;
