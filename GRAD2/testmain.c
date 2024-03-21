@@ -13,16 +13,23 @@
 int main(){
     int m, n;
     scanf("%d %d" , &m, &n);
+    printf("enter first: \n");
     Matrix* matrix = newMatrix(m, n,getComplexImplimentationInstance());
-    printMatrix(matrix);
     readMatrix(matrix);
+
     printMatrix(matrix);
-    Matrix* matrix2 = newMatrix(m, n, getDoubleImplimentationInstance());
-    printMatrix(matrix2);
+    printf("enter second: \n");
+    Matrix* matrix2 = newMatrix(m, n, getComplexImplimentationInstance());
     readMatrix(matrix2);
     printMatrix(matrix2);
-    //readMatrix(matrix2);
+    printf("result: \n");
+    Matrix* res = newMatrix(m, n, getComplexImplimentationInstance()); 
+    addMatrix(matrix, matrix2, res);
 
-    //Matrix* a = malloc(sizeof(Matrix));
+    printf("end add main\n");
+    printMatrix(res);
+    delete(matrix);
+    delete(matrix2);
+    delete(res);
     return 0;
 }

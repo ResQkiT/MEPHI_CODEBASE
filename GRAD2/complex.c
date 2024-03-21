@@ -20,7 +20,7 @@ FieldInfo *getComplexImplimentationInstance()
         complexImplementatinInstance->printElement = complexPrint;
         complexImplementatinInstance->input = complexInput;
         complexImplementatinInstance->zero_ = zeroComplex;
-        complexImplementatinInstance->zero = zeroComplexInplace;
+        complexImplementatinInstance->zeroInPlace = zeroComplexInplace;
     }
     return complexImplementatinInstance;
 }
@@ -59,7 +59,7 @@ void *complexInput(void* target)
 {
     Complex *c = (Complex*) target;
     scanf("%lf %lf", &(c->re), &(c->im));
-    return (void *)c;
+    return (void *)target;
 }
 
 void zeroComplexInplace(const void *ptrToZero)

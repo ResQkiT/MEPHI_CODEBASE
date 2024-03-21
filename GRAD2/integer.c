@@ -15,14 +15,16 @@ FieldInfo *getIntegerImplimentationInstance()
         integerImplementationInstance->printElement = integerPrint;
         integerImplementationInstance->input = integerInput;
         integerImplementationInstance->zero_ = zeroInteger;
+        integerImplementationInstance->zeroInPlace = zeroIntegerInplace;
     }
 
     return integerImplementationInstance;
 }
 // переделать в глобальную переменную
-void *integerAddition(const void *arg1, const void *arg2, void *result)
+void *integerAddition( void *arg1, void *arg2, void *result)
 {
     int temp = (*((int *)arg1)) + (*((int *)arg2));
+    //printf("sum: %d" , temp);
     *(int *)result = temp;
     return result;
 }
@@ -36,15 +38,14 @@ void *integerMultiplication(const void *arg1, const void *arg2, void *result)
 
 void *integerPrint(void *arg)
 {
-    printf("%d", *(int *)arg);
+    int *ptr = (int*)arg;
+    printf("%i", *ptr);
     return arg;
 }
 void *integerInput(void *target)
 {
-    int* ptr = (int*)target;
-    scanf("%d", ptr);
-    *(int*)target = *ptr;
-    return ptr;
+    scanf("%d",(int*)target);
+    return target;
 }
 void zeroIntegerInplace(void *ptrToZero)
 {
