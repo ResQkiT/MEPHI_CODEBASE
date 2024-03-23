@@ -2,7 +2,7 @@
 #include "double.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "constants.h"
 FieldInfo *getDoubleImplimentationInstance()
 {
     static FieldInfo *doubleImplementationInstance = NULL;
@@ -15,19 +15,20 @@ FieldInfo *getDoubleImplimentationInstance()
         doubleImplementationInstance->printElement = doublePrint;
         doubleImplementationInstance->input = doubleInput;
         doubleImplementationInstance->zero_ = zeroDouble;
+        doubleImplementationInstance->zeroInPlace = zeroDoubleInplace;
+        doubleImplementationInstance->equal = doubleEqual;
     }
 
     return doubleImplementationInstance;
 }
-// переделать в глобальную переменную
-void *doubleAddition(const void *arg1, const void *arg2, void *result)
+void *doubleAddition(void *arg1, void *arg2, void *result)
 {
     double temp = (*((double *)arg1)) + (*((double *)arg2));
     *(double *)result = temp;
     return result;
 }
 
-void *doubleMultiplication(const void *arg1, const void *arg2, void *result)
+void *doubleMultiplication(void *arg1, void *arg2, void *result)
 {
     double temp = (*((double *)arg1)) * (*((double *)arg2));
     *(double *)result = temp;
@@ -49,7 +50,7 @@ void zeroDoubleInplace(void *ptrToZero)
     *(double *)ptrToZero = 0.0;
 }
 
-void *zeroDouble()
+const void *zeroDouble()
 {
     static void *zero = NULL;
 
@@ -60,4 +61,9 @@ void *zeroDouble()
     }
 
     return (void *)zero;
+}
+int doubleEqual(void * arg1, void * arg2){
+    if (arg1 == arg2) return true;
+    if(*(double*)arg1 == *(double*)arg2) return true;
+    return false;
 }

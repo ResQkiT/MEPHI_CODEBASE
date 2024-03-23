@@ -6,34 +6,48 @@
 
 #include <assert.h>
 #include "integer.h"
+#include "complex.h"
+#include "double.h"
 #include "matrix.h"
+#include "constants.h"
 
+
+typedef struct Matrix
+{
+    int rows;
+    int cols;
+    void *data;
+    FieldInfo *impl;
+} Matrix;
 
 Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
 {
     Matrix *matrix = malloc(sizeof(Matrix));
-    matrix->data = malloc(rows * cols* impl->allocsize);
+    matrix->data = malloc(rows * cols * impl->allocsize);
 
     matrix->impl = impl;
     matrix->rows = rows;
     matrix->cols = cols;
-    //printf("%d %d", matrix->rows, matrix->cols);
     zeros(matrix);
     return matrix;
 }
-
-// ууказатель на элемен тв матрице, а не ноовый
+int getRows(Matrix *self){
+    return self->rows;
+}   
+int getCols(Matrix *self){
+    return self->cols;
+}
+FieldInfo* getFieldInfo(Matrix *self){
+    return self->impl;
+}
 void *get(Matrix *self, int rowIndex, int colIndex)
 {
     assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
-
-    //printf("adres: %d\n", (void *)((char*)self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize));
     return (void *)(self->data + (rowIndex * (self->cols) + colIndex) * self->impl->allocsize);
 }
 
 void set(Matrix *self, int rowIndex, int colIndex, void *data)
 {
-    // printf("%d %d", row, col);
     assert(self != NULL && data != NULL && rowIndex < self->rows && colIndex < self->cols);
     memcpy(get(self, rowIndex, colIndex),
            data,
@@ -53,11 +67,8 @@ void zeros(Matrix *self)
 
 void printMatrix(Matrix *self)
 {
-    //printf("!0");
     assert(self != NULL);
-    //printf("!1");
-    void * temp = NULL ; //без этого не работает
-    //printf("!2");
+    void *temp ; 
     for (int i = 0; i < self->rows; i++)
     {
         for (int j = 0; j < self->cols; j++)
@@ -68,25 +79,58 @@ void printMatrix(Matrix *self)
         }
         printf("\n");
     }
-
-    //free(temp);
-    
 }
 
-void readMatrix(Matrix *self)
+void readMatrixFromFile(FILE* source, Matrix *self)
 {
     assert(self != NULL);
-    void * temp =malloc(self->impl->allocsize);
+    void *temp = malloc(self->impl->allocsize);
     for (int i = 0; i < self->rows; i++)
     {
         for (int j = 0; j < self->cols; j++)
         {
-            self->impl->input(temp);
+            self->impl->input(source, temp);
             set(self, i, j, temp);
         }
     }
     free(temp);
-    printf("enter ended\n");
+}
+//что то вроде перегрузки
+void readMatrix(Matrix *self)
+{
+    assert(self != NULL);
+    readMatrixFromFile(stdin, self);
+}
+//читает матрицу из .txt файла в формате 
+//первая строка->m m t  число строк число столбцов тип матрицы
+//далее->m строк по n элементов в каждой
+//возвращет ссылку на матрицу в памяти 
+Matrix* newMatrixFromFile(FILE* file){
+    int rows, cols;
+    char t;
+    
+    fscanf(file, "%d %d %c", &rows, &cols, &t);
+    //printf("%d %d %c", rows, cols, t);
+    
+    Matrix *matrix;
+    switch (t -'0')
+    {
+    case 'i' - '0':
+        matrix = newMatrix(rows, cols, getIntegerImplimentationInstance()); 
+        break;
+    case 'd' - '0':
+        matrix = newMatrix(rows, cols, getDoubleImplimentationInstance()); 
+        break;
+    case 'c' - '0' :
+        matrix = newMatrix(rows, cols, getComplexImplimentationInstance()); 
+        break;
+    default:
+        printf("null\n");
+        return NULL;
+        break;
+    }
+    readMatrixFromFile(file, matrix);
+    return matrix;
 }
 
 void delete(Matrix *target)
@@ -98,78 +142,94 @@ void delete(Matrix *target)
 
 Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
 {
-    // Проверим что сигнатуры совпадают, иначе накричим на пользователя
     assert(matrixA->rows == matrixB->rows && matrixA->cols == matrixB->cols && matrixA->impl->allocsize == matrixB->impl->allocsize);
-    void *temp = malloc(result->impl->allocsize); // выделяем память для текущего элемента
+    void *temp = malloc(result->impl->allocsize);
     void *arg1;
     void *arg2;
-    void *target;
     for (int i = 0; i < result->rows; i++)
     {
         for (int j = 0; j < result->cols; j++)
         {
             arg1 = get(matrixA, i, j);
             arg2 = get(matrixB, i, j);
-            target = get(result, i, j);
-            //printf("%d %d\n", arg1, arg2);
             result->impl->addition(arg1, arg2, temp);
-            //printf("%d\n", *(int*) temp);
             set(result, i, j, temp);
         }
     }
     free(temp);
-    //printf("end add\n");
     return result;
 }
-Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB)
+Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
 {
-    assert(matrixA != NULL && matrixB != NULL);
-    assert(matrixA->rows == matrixB->cols && matrixA->impl->allocsize == matrixB->impl->allocsize);
-    Matrix *result = newMatrix(matrixA->rows, matrixB->cols, matrixA->impl);
+    assert(matrixA != NULL && matrixB != NULL && result != NULL);
+    assert(matrixA->cols == matrixB->rows && matrixA->impl->allocsize == matrixB->impl->allocsize);
+    assert(result->cols == matrixB->cols && result->rows == matrixA->rows);
+
+    void *arg1;
+    void *arg2;
+    void *sum = malloc(result->impl->allocsize);
+    void *temp = malloc(result->impl->allocsize);
+
     for (int i = 0; i < matrixA->rows; i++)
     {
         for (int j = 0; j < matrixB->cols; j++)
         {
-            void *sum;
-            void *temp;
+            result->impl->zeroInPlace(sum);
             for (int k = 0; k < matrixA->cols; k++)
             {
-                void *arg1 = get(matrixA, i, k);
-                void *arg2 = get(matrixB, k, j);
-                temp = matrixA->impl->multiplication(arg1, arg2);
-                //set(result, i, j, matrixA->impl->addition(get(result, i, j)));
-                free(arg1);
-                free(arg2);
+                result->impl->zeroInPlace(temp);
+                arg1 = get(matrixA, i, k);
+                arg2 = get(matrixB, k, j);
+                result->impl->multiplication(arg1, arg2, temp);
+
+                result->impl->addition(sum, temp, sum);
+                set(result, i, j, sum);
             }
         }
     }
+    free(sum);
+    free(temp);
     return result;
 }
 
-Matrix *multMatrixToNumber(Matrix *matrix, void *number)
+Matrix *multMatrixToNumber(Matrix *matrix, void *number, Matrix *result)
 {
-    assert(matrix != NULL && number != NULL);
-    Matrix *result = newMatrix(matrix->rows, matrix->cols, matrix->impl);
+    assert(matrix != NULL && number != NULL && result != NULL);
+    void *temp = malloc(result->impl->allocsize);
+    void *arg1;
     for (int i = 0; i < result->rows; i++)
     {
         for (int j = 0; j < result->cols; j++)
         {
-            set(result, i, j, result->impl->multiplication(get(matrix, i, j), number));
+            arg1 = get(matrix, i, j);
+            result->impl->multiplication(arg1, number, temp);
+            set(result, i, j, temp);
         }
     }
+    free(temp);
     return result;
 }
 
-Matrix *transposeMatrix(Matrix *target)
-{
-    assert(target != NULL);
-    Matrix *result = newMatrix(target->cols, target->rows, target->impl);
-    for (int row = 0; row < target->rows; row++)
+int equal(Matrix *matrixA, Matrix* matrixB){
+    if (matrixA == matrixB) return true;
+    if(matrixA == NULL || matrixB == NULL) return false;
+    if(matrixA->impl != matrixB->impl || matrixA->rows != matrixB->rows || matrixA->cols != matrixB->cols) return false;
+    int m = matrixA->rows;
+    int n = matrixA->cols;
+    void * arg1;
+    void * arg2;
+    int f = 1;
+    for (int i = 0; i < m; i++)
     {
-        for (int col = 0; col < target->cols; col++)
+        for (int j = 0; j < n; j++)
         {
-            set(result, col, row, get(target, row, col));
+            arg1 = get(matrixA,i, j);
+            arg2 = get(matrixB,i, j);
+        
+            f = f && matrixA->impl->equal(arg1, arg2);
+            printf("%d", f);
         }
     }
-    return result;
+    return f;
+    
 }

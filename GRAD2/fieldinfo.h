@@ -1,20 +1,12 @@
 #pragma once
 typedef struct {
-    //поправить перевод все в глаголы
-    //третий аргумент - не константный
-    
     void* (*addition)( void*, void*, void*);
-    void* (*multiplication)(const void*,const void*);
+    void* (*multiplication)(void*,void*, void*);
     void* (*printElement)(void*);
-    void* (*input)(void*);
-
-    //size_t
+    void* (*input)(void *,void*);
     int allocsize;
-
     void (*zeroInPlace)(void *);
     const void *(*zero_)();
-    
+    int (*equal)(void*, void*);
 } FieldInfo;
-
-//
 

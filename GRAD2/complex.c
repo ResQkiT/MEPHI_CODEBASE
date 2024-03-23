@@ -1,7 +1,9 @@
 #include "fieldinfo.h"
 #include "complex.h"
+#include "constants.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 typedef struct
 {
     double re;
@@ -10,7 +12,7 @@ typedef struct
 
 FieldInfo *getComplexImplimentationInstance()
 {
-    static FieldInfo * complexImplementatinInstance = NULL;
+    static FieldInfo *complexImplementatinInstance = NULL;
     if (complexImplementatinInstance == NULL)
     {
         complexImplementatinInstance = malloc(sizeof(FieldInfo));
@@ -21,21 +23,22 @@ FieldInfo *getComplexImplimentationInstance()
         complexImplementatinInstance->input = complexInput;
         complexImplementatinInstance->zero_ = zeroComplex;
         complexImplementatinInstance->zeroInPlace = zeroComplexInplace;
+        complexImplementatinInstance->equal = complexEqual;
     }
     return complexImplementatinInstance;
 }
 
-void *complexAddition(const void *arg1,const void *arg2, void* result)
+void *complexAddition(void *arg1, void *arg2, void *result)
 {
-    Complex *res = (Complex*)result;
+    Complex *res = (Complex *)result;
     res->re = ((Complex *)arg1)->re + ((Complex *)arg2)->re;
     res->im = ((Complex *)arg1)->im + ((Complex *)arg2)->im;
     return (void *)res;
 }
 
-void *complexMultiplication(const void *arg1,const void *arg2, void* result)
+void *complexMultiplication(void *arg1, void *arg2, void *result)
 {
-    Complex *res = (Complex*)result;
+    Complex *res = (Complex *)result;
     res->re = (((Complex *)arg1)->re * ((Complex *)arg2)->re) -
               (((Complex *)arg1)->im * ((Complex *)arg2)->im);
 
@@ -45,7 +48,7 @@ void *complexMultiplication(const void *arg1,const void *arg2, void* result)
     return (void *)res;
 }
 
-void *complexPrint(const void *arg)
+void *complexPrint(void *arg)
 {
     Complex *c = (Complex *)arg;
     printf("%.2lf", c->re);
@@ -55,14 +58,15 @@ void *complexPrint(const void *arg)
     printf("i ");
     return (void *)c;
 }
-void *complexInput(void* target)
+void *complexInput(void* source, void *target)
 {
-    Complex *c = (Complex*) target;
-    scanf("%lf %lf", &(c->re), &(c->im));
+    FILE * file = (FILE*) source;
+    Complex *c = (Complex *)target;
+    fscanf(file,"%lf %lf", &(c->re), &(c->im));
     return (void *)target;
 }
 
-void zeroComplexInplace(const void *ptrToZero)
+void zeroComplexInplace(void *ptrToZero)
 {
     Complex *theZero = (Complex *)ptrToZero;
     theZero->re = 0;
@@ -80,4 +84,18 @@ const void *zeroComplex()
     }
 
     return (void *)theZero;
+}
+void *newComplex(double re, double im)
+{
+    Complex *complex = malloc(sizeof(Complex));
+    complex->re = re;
+    complex->im = im;
+    return complex;
+}
+int complexEqual(void * arg1, void * arg2){
+    if (arg1 == arg2) return true;
+    Complex* c1 = (Complex*) arg1;
+    Complex* c2 = (Complex*) arg2;
+    if( fabs(c1->re - c2->re)<=1e-6 && fabs(c1->im - c2->im)<=1e-6 ) return true; 
+    return false;
 }

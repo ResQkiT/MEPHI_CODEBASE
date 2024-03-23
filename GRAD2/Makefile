@@ -9,5 +9,9 @@ complex.o: complex.c
 
 testmain.o: testmain.c
 	gcc -g -c testmain.c
-app: matrix.o testmain.o integer.o complex.o
-	gcc matrix.o testmain.o integer.o complex.o -o app
+
+double.o: double.c
+	gcc -g -c double.c
+
+app: matrix.o testmain.o integer.o complex.o double.o
+	gcc matrix.o testmain.o integer.o complex.o double.o -o app

@@ -1,28 +1,28 @@
 #pragma once
 #include "fieldinfo.h"
-//перенести реализацию в с файл
 
+typedef struct Matrix Matrix;
 
-typedef struct Matrix
-{
-    int rows;
-    int cols;
-    void *data;
-    FieldInfo *impl;
-}Matrix;
+Matrix *newMatrix(int rows, int cols, FieldInfo *);
 
-Matrix* newMatrix(int, int, FieldInfo*);
-
-void *get(Matrix*, int, int);
-void set(Matrix*, int, int, void*);
+void *get(Matrix *self, int rowIndex, int colIndex);
+void set(Matrix *self, int rowIndex, int colIndex, void *data);
 
 void printMatrix(Matrix *self);
-void readMatrix(Matrix*);
-void zeros(Matrix *);
-void delete(Matrix*);
+Matrix* newMatrixFromFile(FILE* file);
+void readMatrixFromFile(FILE* source, Matrix *self);
+void readMatrix(Matrix *self);
+void zeros(Matrix * self);
+void delete(Matrix * self);
 
-Matrix* addMatrix(Matrix*, Matrix*, Matrix*);
-Matrix* multMatrix(Matrix*, Matrix*);
-Matrix* multMatrixToNumber(Matrix*, void*);
-Matrix* transposeMatrix(Matrix*);
-void falseprintMatrix(Matrix *);
+Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result);
+Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result);
+Matrix *multMatrixToNumber(Matrix *matrix, void *number, Matrix *result);
+
+
+
+int getRows(Matrix *self);
+int getCols(Matrix *self);
+FieldInfo* getFieldInfo(Matrix *self);
+
+int equal(Matrix *matrixA, Matrix* matrixB);
