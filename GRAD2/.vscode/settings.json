@@ -60,6 +60,11 @@
     "matrix.h": "c",
     "fieldinfo.h": "c",
     "complex.h": "c",
-    "integer.h": "c"
+    "integer.h": "c",
+    "stdio.h": "c",
+    "functional": "c",
+    "test.h": "c",
+    "system_error": "c",
+    "string.h": "c"
   }
 }

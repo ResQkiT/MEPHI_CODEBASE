@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "constants.h"
+#include <math.h>
 FieldInfo *getDoubleImplimentationInstance()
 {
     static FieldInfo *doubleImplementationInstance = NULL;
@@ -40,9 +41,10 @@ void *doublePrint(void *arg)
     printf("%lf", *(double *)arg);
     return arg;
 }
-void *doubleInput(void *target)
+void *doubleInput(void* source, void *target)
 {
-    scanf("%lf", (double *)target);
+    FILE* file = (FILE*) source;
+    fscanf(source, "%lf", (double *)target);
     return target;
 }
 void zeroDoubleInplace(void *ptrToZero)
@@ -64,6 +66,6 @@ const void *zeroDouble()
 }
 int doubleEqual(void * arg1, void * arg2){
     if (arg1 == arg2) return true;
-    if(*(double*)arg1 == *(double*)arg2) return true;
+    if(fabs(*(double*)arg1 - *(double*)arg2) <=1e-9) return true;
     return false;
 }

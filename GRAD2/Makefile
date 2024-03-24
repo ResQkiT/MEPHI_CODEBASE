@@ -7,11 +7,20 @@ integer.o: integer.c
 complex.o: complex.c
 	gcc -g -c complex.c
 
+double.o: double.c
+	gcc -g -c double.c
+	
+
+main.o: main.c
+	gcc -g -c main.c
+
 testmain.o: testmain.c
 	gcc -g -c testmain.c
 
-double.o: double.c
-	gcc -g -c double.c
 
-app: matrix.o testmain.o integer.o complex.o double.o
-	gcc matrix.o testmain.o integer.o complex.o double.o -o app
+testmain: testmain.o matrix.o integer.o complex.o double.o
+	gcc testmain.o matrix.o  integer.o complex.o double.o -o testmain
+
+main: main.o matrix.o  integer.o complex.o double.o
+	gcc main.o matrix.o  integer.o complex.o double.o -o main
+

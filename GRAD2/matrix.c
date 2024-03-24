@@ -11,7 +11,6 @@
 #include "matrix.h"
 #include "constants.h"
 
-
 typedef struct Matrix
 {
     int rows;
@@ -31,13 +30,16 @@ Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
     zeros(matrix);
     return matrix;
 }
-int getRows(Matrix *self){
+int getRows(Matrix *self)
+{
     return self->rows;
-}   
-int getCols(Matrix *self){
+}
+int getCols(Matrix *self)
+{
     return self->cols;
 }
-FieldInfo* getFieldInfo(Matrix *self){
+FieldInfo *getFieldInfo(Matrix *self)
+{
     return self->impl;
 }
 void *get(Matrix *self, int rowIndex, int colIndex)
@@ -68,7 +70,7 @@ void zeros(Matrix *self)
 void printMatrix(Matrix *self)
 {
     assert(self != NULL);
-    void *temp ; 
+    void *temp;
     for (int i = 0; i < self->rows; i++)
     {
         for (int j = 0; j < self->cols; j++)
@@ -81,7 +83,7 @@ void printMatrix(Matrix *self)
     }
 }
 
-void readMatrixFromFile(FILE* source, Matrix *self)
+void readMatrixFromFile(FILE *source, Matrix *self)
 {
     assert(self != NULL);
     void *temp = malloc(self->impl->allocsize);
@@ -95,34 +97,35 @@ void readMatrixFromFile(FILE* source, Matrix *self)
     }
     free(temp);
 }
-//что то вроде перегрузки
+// что то вроде перегрузки
 void readMatrix(Matrix *self)
 {
     assert(self != NULL);
     readMatrixFromFile(stdin, self);
 }
-//читает матрицу из .txt файла в формате 
-//первая строка->m m t  число строк число столбцов тип матрицы
-//далее->m строк по n элементов в каждой
-//возвращет ссылку на матрицу в памяти 
-Matrix* newMatrixFromFile(FILE* file){
+// читает матрицу из .txt файла в формате
+// первая строка->m m t  число строк число столбцов тип матрицы
+// далее->m строк по n элементов в каждой
+// возвращет ссылку на матрицу в памяти
+Matrix *newMatrixFromFile(FILE *file)
+{
     int rows, cols;
     char t;
-    
+
     fscanf(file, "%d %d %c", &rows, &cols, &t);
-    //printf("%d %d %c", rows, cols, t);
-    
+    // printf("%d %d %c", rows, cols, t);
+
     Matrix *matrix;
-    switch (t -'0')
+    switch (t - '0')
     {
     case 'i' - '0':
-        matrix = newMatrix(rows, cols, getIntegerImplimentationInstance()); 
+        matrix = newMatrix(rows, cols, getIntegerImplimentationInstance());
         break;
     case 'd' - '0':
-        matrix = newMatrix(rows, cols, getDoubleImplimentationInstance()); 
+        matrix = newMatrix(rows, cols, getDoubleImplimentationInstance());
         break;
-    case 'c' - '0' :
-        matrix = newMatrix(rows, cols, getComplexImplimentationInstance()); 
+    case 'c' - '0':
+        matrix = newMatrix(rows, cols, getComplexImplimentationInstance());
         break;
     default:
         printf("null\n");
@@ -210,26 +213,46 @@ Matrix *multMatrixToNumber(Matrix *matrix, void *number, Matrix *result)
     return result;
 }
 
-int equal(Matrix *matrixA, Matrix* matrixB){
-    if (matrixA == matrixB) return true;
-    if(matrixA == NULL || matrixB == NULL) return false;
-    if(matrixA->impl != matrixB->impl || matrixA->rows != matrixB->rows || matrixA->cols != matrixB->cols) return false;
+int equal(Matrix *matrixA, Matrix *matrixB)
+{
+    if (matrixA == matrixB)
+        return true;
+    if (matrixA == NULL || matrixB == NULL)
+        return false;
+    if (matrixA->impl != matrixB->impl || matrixA->rows != matrixB->rows || matrixA->cols != matrixB->cols)
+        return false;
     int m = matrixA->rows;
     int n = matrixA->cols;
-    void * arg1;
-    void * arg2;
+    void *arg1;
+    void *arg2;
     int f = 1;
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            arg1 = get(matrixA,i, j);
-            arg2 = get(matrixB,i, j);
-        
+            arg1 = get(matrixA, i, j);
+            arg2 = get(matrixB, i, j);
             f = f && matrixA->impl->equal(arg1, arg2);
-            printf("%d", f);
         }
     }
     return f;
+}
+//copy without data
+Matrix* newClone(Matrix* source){
+    Matrix* clone = newMatrix(getRows(source), getCols(source), getFieldInfo(source));
+    return clone;
+}
+//copy with data
+Matrix* neweepClone(Matrix* source){
+    Matrix* clone = newMatrix(getRows(source), getCols(source), getFieldInfo(source));
+    for (int i = 0; i < getRows(source); i++)
+    {
+        for (int j = 0; j < getCols(source); j++)
+        {
+            set(clone,i,j,get(source,i,j));
+        }
+        
+    }
+    return clone;
     
 }
