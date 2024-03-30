@@ -30,22 +30,18 @@ Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
     zeros(matrix);
     return matrix;
 }
-
 int getRows(Matrix *self)
 {
     return self->rows;
 }
-
 int getCols(Matrix *self)
 {
     return self->cols;
 }
-
 FieldInfo *getFieldInfo(Matrix *self)
 {
     return self->impl;
 }
-
 void *get(Matrix *self, int rowIndex, int colIndex)
 {
     assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
@@ -115,7 +111,10 @@ Matrix *newMatrixFromFile(FILE *file)
 {
     int rows, cols;
     char t;
+
     fscanf(file, "%d %d %c", &rows, &cols, &t);
+    // printf("%d %d %c", rows, cols, t);
+
     Matrix *matrix;
     switch (t - '0')
     {
@@ -163,7 +162,6 @@ Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
     free(temp);
     return result;
 }
-
 Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
 {
     assert(matrixA != NULL && matrixB != NULL && result != NULL);
@@ -253,6 +251,8 @@ Matrix* newDeepClone(Matrix* source){
         {
             set(clone,i,j,get(source,i,j));
         }
+        
     }
     return clone;
+    
 }

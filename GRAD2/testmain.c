@@ -2,15 +2,15 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <assert.h>
-#include <string.h>
 
 #include "matrix.h"
 #include "fieldinfo.h"
 #include "integer.h"
 #include "complex.h"
 #include "double.h"
-#include "test.h"
 
+#include <string.h>
+#include "test.h"
 int tests_run = 0;
 int tests_failed = 0;
 int tests_succses = 0;
@@ -44,7 +44,6 @@ static char *test_integer_sum()
     mu_assert("TEST 1 FAILED", flag);
     return 0;
 }
-
 static char *test_complex_sum()
 {
     printf("Test 2: testing the summation of two complex matrices \n");
@@ -74,7 +73,6 @@ static char *test_complex_sum()
     mu_assert("TEST 2 FAILED\n", flag);
     return 0;
 }
-
 static char *test_double_multiplication()
 {
     printf("Test 3: testing the multiplication of double matrix by number\n");
@@ -104,7 +102,6 @@ static char *test_double_multiplication()
     mu_assert("TEST 3 FAILED\n", flag);
     return 0;
 }
-
 static char *test_integer_two_matrix_multiplication()
 {
     printf("Test 4: testing two matrix multiplication \n");

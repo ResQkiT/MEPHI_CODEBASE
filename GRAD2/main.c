@@ -10,14 +10,45 @@
 #include "double.h"
 #include "complex.h"
 #include "constants.h"
+Matrix *readFromFileInterface()
+{
+  bool loophere = true;
+  char filepath[100];
+  do
+  {
+    printf("Enter path to file ->");
+    scanf("%s", filepath);
+    FILE *path = fopen(filepath, "r");
+    if (path == NULL)
+    {
+      printf("Invalid path entered or file not found\n");
+    }
+    else
+    {
+      Matrix *matrix = newMatrixFromFile(path);
+      fclose(path);
+      printf("Have read matrix with rows: %d\ncols: %d\ntype: %c\n", getRows(matrix), getCols(matrix), getFieldInfo(matrix)->metadata);
+      printMatrix(matrix);
 
+      return matrix;
+    }
+  } while (loophere);
+}
 Matrix *createMatrixInterface()
 {
+  char choise;
+  printf("Would you like to read matrix from file?(y/n)->");
+  scanf(" %c", &choise);
+  if (choise == 'y')
+  {
+    return readFromFileInterface();
+  }
+
   int m, n;
   char type;
   bool flag = true;
   Matrix *matrix;
-  for (; flag;)
+  do
   {
     printf("Input matrix\n");
     printf("Input dimensions of the matrix (m, n) : ");
@@ -46,7 +77,7 @@ Matrix *createMatrixInterface()
       printf("Unsupported value type. You wil be departed to beggining \n");
       return NULL;
     }
-  }
+  } while (flag);
   printf("matrix:\n");
   readMatrix(matrix);
 
@@ -105,7 +136,6 @@ void multiplyMatrixbyNumber()
   delete (matrixA);
   free(number);
 }
-
 int main(int argc, const char **argv)
 {
   printf("by: Safronov Ilya B23-554 \n");
