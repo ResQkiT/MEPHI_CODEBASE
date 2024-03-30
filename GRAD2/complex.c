@@ -1,9 +1,11 @@
-#include "fieldinfo.h"
-#include "complex.h"
-#include "constants.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#include "fieldinfo.h"
+#include "complex.h"
+#include "constants.h"
+
 typedef struct
 {
     double re;
@@ -58,11 +60,12 @@ void *complexPrint(void *arg)
     printf("i ");
     return (void *)c;
 }
-void *complexInput(void* source, void *target)
+
+void *complexInput(void *source, void *target)
 {
-    FILE * file = (FILE*) source;
+    FILE *file = (FILE *)source;
     Complex *c = (Complex *)target;
-    fscanf(file,"%lf %lf", &(c->re), &(c->im));
+    fscanf(file, "%lf %lf", &(c->re), &(c->im));
     return (void *)target;
 }
 
@@ -85,6 +88,7 @@ const void *zeroComplex()
 
     return (void *)theZero;
 }
+
 void *newComplex(double re, double im)
 {
     Complex *complex = malloc(sizeof(Complex));
@@ -92,10 +96,14 @@ void *newComplex(double re, double im)
     complex->im = im;
     return complex;
 }
-int complexEqual(void * arg1, void * arg2){
-    if (arg1 == arg2) return true;
-    Complex* c1 = (Complex*) arg1;
-    Complex* c2 = (Complex*) arg2;
-    if( fabs(c1->re - c2->re)<=1e-6 && fabs(c1->im - c2->im)<=1e-6 ) return true; 
+
+int complexEqual(void *arg1, void *arg2)
+{
+    if (arg1 == arg2)
+        return true;
+    Complex *c1 = (Complex *)arg1;
+    Complex *c2 = (Complex *)arg2;
+    if (fabs(c1->re - c2->re) <= 1e-6 && fabs(c1->im - c2->im) <= 1e-6)
+        return true;
     return false;
 }

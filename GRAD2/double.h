@@ -2,6 +2,7 @@
 #include "fieldinfo.h"
 
 FieldInfo *getDoubleImplimentationInstance();
+
 void *doubleAddition(void *arg1, void *arg2, void *result);
 void *doubleMultiplication(void *arg1, void *arg2, void *result);
 void *doublePrint(void *arg);

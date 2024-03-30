@@ -1,10 +1,10 @@
-#include "fieldinfo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
 #include <assert.h>
+
+#include "fieldinfo.h"
 #include "integer.h"
 #include "complex.h"
 #include "double.h"
@@ -30,18 +30,22 @@ Matrix *newMatrix(int rows, int cols, FieldInfo *impl)
     zeros(matrix);
     return matrix;
 }
+
 int getRows(Matrix *self)
 {
     return self->rows;
 }
+
 int getCols(Matrix *self)
 {
     return self->cols;
 }
+
 FieldInfo *getFieldInfo(Matrix *self)
 {
     return self->impl;
 }
+
 void *get(Matrix *self, int rowIndex, int colIndex)
 {
     assert(self != NULL && rowIndex < self->rows && colIndex < self->cols);
@@ -111,10 +115,7 @@ Matrix *newMatrixFromFile(FILE *file)
 {
     int rows, cols;
     char t;
-
     fscanf(file, "%d %d %c", &rows, &cols, &t);
-    // printf("%d %d %c", rows, cols, t);
-
     Matrix *matrix;
     switch (t - '0')
     {
@@ -162,6 +163,7 @@ Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
     free(temp);
     return result;
 }
+
 Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
 {
     assert(matrixA != NULL && matrixB != NULL && result != NULL);
@@ -243,7 +245,7 @@ Matrix* newClone(Matrix* source){
     return clone;
 }
 //copy with data
-Matrix* neweepClone(Matrix* source){
+Matrix* newDeepClone(Matrix* source){
     Matrix* clone = newMatrix(getRows(source), getCols(source), getFieldInfo(source));
     for (int i = 0; i < getRows(source); i++)
     {
@@ -251,8 +253,6 @@ Matrix* neweepClone(Matrix* source){
         {
             set(clone,i,j,get(source,i,j));
         }
-        
     }
     return clone;
-    
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 typedef struct {
     void* (*addition)( void*, void*, void*);
     void* (*multiplication)(void*,void*, void*);

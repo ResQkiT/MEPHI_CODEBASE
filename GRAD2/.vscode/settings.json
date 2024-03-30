@@ -65,6 +65,8 @@
     "functional": "c",
     "test.h": "c",
     "system_error": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "stdlib.h": "c",
+    "math.h": "c"
   }
 }

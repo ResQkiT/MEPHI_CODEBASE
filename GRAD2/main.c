@@ -10,6 +10,7 @@
 #include "double.h"
 #include "complex.h"
 #include "constants.h"
+
 Matrix *createMatrixInterface()
 {
   int m, n;
@@ -104,6 +105,7 @@ void multiplyMatrixbyNumber()
   delete (matrixA);
   free(number);
 }
+
 int main(int argc, const char **argv)
 {
   printf("by: Safronov Ilya B23-554 \n");
