@@ -3,13 +3,13 @@
 
 typedef struct Matrix Matrix;
 
-Matrix *newMatrix(int rows, int cols, FieldInfo *);
+Matrix *newMatrix(int rows, int cols, FieldInfo *  FieldInfo);
 
 void *get(Matrix *self, int rowIndex, int colIndex);
 void set(Matrix *self, int rowIndex, int colIndex, void *data);
 
 void printMatrix(Matrix *self);
-Matrix *newMatrixFromFile(FILE *file);
+Matrix *newMatrixFromFile(FILE * file, FieldInfo * fieldInfo);
 void readMatrixFromFile(FILE *source, Matrix *self);
 void readMatrix(Matrix *self);
 void zeros(Matrix *self);

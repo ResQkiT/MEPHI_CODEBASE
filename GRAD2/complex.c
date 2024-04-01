@@ -1,5 +1,4 @@
 #include "fieldinfo.h"
-#include "complex.h"
 #include "constants.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,24 +9,6 @@ typedef struct
     double im;
 } Complex;
 
-FieldInfo *getComplexImplimentationInstance()
-{
-    static FieldInfo *complexImplementationInstance = NULL;
-    if (complexImplementationInstance == NULL)
-    {
-        complexImplementationInstance = malloc(sizeof(FieldInfo));
-        complexImplementationInstance->allocsize = sizeof(Complex);
-        complexImplementationInstance->addition = complexAddition;
-        complexImplementationInstance->multiplication = complexMultiplication;
-        complexImplementationInstance->printElement = complexPrint;
-        complexImplementationInstance->input = complexInput;
-        complexImplementationInstance->zero_ = zeroComplex;
-        complexImplementationInstance->zeroInPlace = zeroComplexInplace;
-        complexImplementationInstance->equal = complexEqual;
-        complexImplementationInstance->metadata = 'c';
-    }
-    return complexImplementationInstance;
-}
 
 void *complexAddition(void *arg1, void *arg2, void *result)
 {
@@ -59,11 +40,10 @@ void *complexPrint(void *arg)
     printf("i ");
     return (void *)c;
 }
-void *complexInput(void* source, void *target)
+void *complexInput(FILE * source, void *target)
 {
-    FILE * file = (FILE*) source;
     Complex *c = (Complex *)target;
-    fscanf(file,"%lf %lf", &(c->re), &(c->im));
+    fscanf(source,"%lf %lf", &(c->re), &(c->im));
     return (void *)target;
 }
 
@@ -99,4 +79,23 @@ int complexEqual(void * arg1, void * arg2){
     Complex* c2 = (Complex*) arg2;
     if( fabs(c1->re - c2->re)<=1e-6 && fabs(c1->im - c2->im)<=1e-6 ) return true; 
     return false;
+}
+
+FieldInfo *getComplexImplimentationInstance()
+{
+    static FieldInfo *complexImplementationInstance = NULL;
+    if (complexImplementationInstance == NULL)
+    {
+        complexImplementationInstance = malloc(sizeof(FieldInfo));
+        complexImplementationInstance->allocsize = sizeof(Complex);
+        complexImplementationInstance->addition = complexAddition;
+        complexImplementationInstance->multiplication = complexMultiplication;
+        complexImplementationInstance->printElement = complexPrint;
+        complexImplementationInstance->input = complexInput;
+        complexImplementationInstance->zero_ = zeroComplex;
+        complexImplementationInstance->zeroInPlace = zeroComplexInplace;
+        complexImplementationInstance->equal = complexEqual;
+        complexImplementationInstance->metadata = 'c';
+    }
+    return complexImplementationInstance;
 }

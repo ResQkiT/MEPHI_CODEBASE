@@ -1,29 +1,10 @@
 #include "fieldinfo.h"
-#include "integer.h"
+
 #include "constants.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
-FieldInfo *getIntegerImplimentationInstance()
-{
-    static FieldInfo *integerImplementationInstance = NULL;
-    if (integerImplementationInstance == NULL)
-    {
-        integerImplementationInstance = malloc(sizeof(FieldInfo));
-        integerImplementationInstance->allocsize = sizeof(int);
-        integerImplementationInstance->addition = integerAddition;
-        integerImplementationInstance->multiplication = integerMultiplication;
-        integerImplementationInstance->printElement = integerPrint;
-        integerImplementationInstance->input = integerInput;
-        integerImplementationInstance->zero_ = zeroInteger;
-        integerImplementationInstance->zeroInPlace = zeroIntegerInplace;
-        integerImplementationInstance->equal = integerEqual;
-        integerImplementationInstance->metadata = 'i';
-    }
-
-    return integerImplementationInstance;
-}
 void *integerAddition( void *arg1, void *arg2, void *result)
 {
     int temp = (*((int *)arg1)) + (*((int *)arg2));
@@ -44,10 +25,9 @@ void *integerPrint(void *arg)
     printf("%i", *ptr);
     return arg;
 }
-void *integerInput(void * source, void *target)
+void *integerInput(FILE * source, void *target)
 {
-    FILE * file = (FILE*)source;
-    fscanf(file, "%d", (int*)target);
+    fscanf(source, "%d", (int*)target);
     return target;
 }
 void zeroIntegerInplace(void *ptrToZero)
@@ -72,4 +52,24 @@ int integerEqual(void *arg1, void* arg2){
     if (arg1 == arg2) return true;
     if(*(int*)arg1 == *(int*)arg2) return true;
     return false;
+}
+
+FieldInfo *getIntegerImplimentationInstance()
+{
+    static FieldInfo *integerImplementationInstance = NULL;
+    if (integerImplementationInstance == NULL)
+    {
+        integerImplementationInstance = malloc(sizeof(FieldInfo));
+        integerImplementationInstance->allocsize = sizeof(int);
+        integerImplementationInstance->addition = integerAddition;
+        integerImplementationInstance->multiplication = integerMultiplication;
+        integerImplementationInstance->printElement = integerPrint;
+        integerImplementationInstance->input = integerInput;
+        integerImplementationInstance->zero_ = zeroInteger;
+        integerImplementationInstance->zeroInPlace = zeroIntegerInplace;
+        integerImplementationInstance->equal = integerEqual;
+        integerImplementationInstance->metadata = 'i';
+    }
+
+    return integerImplementationInstance;
 }

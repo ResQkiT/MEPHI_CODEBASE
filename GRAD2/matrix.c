@@ -82,7 +82,7 @@ void printMatrix(Matrix *self)
         printf("\n");
     }
 }
-
+//reads only data
 void readMatrixFromFile(FILE *source, Matrix *self)
 {
     assert(self != NULL);
@@ -107,31 +107,12 @@ void readMatrix(Matrix *self)
 // первая строка->m m t  число строк число столбцов тип матрицы
 // далее->m строк по n элементов в каждой
 // возвращет ссылку на матрицу в памяти
-Matrix *newMatrixFromFile(FILE *file)
+Matrix *newMatrixFromFile(FILE *file, FieldInfo * fieldInfo)
 {
     int rows, cols;
-    char t;
-
-    fscanf(file, "%d %d %c", &rows, &cols, &t);
-    // printf("%d %d %c", rows, cols, t);
-
-    Matrix *matrix;
-    switch (t - '0')
-    {
-    case 'i' - '0':
-        matrix = newMatrix(rows, cols, getIntegerImplimentationInstance());
-        break;
-    case 'd' - '0':
-        matrix = newMatrix(rows, cols, getDoubleImplimentationInstance());
-        break;
-    case 'c' - '0':
-        matrix = newMatrix(rows, cols, getComplexImplimentationInstance());
-        break;
-    default:
-        printf("null\n");
-        return NULL;
-        break;
-    }
+    fscanf(file, "%d %d", &rows, &cols);
+    Matrix *matrix = newMatrix(rows, cols, fieldInfo);
+    
     readMatrixFromFile(file, matrix);
     return matrix;
 }
@@ -216,10 +197,10 @@ Matrix *multMatrixToNumber(Matrix *matrix, void *number, Matrix *result)
 
 int equal(Matrix *matrixA, Matrix *matrixB)
 {
-    if (matrixA == matrixB)
-        return true;
     if (matrixA == NULL || matrixB == NULL)
         return false;
+    if (matrixA == matrixB)
+        return true;
     if (matrixA->impl != matrixB->impl || matrixA->rows != matrixB->rows || matrixA->cols != matrixB->cols)
         return false;
     int m = matrixA->rows;
