@@ -162,6 +162,7 @@ Matrix *addMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
     free(temp);
     return result;
 }
+
 Matrix *multMatrix(Matrix *matrixA, Matrix *matrixB, Matrix *result)
 {
     assert(matrixA != NULL && matrixB != NULL && result != NULL);

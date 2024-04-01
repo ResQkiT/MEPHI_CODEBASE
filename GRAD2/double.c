@@ -23,6 +23,7 @@ FieldInfo *getDoubleImplimentationInstance()
 
     return doubleImplementationInstance;
 }
+
 void *doubleAddition(void *arg1, void *arg2, void *result)
 {
     double temp = (*((double *)arg1)) + (*((double *)arg2));

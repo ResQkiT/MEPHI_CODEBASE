@@ -12,21 +12,21 @@ typedef struct
 
 FieldInfo *getComplexImplimentationInstance()
 {
-    static FieldInfo *complexImplementatinInstance = NULL;
-    if (complexImplementatinInstance == NULL)
+    static FieldInfo *complexImplementationInstance = NULL;
+    if (complexImplementationInstance == NULL)
     {
-        complexImplementatinInstance = malloc(sizeof(FieldInfo));
-        complexImplementatinInstance->allocsize = sizeof(Complex);
-        complexImplementatinInstance->addition = complexAddition;
-        complexImplementatinInstance->multiplication = complexMultiplication;
-        complexImplementatinInstance->printElement = complexPrint;
-        complexImplementatinInstance->input = complexInput;
-        complexImplementatinInstance->zero_ = zeroComplex;
-        complexImplementatinInstance->zeroInPlace = zeroComplexInplace;
-        complexImplementatinInstance->equal = complexEqual;
-        complexImplementatinInstance->metadata = 'c';
+        complexImplementationInstance = malloc(sizeof(FieldInfo));
+        complexImplementationInstance->allocsize = sizeof(Complex);
+        complexImplementationInstance->addition = complexAddition;
+        complexImplementationInstance->multiplication = complexMultiplication;
+        complexImplementationInstance->printElement = complexPrint;
+        complexImplementationInstance->input = complexInput;
+        complexImplementationInstance->zero_ = zeroComplex;
+        complexImplementationInstance->zeroInPlace = zeroComplexInplace;
+        complexImplementationInstance->equal = complexEqual;
+        complexImplementationInstance->metadata = 'c';
     }
-    return complexImplementatinInstance;
+    return complexImplementationInstance;
 }
 
 void *complexAddition(void *arg1, void *arg2, void *result)
