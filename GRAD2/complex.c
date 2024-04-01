@@ -81,7 +81,7 @@ int complexEqual(void * arg1, void * arg2){
     return false;
 }
 
-FieldInfo *getComplexImplimentationInstance()
+FieldInfo *getComplexImplementationInstance()
 {
     static FieldInfo *complexImplementationInstance = NULL;
     if (complexImplementationInstance == NULL)

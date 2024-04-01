@@ -1,4 +1,4 @@
 #pragma once
 #include "fieldinfo.h"
 
-FieldInfo *getDoubleImplimentationInstance();
+FieldInfo *getDoubleImplementationInstance();

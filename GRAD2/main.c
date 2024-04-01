@@ -11,74 +11,79 @@
 #include "complex.h"
 #include "constants.h"
 
-Matrix *readFromFileInterface()
+FieldInfo *chooseImplementationTypeInterface()
 {
-  bool loophere = true;
-  char filepath[100];
-  do
-  {
-    printf("Enter path to file ->");
-    scanf("%s", filepath);
-    FILE *path = fopen(filepath, "r");
-    if (path == NULL)
-    {
-      printf("Invalid path entered or file not found\n");
-    }
-    else
-    {
-      Matrix *matrix = newMatrixFromFile(path);
-      fclose(path);
-      printf("Have read matrix with rows: %d\ncols: %d\ntype: %c\n", getRows(matrix), getCols(matrix), getFieldInfo(matrix)->metadata);
-      printMatrix(matrix);
-
-      return matrix;
-    }
-  } while (loophere);
-}
-Matrix *createMatrixInterface()
-{
-  char choise;
-  printf("Would you like to read matrix from file?(y/n)->");
-  scanf(" %c", &choise);
-  if (choise == 'y')
-  {
-    return readFromFileInterface();
-  }
-
-  int m, n;
   char type;
-  bool flag = true;
-  Matrix *matrix;
-  do
+  bool isCorrect = false;
+  while(!isCorrect)
   {
-    printf("Input matrix\n");
-    printf("Input dimensions of the matrix (m, n) : ");
-    scanf("%d %d", &m, &n);
     printf("Input the matrix type\n ('i' for integer, 'd' for real, 'c' for complex'):\n");
     scanf(" %c", &type);
     switch (type - '0')
     {
     case 'i' - '0':
       printf("The type is Integer\n");
-      matrix = newMatrix(m, n, getIntegerImplimentationInstance());
-      flag = false;
-      break;
+      return getIntegerImplementationInstance();
     case 'd' - '0':
       printf("The type is Real\n");
-      matrix = newMatrix(m, n, getDoubleImplimentationInstance());
-      flag = false;
-      break;
+      return getDoubleImplementationInstance();
     case 'c' - '0':
       printf("The type is Complex\n");
       printf("Intput the real part first, that the imaginary. \n");
-      matrix = newMatrix(m, n, getComplexImplimentationInstance());
-      flag = false;
-      break;
+      return getComplexImplementationInstance();
     default:
-      printf("Unsupported value type. You wil be departed to beggining \n");
-      return NULL;
+      printf("Unsupported value type. You wil be departed to beginning \n");
+      break;
     }
-  } while (flag);
+  }
+}
+Matrix *readFromFileInterface()
+{
+  bool isCorrectEnter = false;
+  char filepath[100];
+  while(!isCorrectEnter)
+  {
+    printf("Enter path to file ->");
+    scanf("%s", filepath);
+    FILE *path = fopen(filepath, "r");
+
+    if (path == NULL)
+      printf("Invalid path entered or file not found\n");
+    else
+    {
+      FieldInfo *fieldInfo = chooseImplementationTypeInterface();
+      Matrix *matrix = newMatrixFromFile(path, fieldInfo);
+
+      fclose(path);
+
+      printf("Have read matrix with rows: %d\ncols: %d\ntype: %c\n", getRows(matrix), getCols(matrix), getFieldInfo(matrix)->metadata);
+      printMatrix(matrix);
+      return matrix;
+    }
+  }
+  return NULL;
+}
+Matrix *createMatrixInterface()
+{
+  char choice;
+  printf("Would you like to read matrix from file?(y/n)->");
+  scanf(" %c", &choice);
+  if (choice == 'y')
+  {
+    return readFromFileInterface();
+  }
+
+  int rows, cols;
+  char type;
+  bool isCorrectEnter = false;
+  Matrix *matrix;
+
+  printf("Input matrix\n");
+  printf("Input dimensions of the matrix (m, n) : ");
+  scanf("%d %d", &rows, &cols);
+  FieldInfo * fieldInfo = chooseImplementationTypeInterface();
+  matrix = newMatrix(rows, cols, fieldInfo );
+  
   printf("matrix:\n");
   readMatrix(matrix);
 
@@ -93,7 +98,7 @@ void sumMatrix()
   Matrix *matrixA = createMatrixInterface();
   printf("Enter second matrix (same type as first one):\n");
   Matrix *matrixB = createMatrixInterface();
-  Matrix *matrixC = newMatrix(getRows(matrixA), getCols(matrixB), getFieldInfo(matrixA));
+  Matrix *matrixC = newClone(matrixA);
   addMatrix(matrixA, matrixB, matrixC);
   printf("Sum of two matrix:\n");
   printMatrix(matrixC);

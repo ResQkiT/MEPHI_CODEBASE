@@ -51,7 +51,7 @@ int doubleEqual(void * arg1, void * arg2){
     return false;
 }
 
-FieldInfo *getDoubleImplimentationInstance()
+FieldInfo *getDoubleImplementationInstance()
 {
     static FieldInfo *doubleImplementationInstance = NULL;
     if (doubleImplementationInstance == NULL)

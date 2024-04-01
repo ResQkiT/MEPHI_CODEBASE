@@ -54,7 +54,7 @@ int integerEqual(void *arg1, void* arg2){
     return false;
 }
 
-FieldInfo *getIntegerImplimentationInstance()
+FieldInfo *getIntegerImplementationInstance()
 {
     static FieldInfo *integerImplementationInstance = NULL;
     if (integerImplementationInstance == NULL)

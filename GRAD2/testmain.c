@@ -22,7 +22,7 @@ void test_integer_sum()
     FILE *fptr1 = fopen("tests/test1/matrix1.1", "r");
     FILE *fptr2 = fopen("tests/test1/matrix1.2", "r");
     FILE *fptrAns = fopen("tests/test1/answer", "r");
-    FieldInfo * integerImplementation = getIntegerImplimentationInstance();
+    FieldInfo * integerImplementation = getIntegerImplementationInstance();
 
     Matrix *a = newMatrixFromFile(fptr1, integerImplementation);
     Matrix *b = newMatrixFromFile(fptr2 , integerImplementation);
@@ -56,7 +56,7 @@ void test_complex_sum()
     FILE *fptr1 = fopen("tests/test2/matrix2.1", "r");
     FILE *fptr2 = fopen("tests/test2/matrix2.2", "r");
     FILE *fptrAns = fopen("tests/test2/answer", "r");
-    FieldInfo * complexImplementation = getComplexImplimentationInstance();
+    FieldInfo * complexImplementation = getComplexImplementationInstance();
 
     Matrix *a = newMatrixFromFile(fptr1, complexImplementation);
     Matrix *b = newMatrixFromFile(fptr2, complexImplementation);
@@ -88,7 +88,7 @@ void test_double_multiplication()
 
     FILE *mfptr = fopen("tests/test3/matrix", "r");
     FILE *fptrAns = fopen("tests/test3/answer", "r");
-    FieldInfo * doubleImplementation = getDoubleImplimentationInstance();
+    FieldInfo * doubleImplementation = getDoubleImplementationInstance();
 
     Matrix *matrix = newMatrixFromFile(mfptr, doubleImplementation);
     Matrix *answer = newMatrixFromFile(fptrAns, doubleImplementation);
@@ -123,7 +123,7 @@ void test_integer_two_matrix_multiplication()
     FILE *fptr1 = fopen("tests/test4/matrix4.1", "r");
     FILE *fptr2 = fopen("tests/test4/matrix4.2", "r");
     FILE *fptrAns = fopen("tests/test4/answer", "r");
-    FieldInfo * integerImplementation = getIntegerImplimentationInstance();
+    FieldInfo * integerImplementation = getIntegerImplementationInstance();
 
     Matrix *a = newMatrixFromFile(fptr1, integerImplementation);
     Matrix *b = newMatrixFromFile(fptr2, integerImplementation);
