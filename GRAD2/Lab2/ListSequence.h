@@ -1,3 +1,4 @@
+#pragma once
 #include <Sequence.h>
 template<class T>
 class ListSequence : public Sequence<T>
