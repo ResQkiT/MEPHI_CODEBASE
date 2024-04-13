@@ -4,11 +4,9 @@ template<class T>
 class Sequence
 {
 public:
-    Sequence();
-    ~Sequence();
 
-    virtual T getFirst();
-    virtual T getLast();
+    virtual T getFirst() = 0;
+    virtual T getLast() = 0;
     
     virtual T get(int index);
     
