@@ -1,24 +1,13 @@
 #include "Sequence.h"
 
 template<class T>
-class ArraySequence : public Sequence<T> 
+class ArraySequence
 {
-
 public:
-    ArraySequence(T* items, int count);
-    ArraySequence();
-    ArraySequence(const ArraySequence<T> & arraySequence );
-
-    virtual  ~ArraySequence();
-
-    virtual T getFirst();
-    virtual T getLast();
-    virtual T get(int index);
-    virtual Sequence<T> getSubsequence(int startIndex, int endIndex);
+    virtual T getFirst() = 0;
+    virtual T getLast() = 0;
+    virtual T get(int index) = 0;
+    virtual ArraySequence<T> getSubsequence(int startIndex, int endIndex) = 0;
     
-    virtual int getLength();
-    virtual void append(T item);
-    virtual void prepend(T item);
-    virtual void insertAt(int index, T value);
-    virtual Sequence<T> concat(Sequence<T> * list);
+
 };
