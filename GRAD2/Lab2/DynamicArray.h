@@ -36,7 +36,7 @@ public:
         this->data = new T[this->capacity];
     }
 
-    DynamicArray(size_t size) : size(size), capacity(2 *size)
+    DynamicArray(size_t size) : size(size), capacity(2 * size)
     {
         this->data = new T[capacity];
     }
@@ -47,15 +47,14 @@ public:
         std::copy(data, data + size, this->data);
     }
 
-    DynamicArray(const DynamicArray<T> & other) : size{other.size}, capacity{other.capacity}
+    DynamicArray(const DynamicArray<T> &other) : size{other.size}, capacity{other.capacity}
     {
         data = new T[capacity];
         std::copy(other.data, other.data + size, data);
     }
-    
-    
 
-    DynamicArray(DynamicArray<T> && other) : size{std::move(other.size)}, capacity{std::move(other.capacity)}{
+    DynamicArray(DynamicArray<T> &&other) : size{std::move(other.size)}, capacity{std::move(other.capacity)}
+    {
         this->data = std::move(other.data);
         other.capacity = 0;
         other.size = 0;
@@ -89,12 +88,15 @@ public:
 
         return data[index];
     }
-    const DynamicArray<T> & operator=(const DynamicArray<T> & other){
+
+    const DynamicArray<T> &operator=(const DynamicArray<T> &other)
+    {
         this->capacity = other.capacity;
         this->size = other.size;
         reallocate(other.capacity);
         std::copy(other.data, other.data + size, data);
-    } 
+        return *this;
+    }
 
     T get(size_t index)
     {
@@ -106,20 +108,26 @@ public:
         *(data + index) = value;
     }
 
-    void resize(size_t new_size) {
-        if (new_size > size) {
+    void resize(size_t new_size)
+    {
+        if (new_size > size)
+        {
 
-            if (new_size > capacity) {
+            if (new_size > capacity)
+            {
                 reallocate(new_size);
             }
 
             std::copy(data, data + size, data);
-   
-            for (size_t i = size; i < new_size; ++i) {
-                data[i] = T();  
+
+            for (size_t i = size; i < new_size; ++i)
+            {
+                data[i] = T();
             }
             size = new_size;
-        } else if (new_size < size) {
+        }
+        else if (new_size < size)
+        {
             size = new_size;
         }
     }
