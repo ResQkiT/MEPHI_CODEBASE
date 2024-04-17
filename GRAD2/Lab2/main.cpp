@@ -1,5 +1,6 @@
 #include <iostream>
 #include "DynamicArray.h"
+#include "LinkedList.h"
 #include <vector>
 template<class T>
 void printArr(DynamicArray<T> & arr){
@@ -12,14 +13,14 @@ void printArr(DynamicArray<T> & arr){
 int main()
 {
     int arr[5] = {1, 2, 3, 4, 5};
-    DynamicArray<int> a(5, arr);
-    
-    DynamicArray<int> b;
-    DynamicArray<int> c;
-    c = b = a;
-    
-    std::cout << a.get_size();
-    
+    LinkedList<int> Ll(5, arr);
+    LinkedList<int> A(Ll);
+    Ll.push_front(99);
+    Ll.push_back(-115);
+    Ll.push_front(-1213);
+    Ll.print();
+    A.print();
+    std::cout << Ll.getSize()<< std::endl;
     
 
     return 0;
