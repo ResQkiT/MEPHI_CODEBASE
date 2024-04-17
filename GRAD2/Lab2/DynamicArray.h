@@ -31,17 +31,17 @@ private:
     }
 
 public:
-    DynamicArray() : data(nullptr), size(0), capacity(4)
+    DynamicArray() : data{nullptr}, size{0}, capacity{4}
     {
         this->data = new T[this->capacity];
     }
 
-    DynamicArray(size_t size) : size(size), capacity(2 * size)
+    DynamicArray(size_t size) : size{size}, capacity{2 * size}
     {
         this->data = new T[capacity];
     }
 
-    DynamicArray(size_t size, const T *data) : size(size), capacity{2 * size}
+    DynamicArray(size_t size, const T *data) : size{size}, capacity{2 * size}
     {
         this->data = new T[capacity];
         std::copy(data, data + size, this->data);
@@ -89,14 +89,6 @@ public:
         return data[index];
     }
 
-    const DynamicArray<T> &operator=(const DynamicArray<T> &other)
-    {
-        this->capacity = other.capacity;
-        this->size = other.size;
-        reallocate(other.capacity);
-        std::copy(other.data, other.data + size, data);
-        return *this;
-    }
 
     T get(size_t index)
     {
@@ -168,5 +160,14 @@ public:
     {
         reallocate(0);
         size = 0;
+    }
+
+    const DynamicArray<T> &operator=(const DynamicArray<T> &other)
+    {
+        this->capacity = other.capacity;
+        this->size = other.size;
+        reallocate(other.capacity);
+        std::copy(other.data, other.data + size, data);
+        return *this;
     }
 };

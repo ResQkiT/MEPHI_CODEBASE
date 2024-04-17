@@ -45,7 +45,12 @@ public:
     }
     LinkedList(const LinkedList<T> &other) : head(nullptr), tail(nullptr), size(0)
     {
-        *this = other; // Use assignment operator to copy the list
+        *this = other;
+    }
+    LinkedList(LinkedList<T> && other): size{std::move(other.size)} , head{std::move(other.head)}, tail{std::move(other.tail)}{
+        other.size = 0;
+        other.head = nullptr;
+        other.tail = nullptr;
     }
 
     ~LinkedList()
@@ -58,7 +63,7 @@ public:
         return head == nullptr;
     }
 
-    size_t getSize() const
+    size_t get_size() const
     {
         return size;
     }
