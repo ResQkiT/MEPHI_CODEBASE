@@ -2,10 +2,11 @@
 #include "DynamicArray.h"
 #include "LinkedList.h"
 #include <vector>
+#include <list>
 template<class T>
 void printArr(LinkedList<T> & arr){
 
-    for (; !arr.isEmpty();)
+    for (;!arr.isEmpty();)
     {
         std::cout << arr.back() << std:: endl;
         arr.pop_back();
@@ -14,10 +15,14 @@ void printArr(LinkedList<T> & arr){
 int main()
 {
     int arr[5] = {1, 2, 3, 4, 5};
-    LinkedList<int> Ll(5, arr);
-    LinkedList<int> A = std::move(Ll);
-    printArr(A);    
-    printArr(Ll);
-
+    DynamicArray<int> da(5, arr);
+    auto it = DynamicArray<int> :: Iterator(da.begin());
+    auto s = da.begin();
+    
+    for (; it!=da.end(); it++)
+    {
+        std::cout <<  *it << std::endl;
+    }
+    
     return 0;
 }
