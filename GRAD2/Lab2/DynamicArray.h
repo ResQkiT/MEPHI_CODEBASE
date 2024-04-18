@@ -170,4 +170,46 @@ public:
         std::copy(other.data, other.data + size, data);
         return *this;
     }
+
+    class Iterator{
+    private:
+        T * cur;
+    public:
+        Iterator(T* first): cur{first}{}
+        Iterator& operator+ (int n){
+            cur += n;
+            return this;
+        }
+        Iterator& operator- (int n){
+            cur -= n;
+            return *this;
+        }
+
+        Iterator& operator++(int){
+            cur++;
+            return *this;
+        }
+
+        Iterator& operator--(int){
+            cur--;
+            return *this;
+        }
+
+        Iterator& operator++(){
+            ++cur;
+            return *this;
+        }
+
+        Iterator& operator--(){
+            --cur;
+            return *this;
+        }
+
+        bool operator!=(const Iterator& it){return cur != it.cur;}
+        bool operator==(const Iterator& it){return cur == it.cur;}
+        T& operator*(){return *cur;}
+    };
+
+    Iterator begin(){return Iterator(data);}
+    Iterator end(){return Iterator(data+ size);}
 };

@@ -209,6 +209,7 @@ public:
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
     {
+        
         if (this != &other)
         { 
             deleteList();
@@ -244,5 +245,57 @@ public:
         }
 
         return *this;
+    }
+
+    class Iterator {
+    private:
+        Node<T>* curr;
+
+    public:
+        Iterator(Node<T>* head) : curr(head) {}
+
+        Iterator& operator++() {
+            if (curr != nullptr) {
+                curr = curr->next;
+            }
+
+            return *this;
+        }
+
+        Iterator& operator--() {
+            if (curr != nullptr) {
+                curr = curr->prev;
+            }
+
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return curr != other.curr;
+        }
+
+        bool operator==(const Iterator& other) const {
+            return curr == other.curr;
+        }
+        
+        T& operator*() {
+            return curr->data;
+        }
+
+        T* operator->() {
+            return &curr->data;
+        }
+    };
+
+    Iterator begin() {
+        return Iterator(head);
+    }
+
+    Iterator end() {
+        if (tail == nullptr) {
+            return Iterator(nullptr);
+        }
+
+        return Iterator(tail->next); 
     }
 };
