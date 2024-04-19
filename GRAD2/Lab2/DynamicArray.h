@@ -41,7 +41,7 @@ public:
         this->data = new T[capacity];
     }
 
-    DynamicArray(size_t size, const T *data) : size{size}, capacity{2 * size}
+    DynamicArray(const T *data , size_t size) : size{size}, capacity{2 * size}
     {
         this->data = new T[capacity];
         std::copy(data, data + size, this->data);
@@ -176,6 +176,7 @@ public:
         T * cur;
     public:
         Iterator(T* first): cur{first}{}
+
         Iterator& operator+ (int n){
             cur += n;
             return this;

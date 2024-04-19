@@ -3,26 +3,42 @@
 #include "LinkedList.h"
 #include <vector>
 #include <list>
-template<class T>
-void printArr(LinkedList<T> & arr){
+#include <algorithm>
+#include "DynamicArraySequence.h"
 
-    for (;!arr.isEmpty();)
+template <class T>
+void printArr(DynamicArray<T> &arr)
+{
+    std::cout << "Mass:" << std::endl;
+    for (auto b : arr)
     {
-        std::cout << arr.back() << std:: endl;
-        arr.pop_back();
+        std::cout << b << std::endl;
     }
 }
+// погуглить про explicit
 int main()
 {
-    int arr[5] = {1, 2, 3, 4, 5};
-    DynamicArray<int> da(5, arr);
-    auto it = DynamicArray<int> :: Iterator(da.begin());
-    auto s = da.begin();
-    
-    for (; it!=da.end(); it++)
+    /*
+
+
+    int arr[5] = {7, -123, 3, 13, 5};
+    DynamicArray<int> da(arr, 5);
+    auto it = DynamicArray<int>::Iterator(da.begin());
+    for (int i = 1; it != da.end(); i*=2, it ++)
     {
-        std::cout <<  *it << std::endl;
+        *it = i;w
+        printArr(da);
     }
+
+    for (auto var: da)
+    {
+        std::cout << var << std::endl;
+    }
+    */
+    //shared pointer
+    int arr[5] = {7, -123, 3, 13, 5};
+    DynamicArray<int> da(arr, 5);
+    DynamicArraySequence<int> sequence(&da);
     
     return 0;
 }
