@@ -16,6 +16,9 @@ void printArr(DynamicArray<T> &arr)
     }
 }
 // погуглить про explicit
+//random acces iter
+//bidirectional iterator
+
 int main()
 {
     /*
@@ -39,6 +42,6 @@ int main()
     int arr[5] = {7, -123, 3, 13, 5};
     DynamicArray<int> da(arr, 5);
     DynamicArraySequence<int> sequence(&da);
-    
+    std::cout << "end;" << std::endl;
     return 0;
 }
