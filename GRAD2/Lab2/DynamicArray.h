@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-
+#include <stdexcept>
 template <typename T>
 class DynamicArray
 {
@@ -69,25 +69,6 @@ public:
         }
     }
 
-    T &operator[](size_t index)
-    {
-        if (index >= size)
-        {
-            throw std::out_of_range("Index out of range");
-        }
-
-        return data[index];
-    }
-
-    const T &operator[](size_t index) const
-    {
-        if (index >= size)
-        {
-            throw std::out_of_range("Index out of range");
-        }
-
-        return data[index];
-    }
 
 
     T get(size_t index)
@@ -162,6 +143,25 @@ public:
         size = 0;
     }
 
+    T &operator[](size_t index)
+    {
+        if (index >= size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        return data[index];
+    }
+
+    const T &operator[](size_t index) const
+    {
+        if (index >= size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        return data[index];
+    }
     const DynamicArray<T> &operator=(const DynamicArray<T> &other)
     {
         this->capacity = other.capacity;
@@ -179,8 +179,9 @@ public:
 
         Iterator& operator+ (int n){
             cur += n;
-            return this;
+            return *this;
         }
+        
         Iterator& operator- (int n){
             cur -= n;
             return *this;

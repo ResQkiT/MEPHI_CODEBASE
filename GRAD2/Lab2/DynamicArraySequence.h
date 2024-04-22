@@ -1,11 +1,11 @@
+#include <cstddef>
 #include "Sequence.h"
 #include "DynamicArray.h"
-
 template <class T>
 class DynamicArraySequence : public Sequence<T>
 {
 private:
-    const DynamicArray<T> *impl;
+    DynamicArray<T> *impl;
 
 public:
     DynamicArraySequence() : impl{new DynamicArray<T>()} {}
@@ -14,37 +14,38 @@ public:
 
     DynamicArraySequence(T *items, size_t size) : impl{new DynamicArray<T>(items, size)} {}
     
-    T getFirst() override
+    T getFirst() const override
     {
         return (*impl)[0];
     }
 
-    T getLast() override
+    T getLast() const override
     {
         return (*impl)[impl->get_size() - 1];
     }
 
-    T get(size_t index) override
+    T get(size_t index) const override
     {
         return (*impl)[index];
     }
 
-    DynamicArraySequence<T> getSubsequence(size_t startIndex, size_t endIndex) override
+    DynamicArraySequence<T> * getSubsequence(size_t startIndex, size_t endIndex) override
     {
 
-        DynamicArray<T> subsequence(endIndex - startIndex + 1);
+        DynamicArray<T>  * subsequenceArray = new DynamicArray<T>(endIndex - startIndex + 1);
 
         auto cur_it =impl->begin() + startIndex;
-        auto new_it =subsequence.begin();
+        auto new_it =subsequenceArray->begin();
 
-        for (; new_it != subsequence.end(); cur_it++, new_it++)
+        for (; new_it != subsequenceArray->end(); cur_it++, new_it++)
         {
             *new_it = *cur_it;
         }
-        return DynamicArraySequence<T>(subsequence);
+
+        return new DynamicArraySequence(subsequenceArray);
     }
 
-    size_t getLength() override
+    size_t getLength() const override
     {
         return impl->get_size();
     }
@@ -61,17 +62,16 @@ public:
 
     void insertAt(size_t index, T item) override
     {
+        
     }
 
-    Sequence<T>& concat(Sequence<T> * list, size_t count) override
+    DynamicArraySequence<T> * concat(Sequence<T> * list, size_t count) override
     {
-
-
         for (size_t i = 0; i < count; i++)
         {
             *this += list[i];
         }
-        return *this;
+        return this;
     }
 
     DynamicArraySequence<T> operator+(const Sequence<T>& other) const
@@ -84,7 +84,7 @@ public:
         return DynamicArraySequence<T>(newDynamicArray);
     }
 
-    DynamicArraySequence<T> & operator+=(const Sequence<T>& other) const{
+    DynamicArraySequence<T> & operator+=(const Sequence<T>& other){
         for (size_t i = 0; i < other.getLength(); i++)
         {
             impl->push_back(other.get(i));
