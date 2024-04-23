@@ -1,11 +1,13 @@
 #pragma once
 #include <cstddef>
+
 template<class T>
 class Sequence
 {
 public:
     virtual ~Sequence() = default;
 
+//добавить & в наследники
     virtual T getFirst() const = 0;
     virtual T getLast() const = 0;
     virtual T get(size_t index) const = 0;

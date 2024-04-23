@@ -8,7 +8,7 @@ public:
     Node<T> *prev;
     Node<T> *next;
 
-    Node(const T &value) : data(value), prev(nullptr), next(nullptr) {}
+    Node(const T &value) : data{value}, prev{nullptr}, next{nullptr} {}
 };
 
 template <typename T>
@@ -34,16 +34,17 @@ private:
     }
 
 public:
-    LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+    LinkedList() : head{nullptr}, tail{nullptr}, size{0} {}
 
-    LinkedList(size_t size, T *data) : head{nullptr}, tail{nullptr}, size{0}
+    LinkedList(T *data, size_t size) : head{nullptr}, tail{nullptr}, size{0}
     {
         for (size_t i = 0; i < size; i++)
         {
             this->push_back(data[i]);
         }
     }
-    LinkedList(const LinkedList<T> &other) : head(nullptr), tail(nullptr), size(0)
+
+    LinkedList(const LinkedList<T> &other) : head{nullptr}, tail{nullptr}, size{0}
     {
         *this = other;
     }
@@ -245,6 +246,9 @@ public:
         }
 
         return *this;
+    }
+    LinkedList<T> & operator+=(const LinkedList<T> & other){
+
     }
 
     class Iterator {

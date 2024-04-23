@@ -7,16 +7,26 @@ class LinkedListSequence : public Sequence<T>
 private:
     LinkedList<T> * impl;
 public:
-    LinkedListSequence() : impl{new LinkedList<T>}{}
+    explicit LinkedListSequence() : impl{new LinkedList<T>}{}
+    
+    explicit LinkedListSequence(LinkedList<T> * list) : impl{list} {}
 
-    T getFirst(){
+    explicit LinkedListSequence(T * items, size_t size) : impl{new LinkedList(items, size)}{}
+
+    T getFirst() const override
+    {
         return impl->front();
     }
-    T getLast(){
+
+    T getLast() const override
+    {
         return impl->back();
     }
-    T get(size_t index){
-        return this
+
+    T get(size_t index) const override 
+    { //std::advance(it, n)
+        for (int i = 0 , auto it = impl->begin() ; i < index; it++ , i++);
+        return *iter;
     }
     Sequence<T> getSubsequence(size_t startIndex, size_t endIndex){
         //TODO realization oof subsequence
