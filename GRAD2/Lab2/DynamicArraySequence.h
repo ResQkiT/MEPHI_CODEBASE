@@ -91,29 +91,21 @@ public:
         impl = new_array;
     }
 
-    DynamicArraySequence<T> * concat(Sequence<T> list[], size_t count) override
-    {
-        for (size_t i = 0; i < count; i++)
-        {
-            *this += list[i];
-        }
-        return this;
-    }
     
-    DynamicArraySequence<T> operator+(const Sequence<T>& other) const
+    DynamicArraySequence<T> operator+(const DynamicArraySequence<T>& other) const
     {
-        DynamicArray<T> newDynamicArray(this->getLength() + other.getLength());
+        DynamicArraySequence<T> newDynamicArraySequence;
 
-        newDynamicArray+=(*this);
-        newDynamicArray+=(other);
+        newDynamicArraySequence+=(*this);
+        newDynamicArraySequence+=(other);
 
-        return DynamicArraySequence<T>(newDynamicArray);
+        return newDynamicArraySequence;
     }
 
-    DynamicArraySequence<T> & operator+=(const Sequence<T>& other){
+    DynamicArraySequence<T> & operator+=(const DynamicArraySequence<T>& other){
         for (size_t i = 0; i < other.getLength(); i++)
         {
-            impl.push_back(other.get(i));
+            append(other.get(i));
         }
         
         return *this;

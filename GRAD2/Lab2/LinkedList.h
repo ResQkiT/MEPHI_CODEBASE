@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 template <typename T>
@@ -34,9 +35,9 @@ private:
     }
 
 public:
-    LinkedList() : head{nullptr}, tail{nullptr}, size{0} {}
+    explicit LinkedList() : head{nullptr}, tail{nullptr}, size{0} {}
 
-    LinkedList(T *data, size_t size) : head{nullptr}, tail{nullptr}, size{0}
+    explicit LinkedList(T *data, size_t size) : head{nullptr}, tail{nullptr}, size{0}
     {
         for (size_t i = 0; i < size; i++)
         {
@@ -44,11 +45,11 @@ public:
         }
     }
 
-    LinkedList(const LinkedList<T> &other) : head{nullptr}, tail{nullptr}, size{0}
+    explicit LinkedList(const LinkedList<T> &other) : head{nullptr}, tail{nullptr}, size{0}
     {
         *this = other;
     }
-    LinkedList(LinkedList<T> && other): size{std::move(other.size)} , head{std::move(other.head)}, tail{std::move(other.tail)}{
+    explicit LinkedList(LinkedList<T> && other): size{std::move(other.size)} , head{std::move(other.head)}, tail{std::move(other.tail)}{
         other.size = 0;
         other.head = nullptr;
         other.tail = nullptr;
@@ -248,7 +249,9 @@ public:
         return *this;
     }
     LinkedList<T> & operator+=(const LinkedList<T> & other){
-
+        other.head->prev = tail;
+        tail->next = other.head;
+        return *this;
     }
 
     class Iterator {

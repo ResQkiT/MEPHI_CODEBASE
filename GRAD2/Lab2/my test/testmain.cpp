@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <memory>
+#include <stdexcept>
 class B{
 public:
     int t;
@@ -17,9 +19,22 @@ class A{
 
     }
 };
+
+void foo(int a) {
+   
+
+}
 int main(){
     A a(5);    
-
+    try
+    {
+        foo(2);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 
     return 0;
 }

@@ -171,6 +171,15 @@ public:
         std::copy(other.data, other.data + size, data);
         return *this;
     }
+    DynamicArray<T> & operator+=(const DynamicArray<T> &other)
+    {
+        for (size_t i = 0; i < other.get_size(); i++)
+        {
+            this->push_back(other[i]);
+        }
+        return *this;        
+    }
+
 
     class Iterator
     {
