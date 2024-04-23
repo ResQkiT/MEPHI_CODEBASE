@@ -1,2 +1,3 @@
 echo cleaning derectory...
 rm *.o
+rm *.app

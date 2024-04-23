@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
+
 template <typename T>
 class DynamicArray
 {
@@ -15,6 +17,8 @@ private:
         {
             delete[] data;
             data = nullptr;
+            size = 0;
+            capacity = 0;
             return;
         }
 
@@ -41,7 +45,7 @@ public:
         this->data = new T[capacity];
     }
 
-    DynamicArray(const T *data , size_t size) : size{size}, capacity{2 * size}
+    DynamicArray(const T *data, size_t size) : size{size}, capacity{2 * size}
     {
         this->data = new T[capacity];
         std::copy(data, data + size, this->data);
@@ -69,14 +73,12 @@ public:
         }
     }
 
-
-
-    T get(size_t index)
+    T get(size_t index) const
     {
         return *(data + index);
     }
 
-    void set(size_t index, T value)
+    void set(size_t index, const T & value)
     {
         *(data + index) = value;
     }
@@ -91,7 +93,7 @@ public:
                 reallocate(new_size);
             }
 
-            std::copy(data, data + size, data);
+            //std::copy(data, data + size, data);
 
             for (size_t i = size; i < new_size; ++i)
             {
@@ -117,10 +119,9 @@ public:
 
     void push_back(const T &value)
     {
-
         if (size == capacity)
         {
-            reallocate(capacity * 2);
+            reallocate(std::max(capacity,(size_t)1) * 2);
         }
 
         data[size] = value;
@@ -133,13 +134,13 @@ public:
         {
             return;
         }
-
         size--;
     }
+    
 
     void clear()
     {
-        reallocate(0);
+        reallocate(4);
         size = 0;
     }
 
@@ -171,47 +172,62 @@ public:
         return *this;
     }
 
-    class Iterator{
+    class Iterator
+    {
     private:
-        T * cur;
-    public:
-        Iterator(T* first): cur{first}{}
+        T *cur;
 
-        Iterator& operator+ (int n){
+    public:
+        using iterator_category = std::random_access_iterator_tag;
+        // Уточнить моментик
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T *;   // or also value_type*
+        using reference = T &; // or also value_type&
+
+        Iterator(T *first) : cur{first} {}
+
+        Iterator &operator+(int n)
+        {
             cur += n;
             return *this;
         }
-        
-        Iterator& operator- (int n){
+
+        Iterator &operator-(int n)
+        {
             cur -= n;
             return *this;
         }
-
-        Iterator& operator++(int){
+        Iterator &operator++(int)
+        {
             cur++;
             return *this;
         }
 
-        Iterator& operator--(int){
+        Iterator &operator--(int)
+        {
             cur--;
             return *this;
         }
 
-        Iterator& operator++(){
+        Iterator &operator++()
+        {
             ++cur;
             return *this;
         }
 
-        Iterator& operator--(){
+        Iterator &operator--()
+        {
             --cur;
             return *this;
         }
 
-        bool operator!=(const Iterator& it){return cur != it.cur;}
-        bool operator==(const Iterator& it){return cur == it.cur;}
-        T& operator*(){return *cur;}
+        bool operator!=(const Iterator &it) const { return cur != it.cur; }
+        bool operator==(const Iterator &it) const { return cur == it.cur; }
+
+        reference operator*() { return *cur; }
     };
 
-    Iterator begin(){return Iterator(data);}
-    Iterator end(){return Iterator(data+ size);}
+    Iterator begin() { return Iterator(data); }
+    Iterator end() { return Iterator(data + size); }
 };

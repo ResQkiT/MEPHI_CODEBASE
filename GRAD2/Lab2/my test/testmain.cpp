@@ -1,30 +1,24 @@
 #include <iostream>
 #include <vector>
+class B{
+public:
+    int t;
+    B(){
+        std::cout << "default b constructor called" << std::endl;
+    }
+    B(int n){
+        std::cout << "B constructor called" << std::endl;
+    }
+};
 class A{
     public:
+    B b;
+    A(int t) : b{B(t)}{
 
-    virtual A *  getInstance(){
-        std::cout << "called A instance" << std::endl;
-        return this;
-    }
-
-    virtual void call() = 0;
-};
-class B : public A{
-    public:
-    B * getInstance() override{
-        std::cout << "called B instance" << std::endl;
-        return (B*)this;
-    }
-    void call(){
-        std::cout << "class B called" << std::endl;
     }
 };
 int main(){
-    A * a;
-    B b;
-    a = &b;
-    a->getInstance()->call();
+    A a(5);    
 
 
     return 0;
