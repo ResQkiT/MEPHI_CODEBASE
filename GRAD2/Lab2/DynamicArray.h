@@ -185,7 +185,6 @@ public:
     {
     private:
         T *cur;
-
     public:
         using iterator_category = std::random_access_iterator_tag;
         // Уточнить моментик

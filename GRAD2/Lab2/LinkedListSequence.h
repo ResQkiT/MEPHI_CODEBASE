@@ -54,11 +54,15 @@ public:
     void insertAt(size_t index, T item){
 
     }
-    LinkedListSequence<T> * concat(Sequence<T> ** list, size_t count) override
+    LinkedListSequence<T> * concat(Sequence<T> * list) override
     {
-        //делаем динамик каст к 
+        for (size_t i = 0; i < list->getLength(); i++)
+        {
+            append(list->get(i));
+        }
+        return this;
     }
-    LinkedListSequence<T> & operator+(const LinkedListSequence<T> & other) const
+    LinkedListSequence<T> operator+(const LinkedListSequence<T> & other) const
     {
         LinkedList<T> newLinkedList;
         newLinkedList += *this;
