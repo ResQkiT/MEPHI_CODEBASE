@@ -14,23 +14,23 @@ public:
 
     explicit DynamicArraySequence() : impl{DynamicArray<T>()} {}
 
-    explicit DynamicArraySequence(T *items, size_t size) : impl{DynamicArray<T>(items, size)} {}
+    explicit DynamicArraySequence(T items[], size_t size) : impl{DynamicArray<T>(items, size)} {}
     
-    T getFirst() const override
+    T get_first() const override
     {
         return (impl)[0];
     }
-    T getLast() const override
+    T get_last() const override
     {
         return impl[impl.get_size() - 1];
     }
-    T get(size_t index) const override
+    T get(size_t index) override
     {
         return  impl[index];
     }
 
 
-    DynamicArraySequence<T> * getSubsequence(size_t startIndex, size_t endIndex) override
+    DynamicArraySequence<T> * get_subsequence(size_t startIndex, size_t endIndex) override
     {
 
         DynamicArray<T> subsequenceArray = DynamicArray<T>(endIndex - startIndex + 1);
@@ -53,7 +53,7 @@ public:
         }
     }
 
-    size_t getLength() const override
+    size_t get_length() const override
     {
         return impl.get_size();
     }
@@ -75,25 +75,36 @@ public:
         impl = new_array;
     }
 
-    void insertAt(size_t index, T item) override
+    void insert_at(size_t index, T item) override
     {
         DynamicArray<T> new_array;
         for (size_t i = 0; i < index; i++)
         {
             new_array.push_back(impl[i]);
         }
+
         new_array.push_back(item);
 
         for (size_t i = index ; i < impl.get_size(); i++)
         {
             new_array.push_back(impl[i]);
         }
+        //alert двойное копирование
         impl = new_array;
+    }
+
+
+    //спорное архитектурное решение
+    typename DynamicArray<T>::Iterator get_begin(){
+        return impl.begin();
+    }
+    typename DynamicArray<T>::Iterator get_end(){
+        return impl.end();
     }
 
     DynamicArraySequence<T> * concat(Sequence<T> * list) override
     {
-        for (size_t i = 0; i < list->getLength(); i++)
+        for (size_t i = 0; i < list->get_length(); i++)
         {
             append(list->get(i));
         }
@@ -112,18 +123,14 @@ public:
     }
 
     DynamicArraySequence<T> & operator+=(const DynamicArraySequence<T>& other){
-        for (size_t i = 0; i < other.getLength(); i++)
-        {
-            append(other.get(i));
-        }
-        
+        impl += other.impl;
         return *this;
     }
 };
 template<class T>
 std::ostream& operator << (std::ostream &os, const DynamicArraySequence<T> &array)
 {
-    for (size_t i = 0; i < array.getLength(); i++)
+    for (size_t i = 0; i < array.get_length(); i++)
     {
         os << array.get(i) << " ";
     }
