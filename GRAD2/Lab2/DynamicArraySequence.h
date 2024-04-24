@@ -91,8 +91,17 @@ public:
         impl = new_array;
     }
 
+    DynamicArraySequence<T> * concat(Sequence<T> * list) override
+    {
+        for (size_t i = 0; i < list->getLength(); i++)
+        {
+            append(list->get(i));
+        }
+        return this;
+    }
+
     
-    DynamicArraySequence<T> operator+(const DynamicArraySequence<T>& other) const
+    DynamicArraySequence<T> operator+(const DynamicArraySequence<T> & other) const
     {
         DynamicArraySequence<T> newDynamicArraySequence;
 

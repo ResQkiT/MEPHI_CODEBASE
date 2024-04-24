@@ -19,5 +19,5 @@ public:
     virtual void prepend(T item) = 0;
     virtual void insertAt(size_t index, T item) = 0;
     
-    virtual Sequence<T> * concat(Sequence<T> * list, size_t count) = 0;
+    virtual Sequence<T> * concat(Sequence<T> * list) = 0;
 };
