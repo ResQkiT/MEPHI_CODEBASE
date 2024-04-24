@@ -15,12 +15,13 @@ public:
 template <typename T>
 class LinkedList
 {
+
 private:
     Node<T> *head;
     Node<T> *tail;
     size_t size;
 
-    void deleteList()
+    void delete_list()
     {
         Node<T> *current = head;
         while (current)
@@ -45,7 +46,7 @@ public:
         }
     }
 
-    explicit LinkedList(const LinkedList<T> &other) : head{nullptr}, tail{nullptr}, size{0}
+    LinkedList(const LinkedList<T> &other) : head{nullptr}, tail{nullptr}, size{0}
     {
         *this = other;
     }
@@ -57,10 +58,10 @@ public:
 
     ~LinkedList()
     {
-        deleteList();
+        delete_list();
     }
 
-    bool isEmpty() const
+    bool is_empty() const
     {
         return head == nullptr;
     }
@@ -74,7 +75,7 @@ public:
     {
         Node<T> *new_node = new Node<T>(value);
 
-        if (isEmpty())
+        if (is_empty())
         {
             head = tail = new_node;
         }
@@ -92,7 +93,7 @@ public:
     {
         Node<T> *new_node = new Node<T>(value);
 
-        if (isEmpty())
+        if (is_empty())
         {
             push_front(value);
             return;
@@ -106,7 +107,7 @@ public:
 
     T &front()
     {
-        if (isEmpty())
+        if (is_empty())
         {
             throw std::out_of_range("List is empty");
         }
@@ -116,7 +117,7 @@ public:
 
     const T &front() const
     {
-        if (isEmpty())
+        if (is_empty())
         {
             throw std::out_of_range("List is empty");
         }
@@ -126,7 +127,7 @@ public:
 
     T &back()
     {
-        if (isEmpty())
+        if (is_empty())
         {
             throw std::out_of_range("List is empty");
         }
@@ -136,7 +137,7 @@ public:
 
     const T &back() const
     {
-        if (isEmpty())
+        if (is_empty())
         {
             throw std::out_of_range("List is empty");
         }
@@ -146,7 +147,7 @@ public:
 
     void pop_front()
     {
-        if (isEmpty())
+        if (is_empty())
         {
             throw std::out_of_range("List is empty");
         }
@@ -168,7 +169,7 @@ public:
 
     void pop_back()
     {
-        if (isEmpty())
+        if (is_empty())
         {
             throw std::out_of_range("List is empty");
         }
@@ -186,27 +187,15 @@ public:
         size--;
     }
 
-    void clear()
-    {
-        deleteList();
+    T & get(size_t index){
+        auto it = begin();
+        for (int i = 0; i < index; it++, i++);
+        return *it;
     }
 
-    void print() const
+    void clear()
     {
-        if (isEmpty())
-        {
-            std::cout << "List is empty" << std::endl;
-            return;
-        }
-
-        Node<T> *current = head;
-        while (current)
-        {
-            std::cout << current->data << " ";
-            current = current->next;
-        }
-
-        std::cout << std::endl;
+        delete_list();
     }
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
@@ -214,7 +203,7 @@ public:
         
         if (this != &other)
         { 
-            deleteList();
+            delete_list();
             head = other.head;
             tail = other.tail;
             size = other.size;
@@ -265,7 +254,13 @@ public:
             if (curr != nullptr) {
                 curr = curr->next;
             }
+            return *this;
+        }
 
+        Iterator& operator++(int) {
+            if (curr != nullptr) {
+                curr = curr->next;
+            }
             return *this;
         }
 
@@ -273,7 +268,12 @@ public:
             if (curr != nullptr) {
                 curr = curr->prev;
             }
-
+            return *this;
+        }
+        Iterator& operator--(int) {
+            if (curr != nullptr) {
+                curr = curr->prev;
+            }
             return *this;
         }
 

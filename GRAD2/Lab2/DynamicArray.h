@@ -73,7 +73,7 @@ public:
         }
     }
 
-    T get(size_t index) const
+    T& get(size_t index) const
     {
         return *(data + index);
     }
@@ -92,8 +92,6 @@ public:
             {
                 reallocate(new_size);
             }
-
-            //std::copy(data, data + size, data);
 
             for (size_t i = size; i < new_size; ++i)
             {
