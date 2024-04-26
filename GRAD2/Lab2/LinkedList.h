@@ -240,6 +240,7 @@ public:
     LinkedList<T> & operator+=(const LinkedList<T> & other){
         other.head->prev = tail;
         tail->next = other.head;
+        size+= other.size;
         return *this;
     }
 
