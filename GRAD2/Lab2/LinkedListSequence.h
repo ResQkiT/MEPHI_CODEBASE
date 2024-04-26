@@ -79,9 +79,18 @@ public:
     typename LinkedList<T>::Iterator get_end(){
         return impl.end();
     }
-    
+    //примечание, в случае если аргумент приводим к типу LinkedListSequence, 
+    //то склеивание будет выполнено за O(1), иначе за O(n), где n - размерность аргумента 
     LinkedListSequence<T> *concat(Sequence<T> *list) override
     {
+        
+        LinkedListSequence<T> * itislinkedlist = dynamic_cast<LinkedListSequence<T>*>(list);
+        if (itislinkedlist != nullptr)
+        {
+            impl += itislinkedlist->impl;
+            return this;
+        }
+        
         // попробовать поиграть с динамическим приведением
         for (size_t i = 0; i < list->get_length(); i++)
         {

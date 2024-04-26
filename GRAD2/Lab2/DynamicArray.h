@@ -35,6 +35,7 @@ private:
     }
 
 public:
+
     DynamicArray() : data{nullptr}, size{0}, capacity{4}
     {
         this->data = new T[this->capacity];
@@ -82,6 +83,7 @@ public:
     {
         *(data + index) = value;
     }
+    
 
     void resize(size_t new_size)
     {
