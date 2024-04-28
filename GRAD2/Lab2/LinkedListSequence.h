@@ -8,12 +8,12 @@ class LinkedListSequence : public Sequence<T>
 private:
     LinkedList<T> impl;
 
-    explicit LinkedListSequence(LinkedList<T> list) : impl{list} {}
+    LinkedListSequence(LinkedList<T> list) : impl{list} {}
 
 public:
-    explicit LinkedListSequence() : impl{LinkedList<T>()} {}
+    LinkedListSequence() : impl{LinkedList<T>()} {}
 
-    explicit LinkedListSequence(T items[], size_t size) : impl{LinkedList(items, size)} {}
+    LinkedListSequence(T items[], size_t size) : impl{LinkedList(items, size)} {}
 
     T get_first() const override
     {
@@ -30,13 +30,14 @@ public:
         return impl.get(index);
     }
 
-    LinkedListSequence<T> * get_subsequence(size_t startIndex, size_t endIndex) override
+    LinkedListSequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
     {
 
         LinkedList<T> subsequence = LinkedList<T>();
         auto it_from = impl.begin();
 
-        for (size_t i = 0; i < startIndex; i++, it_from++);
+        for (size_t i = 0; i < startIndex; i++, it_from++)
+            ;
         for (size_t i = 0; i < endIndex - startIndex; i++, it_from++)
         {
             subsequence.push_back(*it_from);
@@ -63,7 +64,7 @@ public:
         {
             new_list.push_back(*it);
         }
-        
+
         new_list.push_back(item);
 
         for (size_t i = index; i < impl.get_size(); i++, it++)
@@ -72,31 +73,33 @@ public:
         }
         impl = new_list;
     }
-    //спорное архитектурное решение
-    typename LinkedList<T>::Iterator get_begin(){
+    // спорное архитектурное решение
+    typename LinkedList<T>::Iterator get_begin()
+    {
         return impl.begin();
     }
-    typename LinkedList<T>::Iterator get_end(){
+    typename LinkedList<T>::Iterator get_end()
+    {
         return impl.end();
     }
-    //примечание, в случае если аргумент приводим к типу LinkedListSequence, 
-    //то склеивание будет выполнено за O(1), иначе за O(n), где n - размерность аргумента 
+    /// @brief Добавление любых Sequence за O(n)
+    /// @param list - абстрактная последовательность
+    /// @return возвращает измененный this
     LinkedListSequence<T> *concat(Sequence<T> *list) override
     {
-        
-        LinkedListSequence<T> * itislinkedlist = dynamic_cast<LinkedListSequence<T>*>(list);
-        if (itislinkedlist != nullptr)
-        {
-            impl += itislinkedlist->impl;
-            return this;
-        }
-        
-        // попробовать поиграть с динамическим приведением
         for (size_t i = 0; i < list->get_length(); i++)
         {
             append(list->get(i));
         }
         return this;
+    }
+
+    ///@brief склеивание будет выполнено за O(1) где n - размерность аргумента
+    /// @attention состояние list после выполнения - неопределено!
+    LinkedListSequence<T> &append(LinkedListSequence<T> &list)
+    {
+        impl += list.impl;
+        return *this;
     }
     LinkedListSequence<T> operator+(const LinkedListSequence<T> &other) const
     {
@@ -105,10 +108,9 @@ public:
         newLinkedListSequence += other;
         return newLinkedListSequence;
     }
-    LinkedListSequence<T> &operator+=(const LinkedListSequence<T> &other)
+    LinkedListSequence<T> &operator+=(LinkedListSequence<T> &other)
     {
         impl += other.impl;
         return *this;
     }
 };
-

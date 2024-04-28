@@ -26,13 +26,18 @@ void printArr(Sequence<T> * arr)
     }
     std::cout << std::endl;
 }
-
+template<class T>
+void printArr(LinkedList<T> & l){
+    for(auto v: l ){
+        std::cout << v << " ";
+    }
+}
 int main()
 {
     int arr1[5] = {1, 2, 3 ,4 ,5 };
     int arr2[6] = {6, 7, 8 ,9 ,10, 11};
     LinkedListSequence<int> das1(arr1, 5);
     LinkedListSequence<int> das2(arr2, 6);
-    printArr(das1.concat(&das2));
+    printArr(das1.append(das2));
     return 0;
 }

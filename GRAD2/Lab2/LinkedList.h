@@ -50,7 +50,7 @@ public:
     {
         *this = other;
     }
-    explicit LinkedList(LinkedList<T> && other): size{std::move(other.size)} , head{std::move(other.head)}, tail{std::move(other.tail)}{
+    LinkedList(LinkedList<T> && other): size{std::move(other.size)} , head{std::move(other.head)}, tail{std::move(other.tail)}{
         other.size = 0;
         other.head = nullptr;
         other.tail = nullptr;
@@ -237,10 +237,19 @@ public:
 
         return *this;
     }
-    LinkedList<T> & operator+=(const LinkedList<T> & other){
+
+    LinkedList<T> & operator+=(LinkedList<T> & other){
+
         other.head->prev = tail;
-        tail->next = other.head;
+
+        //забираем доступ
+        tail->next =std::move(other.head);
+        other.head = nullptr;
+
+        tail = std::move(other.tail);
+        other.tail = nullptr;
         size+= other.size;
+
         return *this;
     }
 
