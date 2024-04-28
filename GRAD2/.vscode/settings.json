@@ -68,7 +68,12 @@
     "string.h": "c",
     "stdlib.h": "c",
     "math.h": "c",
-    "stdexcept": "cpp"
+    "stdexcept": "cpp",
+    "*.tcc": "cpp",
+    "deque": "cpp",
+    "list": "cpp",
+    "string": "cpp",
+    "vector": "cpp"
   },
   "cSpell.enableFiletypes": [
     "cmake"

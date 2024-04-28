@@ -35,7 +35,6 @@ private:
     }
 
 public:
-
     DynamicArray() : data{nullptr}, size{0}, capacity{4}
     {
         this->data = new T[this->capacity];
@@ -74,16 +73,15 @@ public:
         }
     }
 
-    T& get(size_t index) const
+    T &get(size_t index) const
     {
         return *(data + index);
     }
 
-    void set(size_t index, const T & value)
+    void set(size_t index, const T &value)
     {
         *(data + index) = value;
     }
-    
 
     void resize(size_t new_size)
     {
@@ -121,7 +119,7 @@ public:
     {
         if (size == capacity)
         {
-            reallocate(std::max(capacity,(size_t)1) * 2);
+            reallocate(std::max(capacity, (size_t)1) * 2);
         }
 
         data[size] = value;
@@ -136,7 +134,6 @@ public:
         }
         size--;
     }
-    
 
     void clear()
     {
@@ -171,20 +168,21 @@ public:
         std::copy(other.data, other.data + size, data);
         return *this;
     }
-    DynamicArray<T> & operator+=(const DynamicArray<T> &other)
+    DynamicArray<T> &operator+=(const DynamicArray<T> &other)
     {
+
         for (size_t i = 0; i < other.get_size(); i++)
         {
             this->push_back(other[i]);
         }
-        return *this;        
+        return *this;
     }
-
 
     class Iterator
     {
     private:
         T *cur;
+
     public:
         using iterator_category = std::random_access_iterator_tag;
         // Уточнить моментик
