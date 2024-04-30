@@ -36,10 +36,12 @@ private:
     }
 
 public:
-    explicit LinkedList() : head{nullptr}, tail{nullptr}, size{0} {}
+    LinkedList() : head{nullptr}, tail{nullptr}, size{0} {}
 
-    explicit LinkedList(T *data, size_t size) : head{nullptr}, tail{nullptr}, size{0}
+    LinkedList(T *data, size_t size) : head{nullptr}, tail{nullptr}, size{0}
     {
+        if(size < 0) throw std::invalid_argument("Cannot create LinkedList with negative size");
+        if(data == nullptr) throw std::invalid_argument("LinkedList Constructor must take not null arguments");
         for (size_t i = 0; i < size; i++)
         {
             this->push_back(data[i]);
@@ -107,50 +109,35 @@ public:
 
     T &front()
     {
-        if (is_empty())
-        {
-            throw std::out_of_range("List is empty");
-        }
+        if (is_empty()) throw std::out_of_range("List is empty");
 
         return head->data;
     }
 
     const T &front() const
     {
-        if (is_empty())
-        {
-            throw std::out_of_range("List is empty");
-        }
+        if (is_empty()) throw std::out_of_range("List is empty");
 
         return head->data;
     }
 
     T &back()
     {
-        if (is_empty())
-        {
-            throw std::out_of_range("List is empty");
-        }
+        if (is_empty()) throw std::out_of_range("List is empty");
 
         return tail->data;
     }
 
     const T &back() const
     {
-        if (is_empty())
-        {
-            throw std::out_of_range("List is empty");
-        }
+        if (is_empty()) throw std::out_of_range("List is empty");
 
         return tail->data;
     }
 
     void pop_front()
     {
-        if (is_empty())
-        {
-            throw std::out_of_range("List is empty");
-        }
+        if (is_empty()) throw std::out_of_range("List is empty");
 
         Node<T> *temp = head;
         if (size == 1)
@@ -169,10 +156,7 @@ public:
 
     void pop_back()
     {
-        if (is_empty())
-        {
-            throw std::out_of_range("List is empty");
-        }
+        if (is_empty()) throw std::out_of_range("List is empty");
 
         Node<T> *temp = tail;
         if (size == 1)
@@ -188,6 +172,8 @@ public:
     }
 
     T & get(size_t index){
+        if(index < 0 || index >= size) throw std::out_of_range("Out of range");
+        if (is_empty()) throw std::out_of_range("List is empty");
         auto it = begin();
         for (int i = 0; i < index; it++, i++);
         return *it;
@@ -242,7 +228,6 @@ public:
 
         other.head->prev = tail;
 
-        //забираем доступ
         tail->next =std::move(other.head);
         other.head = nullptr;
 

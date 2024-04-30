@@ -35,7 +35,6 @@ public:
 
     DynamicArraySequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
     {
-
         DynamicArray<T> subsequenceArray = DynamicArray<T>(endIndex - startIndex + 1);
 
         auto cur_it = impl.begin() + startIndex;
