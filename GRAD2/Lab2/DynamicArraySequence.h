@@ -7,12 +7,13 @@ template <class T>
 class DynamicArraySequence : public Sequence<T>
 {
 private:
+
+    DynamicArray<T> impl; 
+
     DynamicArraySequence(DynamicArray<T> array) : impl{array} {}
 
-protected:
-    DynamicArray<T> impl;
-
 public:
+
     DynamicArraySequence() : impl{DynamicArray<T>()} {}
 
     DynamicArraySequence(T items[], size_t size) : impl{DynamicArray<T>(items, size)} {}
@@ -21,10 +22,12 @@ public:
     {
         return (impl)[0];
     }
+
     T get_last() const override
     {
         return impl[impl.get_size() - 1];
     }
+
     T get(size_t index) override
     {
         return impl[index];
@@ -130,6 +133,7 @@ public:
         return *this;
     }
 };
+
 template <class T>
 std::ostream &operator<<(std::ostream &os, const DynamicArraySequence<T> &array)
 {

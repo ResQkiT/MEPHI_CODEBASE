@@ -8,12 +8,17 @@ template <class T>
 class ImmutableDynamicArraySequence : public ImmutableSequence<T>
 {
 private:
+
     DynamicArray<T> impl;
+
     ImmutableDynamicArraySequence(DynamicArray<T> & list) : impl{list} {}
 
 public:
-    ImmutableDynamicArraySequence() {}
-    ImmutableDynamicArraySequence(T items[], size_t size) {}
+
+    ImmutableDynamicArraySequence(): impl{DynamicArray<T>()}{}
+
+    ImmutableDynamicArraySequence(T items[], size_t size): impl{DynamicArray<T>(items, size)} {}
+
     T get_first() const override
     {
         return (impl)[0];
@@ -49,12 +54,13 @@ public:
         return impl.get_size();
     }
 
-    ImmutableDynamicArraySequence<T> *append(T item) override
+    ImmutableDynamicArraySequence<T> * append(T item) override
     {
         DynamicArray<T> newDArray(impl);
         newDArray.push_back(item);
         return new ImmutableDynamicArraySequence<T>(newDArray);
     }
+
     ImmutableDynamicArraySequence<T> * prepend(T item) override
     {
         DynamicArray<T> newDArray;
@@ -66,9 +72,11 @@ public:
         
         return ImmutableDynamicArraySequence<T>(newDArray);
     }
+
     ImmutableDynamicArraySequence<T> * insert_at(size_t index, T item) override
     {
         DynamicArray<T> new_array;
+
         for (size_t i = 0; i < index; i++)
         {
             new_array.push_back(impl[i]);
@@ -80,17 +88,18 @@ public:
         {
             new_array.push_back(impl[i]);
         }
+
         return new ImmutableDynamicArraySequence<T>(new_array);
     }
 
     ImmutableDynamicArraySequence<T> * concat(ImmutableSequence<T> *list) override
     {
-        
+        DynamicArray<T> new_array(impl);
         for (size_t i = 0; i < list->get_length(); i++)
         {
-            append(list->get(i));
+            new_array.push_back(list.get(i));
         }
-        return this;
+        return new ImmutableDynamicArraySequence<T>(new_array);
     }
 
 };

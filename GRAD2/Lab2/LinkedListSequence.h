@@ -30,32 +30,34 @@ public:
         return impl.get(index);
     }
 
-    LinkedListSequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
+    LinkedListSequence<T> *get_subsequence(size_t start_index, size_t end_index) override
     {
-
         LinkedList<T> subsequence = LinkedList<T>();
         auto it_from = impl.begin();
 
-        for (size_t i = 0; i < startIndex; i++, it_from++)
-            ;
-        for (size_t i = 0; i < endIndex - startIndex; i++, it_from++)
+        for (size_t i = 0; i < start_index; i++, it_from++);
+        for (size_t i = 0; i < end_index - start_index + 1; i++, it_from++)
         {
             subsequence.push_back(*it_from);
         }
-        return new LinkedListSequence(subsequence);
+        return new LinkedListSequence<T>(subsequence);
     }
+
     size_t get_length() const override
     {
         return impl.get_size();
     }
+    
     void append(T item) override
     {
         impl.push_back(item);
     }
+    
     void prepend(T item) override
     {
         impl.push_front(item);
     }
+    
     void insert_at(size_t index, T item) override
     {
         auto it = impl.begin();
@@ -73,15 +75,17 @@ public:
         }
         impl = new_list;
     }
-    // спорное архитектурное решение
+
     typename LinkedList<T>::Iterator get_begin()
     {
         return impl.begin();
     }
+
     typename LinkedList<T>::Iterator get_end()
     {
         return impl.end();
     }
+
     /// @brief Добавление любых Sequence за O(n)
     /// @param list - абстрактная последовательность
     /// @return возвращает измененный this
@@ -101,6 +105,7 @@ public:
         impl += list.impl;
         return *this;
     }
+
     LinkedListSequence<T> operator+(const LinkedListSequence<T> &other) const
     {
         LinkedListSequence<T> newLinkedListSequence;
@@ -108,6 +113,7 @@ public:
         newLinkedListSequence += other;
         return newLinkedListSequence;
     }
+
     LinkedListSequence<T> &operator+=(LinkedListSequence<T> &other)
     {
         impl += other.impl;
