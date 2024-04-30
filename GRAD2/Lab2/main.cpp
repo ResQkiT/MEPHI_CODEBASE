@@ -6,38 +6,36 @@
 #include <algorithm>
 #include "DynamicArraySequence.h"
 #include "LinkedListSequence.h"
+#include <cassert> 
+#include "readio.h"
+#include "tests.h"
+using namespace std;
 
-template <class T>
-void printArr(Sequence<T> &arr)
-{
-    for (size_t i = 0; i < arr.get_length(); i++)
-    {
-        std::cout << arr.get(i) << " "; 
-    }
-    std::cout << std::endl;
-    
+void runtest(){
+    using namespace tests;
+    test1();
+    test2();
+    test3();
+    test4();
+    test5();
+    test6();
+    test7();
+    test8();
+    test9();
+    test10();
+    test11();
+    test12();
+    test13();
+    test14();
+    test15();
+    test16();
+    test17();
+    test18();
 }
-template <class T>
-void printArr(Sequence<T> * arr)
-{
-    for (size_t i = 0; i < arr->get_length(); i++)
-    {
-        std::cout << arr->get(i) << " "; 
-    }
-    std::cout << std::endl;
-}
-template<class T>
-void printArr(LinkedList<T> & l){
-    for(auto v: l ){
-        std::cout << v << " ";
-    }
-}
+
 int main()
-{
-    int arr1[5] = {1, 2, 3 ,4 ,5 };
-    int arr2[6] = {6, 7, 8 ,9 ,10, 11};
-    LinkedListSequence<int> das1(arr1, 5);
-    LinkedListSequence<int> das2(arr2, 6);
-    printArr(das1.append(das2));
+{  
+    runtest();
+    
     return 0;
 }
