@@ -252,5 +252,44 @@ namespace tests
     }
 
 
+    //emergency situations tests
+
+    /// @brief test if index out of bounce
+    void test19(){
+        int arr[] = {1, 2, 3};
+        DynamicArraySequence<int> array(arr, 3);
+        try
+        {
+            array.get(-1);
+            assert(false);
+        }
+        catch(const std::exception& e){}
+        try
+        {
+            array.get(5);
+            assert(false);
+        }
+        catch(const std::exception& e){}
+        cout << "TEST 19 PASSED!"<< endl;
+    }
+
+    /// @brief test if index out of bounce
+    void test20(){
+        int arr[] = {1, 2, 3};
+        LinkedListSequence<int> array(arr, 3);
+        try
+        {
+            array.get(-1);
+            assert(false);
+        }
+        catch(const std::exception& e){}
+        try
+        {
+            array.get(5);
+            assert(false);
+        }
+        catch(const std::exception& e){}
+        cout << "TEST 20 PASSED!"<< endl;
+    }
 
 } // namespace tests

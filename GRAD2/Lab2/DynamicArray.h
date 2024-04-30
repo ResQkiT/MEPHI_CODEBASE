@@ -42,11 +42,14 @@ public:
 
     DynamicArray(size_t size) : size{size}, capacity{2 * size}
     {
+        if(size < 0) throw std::invalid_argument("Cannot create DynamicArray with negative size");
         this->data = new T[capacity];
     }
 
     DynamicArray(const T *data, size_t size) : size{size}, capacity{2 * size}
     {
+        if(size < 0) throw std::invalid_argument("Cannot create DynamicArray with negative size");
+        if(data == nullptr) throw std::invalid_argument("DynamicArray constructor must take not null arguments");
         this->data = new T[capacity];
         std::copy(data, data + size, this->data);
     }
@@ -75,11 +78,13 @@ public:
 
     T &get(size_t index) const
     {
+        if(index < 0 || index >= size) throw std::out_of_range("Out of range");
         return *(data + index);
     }
 
     void set(size_t index, const T &value)
     {
+        if(index < 0 || index >= size) throw std::out_of_range("Out of range");
         *(data + index) = value;
     }
 
@@ -128,10 +133,7 @@ public:
 
     void pop_back()
     {
-        if (size == 0)
-        {
-            return;
-        }
+        if (size == 0) throw std::out_of_range("Array is empty");
         size--;
     }
 
@@ -155,7 +157,7 @@ public:
     {
         if (index >= size)
         {
-            throw std::out_of_range("Index out of range");
+            throw std::out_of_range("Out of range");
         }
 
         return data[index];
@@ -185,11 +187,10 @@ public:
 
     public:
         using iterator_category = std::random_access_iterator_tag;
-        // Уточнить моментик
         using difference_type = std::ptrdiff_t;
         using value_type = T;
-        using pointer = T *;   // or also value_type*
-        using reference = T &; // or also value_type&
+        using pointer = T *;
+        using reference = T &; 
 
         Iterator(T *first) : cur{first} {}
 
