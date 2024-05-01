@@ -250,8 +250,7 @@ namespace tests
         }
         cout << "TEST 18 PASSED!"<< endl;
     }
-
-
+    
     //emergency situations tests
 
     /// @brief test if index out of bounce

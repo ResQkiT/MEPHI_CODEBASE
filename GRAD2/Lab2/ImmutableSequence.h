@@ -4,7 +4,7 @@ template<class T>
 class ImmutableSequence
 {
 public:
-    virtual ~Sequence() = default;
+    virtual ~ImmutableSequence() = default;
 
     virtual T get_first() const = 0;
     virtual T get_last() const = 0;

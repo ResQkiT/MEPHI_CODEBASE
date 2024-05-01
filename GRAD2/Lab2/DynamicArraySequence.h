@@ -35,6 +35,7 @@ public:
 
     DynamicArraySequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
     {
+        if(startIndex > endIndex || startIndex <0 || endIndex >=impl.get_size()) throw std::invalid_argument("invalid arguments");
         DynamicArray<T> subsequenceArray = DynamicArray<T>(endIndex - startIndex + 1);
 
         auto cur_it = impl.begin() + startIndex;
