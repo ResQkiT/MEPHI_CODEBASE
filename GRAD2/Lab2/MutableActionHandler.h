@@ -52,7 +52,7 @@ public:
             cin >> data[i];
         }
 
-        LinkedListSequence<T> *linked_list = new LinkedListSequence(data, n);
+        LinkedListSequence<T> *linked_list = new LinkedListSequence<T>(data, n);
         working_sequence = linked_list;
         return this;
     }
@@ -63,13 +63,13 @@ public:
         int n;
         cin >> n;
         T data[n];
-        cout << "Enter " << n << " elements of future list\n->";
+        cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
             cin >> data[i];
         }
 
-        DynamicArraySequence<T> * dynamic_array = new DynamicArraySequence(data, n);
+        DynamicArraySequence<T> * dynamic_array = new DynamicArraySequence<T>(data, n);
         working_sequence = dynamic_array;
         return this;
     }
@@ -89,7 +89,7 @@ public:
         }
         catch(const std::exception& e)
         {
-            cout << "Exception occurred, something goes wrong: " << e.what() << '\n';
+            cout << "Exception occurred, something wrong with indexes. '\n'";
             return this;
         }
         return this;
@@ -143,7 +143,7 @@ public:
     {
         if (working_sequence == nullptr)
         {
-            cout << "Can not add element because not any sequence created\n";
+            cout << "Can not be printed because not any sequence created\n";
             return this;
         }
         cout << "Printing working sequence...\n->";

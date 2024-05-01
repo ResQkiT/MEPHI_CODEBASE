@@ -34,7 +34,7 @@ public:
         return impl[index];
     }
 
-    DynamicArraySequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
+    ImmutableDynamicArraySequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
     {
         DynamicArray<T> subsequenceArray = DynamicArray<T>(endIndex - startIndex + 1);
 
@@ -46,7 +46,7 @@ public:
             *new_it = *cur_it;
         }
 
-        return new DynamicArraySequence(subsequenceArray);
+        return new ImmutableDynamicArraySequence<T>(subsequenceArray);
     }
 
     size_t get_length() const override
@@ -70,7 +70,7 @@ public:
             newDArray.push_back(impl[i]);
         }
         
-        return ImmutableDynamicArraySequence<T>(newDArray);
+        return new ImmutableDynamicArraySequence<T>(newDArray);
     }
 
     ImmutableDynamicArraySequence<T> * insert_at(size_t index, T item) override
@@ -97,7 +97,7 @@ public:
         DynamicArray<T> new_array(impl);
         for (size_t i = 0; i < list->get_length(); i++)
         {
-            new_array.push_back(list.get(i));
+            new_array.push_back(list->get(i));
         }
         return new ImmutableDynamicArraySequence<T>(new_array);
     }

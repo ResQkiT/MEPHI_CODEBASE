@@ -10,12 +10,9 @@
 #include "tests.h"
 #include "AbstractActionListener.h"
 #include "MutableActionHandler.h"
+#include "ImmutableActionHandler.h"
 
-
-
-enum class modes{   MUTABLE,
-                    IMMUTABLE,
-                    STARTING,
+enum class modes{  STARTING,
                     RUNNING,
                     ENDING};
 
@@ -51,7 +48,6 @@ void runtest(){
 
 template<class T>
 void work(AbstractActionListener<T> * listener){
-    //тут уже определен тип для работы.
     bool is_working = true;
     while(is_working){
         cout << "   choose command\n    1 - for create new list\n\\
@@ -59,7 +55,7 @@ void work(AbstractActionListener<T> * listener){
         3 - for extract and show subsequence\n\\
         4 - for adding element at the end\n\\
         5 - for adding element at definite possition\n\\
-        6 - for adding elememnt at begining\n\\
+        6 - for adding element at begining\n\\
         -1 - for return back\n->";
         int choice;
         cin >> choice;
@@ -98,40 +94,64 @@ int main()
 {  
     runtest();
     cout << "Lets create first data structure!: " << endl;
-
     modes mode = modes::RUNNING;
-
     int mutable_choice;
     int type_choice;
-    //main program loop
     while (mode == modes::RUNNING)
     {    
-        
         cout << "1 - to work with mutable structures \n2 - to work with immutable structures \n-1 for exit\n->";
         cin >> mutable_choice;
         cout << "Choose type: 1 - int, 2 - double, 3 - char, 4 - string\n->";
         cin >> type_choice;
-        if(type_choice == 1){
-            AbstractActionListener<int> * listener1 = new MutableActionHandler<int>(); 
-            work(listener1);
-        }else if (type_choice == 2)
-        {
-            AbstractActionListener<double> * listener1 = new MutableActionHandler<double>(); 
-            work(listener1);
-        }
-        else if (type_choice == 3)
-        {
-            AbstractActionListener<char> * listener1 = new MutableActionHandler<char>(); 
-            work(listener1);
-        }
-        else if (type_choice == 4)
-        {
-            AbstractActionListener<string> * listener1 = new MutableActionHandler<string>(); 
-            work(listener1);
-        }
-        else if (type_choice == -1)
-        {
-            mode = modes::ENDING;
+
+        if(mutable_choice == 1){
+            if(type_choice == 1){
+                AbstractActionListener<int> * listener = new MutableActionHandler<int>(); 
+                work(listener);
+            }else if (type_choice == 2)
+            {
+                AbstractActionListener<double> * listener = new MutableActionHandler<double>(); 
+                work(listener);
+            }
+            else if (type_choice == 3)
+            {
+                AbstractActionListener<char> * listener = new MutableActionHandler<char>(); 
+                work(listener);
+            }
+            else if (type_choice == 4)
+            {
+                AbstractActionListener<string> * listener = new MutableActionHandler<string>(); 
+                work(listener);
+            }
+            else if (type_choice == -1)
+            {
+                continue;
+            }
+        }else if(mutable_choice == 2){
+            if(type_choice == 1){
+                AbstractActionListener<int> * listener = new ImmutableActionHandler<int>(); 
+                work(listener);
+            }else if (type_choice == 2)
+            {
+                AbstractActionListener<double> * listener = new ImmutableActionHandler<double>(); 
+                work(listener);
+            }
+            else if (type_choice == 3)
+            {
+                AbstractActionListener<char> * listener = new ImmutableActionHandler<char>(); 
+                work(listener);
+            }
+            else if (type_choice == 4)
+            {
+                AbstractActionListener<string> * listener = new ImmutableActionHandler<string>(); 
+                work(listener);
+            }
+            else if (type_choice == -1)
+            {
+                continue;
+            }
+        }else{
+            break;
         }
     }
     return 0;
