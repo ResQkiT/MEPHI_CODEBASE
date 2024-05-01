@@ -73,8 +73,12 @@
     "deque": "cpp",
     "list": "cpp",
     "string": "cpp",
+<<<<<<< HEAD
     "vector": "cpp",
     "iostream": "cpp"
+=======
+    "vector": "cpp"
+>>>>>>> main
   },
   "cSpell.enableFiletypes": [
     "cmake"
