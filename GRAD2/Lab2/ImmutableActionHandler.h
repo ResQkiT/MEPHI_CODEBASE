@@ -85,8 +85,8 @@ public:
             {
                 cout << subsequence->get(i) << " ";
             }
+            cout << '\n';
         }
-        cout << '\n';
         catch (const std::exception& e)
         {
             cout << "Exception occurred, something wrong with indexes \n";

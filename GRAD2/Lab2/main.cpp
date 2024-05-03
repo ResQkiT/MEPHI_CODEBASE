@@ -99,7 +99,7 @@ int main()
     int type_choice;
     while (mode == modes::RUNNING)
     {    
-        cout << "1 - to work with mutable structures \n2 - to work with immutable structures \n-1 for exit\n->";
+        cout << "1 - to work with mutable structures \n2 - to work with immutable structures \n->";
         cin >> mutable_choice;
         cout << "Choose type: 1 - int, 2 - double, 3 - char, 4 - string\n->";
         cin >> type_choice;

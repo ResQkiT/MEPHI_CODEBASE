@@ -86,6 +86,7 @@ public:
             {
                 cout << subsequence->get(i) << " ";
             }
+            cout << '\n';
         }
         catch(const std::exception& e)
         {
