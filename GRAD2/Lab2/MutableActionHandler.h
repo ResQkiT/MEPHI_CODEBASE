@@ -5,6 +5,7 @@
 #include "DynamicArraySequence.h"
 #include "LinkedListSequence.h"
 #include "AbstractActionListener.h"
+#include "readio.h"
 
 using namespace std;
 
@@ -21,35 +22,17 @@ public:
     {
         delete[] working_sequence;
     }
-    MutableActionHandler<T> *create_sequence_dialog() override
-    {
-        cout << "1 - to create Mutable Dynamic Array Sequence\n2 - to create Mutable Linked List Sequence\n-1 - to return\n->";
-        int choice;
-        cin >> choice;
-        switch (choice)
-        {
-        case 1:
-            return create_dynamic_array_sequence();
-            break;
-        case 2:
-            return create_linked_list_sequence();
-            break;
-        default:
-            return this;
-            break;
-        }
-    }
 
     MutableActionHandler<T> *create_linked_list_sequence() override
     {
         cout << "Creating Linked List Sequence\nenter size of sequence->";
         int n;
-        cin >> n;
+        console_get(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            cin >> data[i];
+            console_get(data[i]);
         }
 
         LinkedListSequence<T> *linked_list = new LinkedListSequence<T>(data, n);
@@ -61,12 +44,12 @@ public:
     {
         cout << "Creating Dynamic Array Sequence\nenter size of sequence->";
         int n;
-        cin >> n;
+        console_get(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            cin >> data[i];
+            console_get(data[i]);
         }
 
         DynamicArraySequence<T> * dynamic_array = new DynamicArraySequence<T>(data, n);
@@ -77,7 +60,8 @@ public:
     {
         cout << "Extracting subsequence\n Enter start index and end index [start index, end index]\n->";
         size_t start_index, end_index;
-        cin >> start_index >> end_index;
+        console_get(start_index);
+        console_get(end_index);
         Sequence<T> *subsequence;
         try
         {
@@ -105,7 +89,7 @@ public:
         }
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        cin >> elem;
+        console_get(elem);
         working_sequence->prepend(elem);
         return this;
     }
@@ -119,10 +103,10 @@ public:
         }
         int position;
         cout << "Enter position\n->";
-        cin >> position;
+        console_get(position);
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        cin >> elem;
+        console_get(elem);
         working_sequence->insert_at(position, elem);
         return this;
     }
@@ -136,7 +120,7 @@ public:
         }
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        cin >> elem;
+        console_get(elem);
         working_sequence->append(elem);
         return this;
     }

@@ -5,6 +5,7 @@
 #include "ImmutableDynamicArraySequence.h"
 #include "ImmutableLinkedListSequense.h"
 #include "AbstractActionListener.h"
+#include "readio.h"
 
 using namespace std;
 
@@ -21,35 +22,17 @@ public:
     {
         delete[] working_sequence;
     }
-    ImmutableActionHandler<T> *create_sequence_dialog() override
-    {
-        cout << "1 - to create Immutable Dynamic Array Sequence\n2 - to create Immutable Linked List Sequence\n-1 - to return\n->";
-        int choice;
-        cin >> choice;
-        switch (choice)
-        {
-        case 1:
-            return create_dynamic_array_sequence();
-            break;
-        case 2:
-            return create_linked_list_sequence();
-            break;
-        default:
-            return this;
-            break;
-        }
-    }
 
     ImmutableActionHandler<T> *create_linked_list_sequence() override
     {
         cout << "Creating Immutable Linked List Sequence\nenter size of sequence->";
         int n;
-        cin >> n;
+        console_get(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            cin >> data[i];
+            console_get(data[i]);
         }
         ImmutableLinkedListSequence<T> *linked_list = new ImmutableLinkedListSequence<T>(data, n);
         working_sequence = linked_list;
@@ -60,12 +43,12 @@ public:
     {
         cout << "Creating Immutable Dynamic Array Sequence\nenter size of sequence->";
         int n;
-        cin >> n;
+        console_get(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            cin >> data[i];
+            console_get(data[i]);
         }
 
         ImmutableDynamicArraySequence<T> *dynamic_array = new ImmutableDynamicArraySequence(data, n);
@@ -76,7 +59,8 @@ public:
     {
         cout << "Extracting subsequence\n Enter start index and end index [start index, end index]\n->";
         size_t start_index, end_index;
-        cin >> start_index >> end_index;
+        console_get(start_index);
+        console_get(end_index);
         ImmutableSequence<T> *subsequence;
         try
         {
@@ -87,7 +71,7 @@ public:
             }
             cout << '\n';
         }
-        catch (const std::exception& e)
+        catch (const std::exception &e)
         {
             cout << "Exception occurred, something wrong with indexes \n";
             return this;
@@ -104,7 +88,7 @@ public:
         }
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        cin >> elem;
+        console_get(elem);
         working_sequence = working_sequence->prepend(elem);
         return this;
     }
@@ -118,10 +102,10 @@ public:
         }
         int position;
         cout << "Enter position\n->";
-        cin >> position;
+        console_get(position);
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        cin >> elem;
+        console_get(elem);
         working_sequence = working_sequence->insert_at(position, elem);
         return this;
     }
@@ -135,7 +119,7 @@ public:
         }
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        cin >> elem;
+        console_get(elem);
         working_sequence = working_sequence->append(elem);
         return this;
     }

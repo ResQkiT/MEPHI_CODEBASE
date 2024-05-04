@@ -1,16 +1,16 @@
 #include <iostream>
 #include <string>
+#include "readio.h"
 #include "DynamicArray.h"
 #include "LinkedList.h"
 #include "DynamicArraySequence.h"
 #include "ImmutableDynamicArraySequence.h"
 #include "ImmutableLinkedListSequense.h"
 #include "LinkedListSequence.h"
-#include "readio.h"
 #include "AbstractActionListener.h"
 #include "MutableActionHandler.h"
 #include "ImmutableActionHandler.h"
-#include "test.h"
+
 enum class modes{  STARTING,
                     RUNNING,
                     ENDING};
@@ -33,7 +33,7 @@ void work(AbstractActionListener<T> * listener){
         6 - for adding element at begining\n\\
         -1 - for return back\n->";
         int choice;
-        cin >> choice;
+        console_get(choice);
         switch (choice)
         {
         case 1:
@@ -67,7 +67,6 @@ void work(AbstractActionListener<T> * listener){
 
 int main()
 {  
-    run();
     cout << "Lets create first data structure!: " << endl;
     modes mode = modes::RUNNING;
     int mutable_choice;
@@ -75,9 +74,10 @@ int main()
     while (mode == modes::RUNNING)
     {    
         cout << "1 - to work with mutable structures \n2 - to work with immutable structures \n->";
-        cin >> mutable_choice;
-        cout << "Choose type: 1 - int, 2 - double, 3 - char, 4 - string\n->";
-        cin >> type_choice;
+        console_get(mutable_choice);
+        
+        cout <<"Choose type: 1 - int, 2 - double, 3 - char, 4 - string\n->";
+        console_get(type_choice);
 
         if(mutable_choice == 1){
             if(type_choice == 1){
