@@ -6,6 +6,7 @@
 
 #include <cassert> 
 
+
 namespace tests
 {
     using namespace std;
@@ -290,5 +291,36 @@ namespace tests
         catch(const std::exception& e){}
         cout << "TEST 20 PASSED!"<< endl;
     }
+    void runtests(){
+        test1();
+        test2();
+        test3();
+        test4();
+        test5();
+        test6();
+        test7();
+        test8();
+        test9();
+        test10();
+        test11();
+        test12();
+        test13();
+        test14();
+        test15();
+        test16();
+        test17();
+        test18();
+        test19();
+        test20();
+        std::cout << "ALL TEST PASSED!" << std::endl;
+    }
 
 } // namespace tests
+int main(){
+    std::cout << "TEST " << "\n";
+    tests::runtests();
+}
+int run(){
+    std::cout << "TEST " << "\n";
+    tests::runtests();
+}

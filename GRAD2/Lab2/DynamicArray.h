@@ -182,9 +182,13 @@ public:
 
     class Iterator
     {
+    friend DynamicArray;
     private:
         T *cur;
+        int index;
+        DynamicArray<T> * ptr;
 
+        Iterator(T *first,int index, DynamicArray<T> * self) : cur{first} ,index{index}, ptr{self} {}
     public:
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = std::ptrdiff_t;
@@ -192,39 +196,51 @@ public:
         using pointer = T *;
         using reference = T &; 
 
-        Iterator(T *first) : cur{first} {}
 
-        Iterator &operator+(int n)
+        Iterator &operator+(difference_type n)
         {
+            //для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n; 
+            if(index + n > ptr->size) throw std::out_of_range("Iterator out of working zone(+)");
+            index += n;
             cur += n;
             return *this;
         }
 
-        Iterator &operator-(int n)
+        Iterator &operator-(difference_type n)
         {
+            if(index - n < ptr->size) throw std::out_of_range("Iterator out of working zone(-)");
+            index -= n;
             cur -= n;
             return *this;
         }
         Iterator &operator++(int)
         {
-            cur++;
+            if(index+1 > ptr->size) throw std::out_of_range("Iterator out of working zone(|++)");
+            index ++;
+            cur ++;
             return *this;
         }
 
         Iterator &operator--(int)
         {
-            cur--;
+            if(index-1 > ptr->size) throw std::out_of_range("Iterator out of working zone(|--)");
+            index --;
+            cur --;
             return *this;
         }
 
         Iterator &operator++()
         {
+            if(index + 1 > ptr->size) throw std::out_of_range("Iterator out of working zone(++|)");
+            ++index;
             ++cur;
             return *this;
         }
 
         Iterator &operator--()
         {
+            if(index - 1 > ptr->size) throw std::out_of_range("Iterator out of working zone(--|)");
+            --index;
             --cur;
             return *this;
         }
@@ -232,9 +248,15 @@ public:
         bool operator!=(const Iterator &it) const { return cur != it.cur; }
         bool operator==(const Iterator &it) const { return cur == it.cur; }
 
-        reference operator*() { return *cur; }
+        reference operator*() { 
+            if(cur != nullptr)
+                return *cur;
+            else throw std::runtime_error("Iterator refer to null");
+        }
     };
 
-    Iterator begin() { return Iterator(data); }
-    Iterator end() { return Iterator(data + size); }
+    Iterator begin() { return Iterator(data,0, this); }
+    
+    Iterator end() { return Iterator(data + size,size, this); }
+    friend Iterator;    
 };

@@ -240,52 +240,54 @@ public:
 
     class Iterator {
     private:
-        Node<T>* curr;
+        Node<T>* cur;
 
     public:
-        Iterator(Node<T>* head) : curr(head) {}
+        Iterator(Node<T>* head) : cur(head) {}
 
         Iterator& operator++() {
-            if (curr != nullptr) {
-                curr = curr->next;
+            if (cur != nullptr) {
+                cur = cur->next;
             }
             return *this;
         }
 
         Iterator& operator++(int) {
-            if (curr != nullptr) {
-                curr = curr->next;
+            if (cur != nullptr) {
+                cur = cur->next;
             }
             return *this;
         }
 
         Iterator& operator--() {
-            if (curr != nullptr) {
-                curr = curr->prev;
+            if (cur != nullptr) {
+                cur = cur->prev;
             }
             return *this;
         }
         Iterator& operator--(int) {
-            if (curr != nullptr) {
-                curr = curr->prev;
+            if (cur != nullptr) {
+                cur = cur->prev;
             }
             return *this;
         }
 
         bool operator!=(const Iterator& other) const {
-            return curr != other.curr;
+            return cur != other.cur;
         }
 
         bool operator==(const Iterator& other) const {
-            return curr == other.curr;
+            return cur == other.cur;
         }
         
         T& operator*() {
-            return curr->data;
+            if(cur != nullptr)
+                return cur->data;
+            else throw std::runtime_error("Iterator refer to null");
         }
 
         T* operator->() {
-            return &curr->data;
+            return &cur->data;
         }
     };
 

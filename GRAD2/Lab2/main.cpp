@@ -7,11 +7,10 @@
 #include "ImmutableLinkedListSequense.h"
 #include "LinkedListSequence.h"
 #include "readio.h"
-#include "tests.h"
 #include "AbstractActionListener.h"
 #include "MutableActionHandler.h"
 #include "ImmutableActionHandler.h"
-
+#include "test.h"
 enum class modes{  STARTING,
                     RUNNING,
                     ENDING};
@@ -21,30 +20,6 @@ enum class type_mode {INT, DOUBLE, CHAR, STRING};
 
 using namespace std;
 
-void runtest(){
-    using namespace tests;
-    test1();
-    test2();
-    test3();
-    test4();
-    test5();
-    test6();
-    test7();
-    test8();
-    test9();
-    test10();
-    test11();
-    test12();
-    test13();
-    test14();
-    test15();
-    test16();
-    test17();
-    test18();
-    test19();
-    test20();
-    std::cout << "ALL TEST PASSED!" << std::endl;
-}
 
 template<class T>
 void work(AbstractActionListener<T> * listener){
@@ -92,7 +67,7 @@ void work(AbstractActionListener<T> * listener){
 
 int main()
 {  
-    runtest();
+    run();
     cout << "Lets create first data structure!: " << endl;
     modes mode = modes::RUNNING;
     int mutable_choice;
