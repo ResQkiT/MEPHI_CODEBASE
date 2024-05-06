@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+GRAD2/Lab2/output
+GRAD2/Lab2/build
