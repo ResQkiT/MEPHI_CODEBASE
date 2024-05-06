@@ -100,7 +100,7 @@ public:
 
     ///@brief склеивание будет выполнено за O(1) где n - размерность аргумента
     /// @attention состояние list после выполнения - неопределено!
-    LinkedListSequence<T> &append(LinkedListSequence<T> &list)
+    LinkedListSequence<T> &append(LinkedListSequence<T> &list) override
     {
         impl += list.impl;
         return *this;
