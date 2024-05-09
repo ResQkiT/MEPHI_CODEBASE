@@ -15,17 +15,17 @@ public:
 
     LinkedListSequence(T items[], size_t size) : impl{LinkedList(items, size)} {}
 
-    T get_first() const override
+    T & get_first() override
     {
         return impl.front();
     }
 
-    T get_last() const override
+    T & get_last() override
     {
         return impl.back();
     }
 
-    T get(size_t index) override
+    T & get(size_t index) override
     {
         return impl.get(index);
     }
@@ -35,7 +35,8 @@ public:
         LinkedList<T> subsequence = LinkedList<T>();
         auto it_from = impl.begin();
 
-        for (size_t i = 0; i < start_index; i++, it_from++);
+        for (size_t i = 0; i < start_index; i++, it_from++)
+            ;
         for (size_t i = 0; i < end_index - start_index + 1; i++, it_from++)
         {
             subsequence.push_back(*it_from);
@@ -47,17 +48,29 @@ public:
     {
         return impl.get_size();
     }
-    
+
     void append(T item) override
     {
         impl.push_back(item);
     }
-    
+
     void prepend(T item) override
     {
         impl.push_front(item);
     }
-    
+
+    void pop_front() override
+    {
+        impl.pop_front();
+    }
+    void pop_back() override
+    {
+        impl.pop_back();
+    }
+    bool is_empty() override{
+        return impl.is_empty();
+    }
+
     void insert_at(size_t index, T item) override
     {
         auto it = impl.begin();
@@ -100,7 +113,7 @@ public:
 
     ///@brief склеивание будет выполнено за O(1) где n - размерность аргумента
     /// @attention состояние list после выполнения - неопределено!
-    LinkedListSequence<T> &append(LinkedListSequence<T> &list) override
+    LinkedListSequence<T> &append(LinkedListSequence<T> &list) 
     {
         impl += list.impl;
         return *this;

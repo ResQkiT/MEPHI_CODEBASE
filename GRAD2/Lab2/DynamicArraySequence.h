@@ -18,17 +18,17 @@ public:
 
     DynamicArraySequence(T items[], size_t size) : impl{DynamicArray<T>(items, size)} {}
 
-    T get_first() const override
+    T& get_first() override
     {
         return (impl)[0];
     }
 
-    T get_last() const override
+    T& get_last() override
     {
         return impl[impl.get_size() - 1];
     }
 
-    T get(size_t index) override
+    T& get(size_t index) override
     {
         return impl[index];
     }
@@ -62,6 +62,9 @@ public:
     {
         return impl.get_size();
     }
+    bool is_empty() override{
+        return impl.get_size() == 0;
+    }
 
     void append(T item) override
     {
@@ -78,6 +81,20 @@ public:
             new_array.push_back(impl[i]);
         }
         impl = new_array;
+    }
+
+    void pop_front(){
+        if(impl.get_size()==0) throw std::invalid_argument("Array is empty");
+        DynamicArray<T> new_impl = DynamicArray<T>();
+        for (size_t i = 1; i < impl.get_size(); i++)
+        {
+            new_impl.push_back(impl[i]);
+        }
+        
+        impl = new_impl;
+    }   
+    void pop_back(){
+        impl.pop_back();
     }
 
     void insert_at(size_t index, T item) override

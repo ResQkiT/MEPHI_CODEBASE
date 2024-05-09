@@ -63,7 +63,7 @@ public:
         delete_list();
     }
 
-    bool is_empty() const
+    bool is_empty() const 
     {
         return head == nullptr;
     }
@@ -218,7 +218,7 @@ public:
                     }
                     curr = curr->next;
                 }
-            }
+            } 
         }
 
         return *this;
@@ -234,6 +234,7 @@ public:
         tail = std::move(other.tail);
         other.tail = nullptr;
         size+= other.size;
+        other.size = 0;
 
         return *this;
     }

@@ -1,83 +1,94 @@
 #pragma once
 #include <functional>
+#include <concepts>
 #include "../Lab2/Sequence.h"
 #include "../Lab2/LinkedListSequence.h"
-#include "../Lab2/LinkedList.h"
 #include "MWRAble.hpp"
 
-template <class T>
+template <class T, template <class> class Container = LinkedListSequence>
+    requires std::derived_from<Container<T>, Sequence<T>>
 class Queue : public MWRAble<T, T>
 {
 private:
-    LinkedList<T> impl;
+    Container<T> container;
 
 public:
-    Queue() : impl{LinkedList<T>()} {}
-    Queue(T items[], size_t size) : impl{LinkedList<T>(items, size)} {}
-    Queue(const Queue<T> &other) : impl{other.impl}{}
+    Queue() : container{Container<T>()} {}
+    Queue(T items[], size_t size) : container{Container<T>(items, size)} {}
+    Queue(const Queue<T, Container> &other) : container{other.container} {}
 
     ~Queue() = default;
 
-    T front()
+    T& front()
     {
-        return impl.front();
+        return container.get_first();
     }
-    T back()
+    T& back()
     {
-        return impl.back();
+        return container.get_last();
     }
     bool empty()
     {
-        return impl.is_empty();
+        return container.is_empty();
     }
     size_t size()
     {
-        return impl.get_size();
+        return container.get_length();
     }
 
     void push(T value)
     {
-        impl.push_back(value);
+        container.append(value);
     }
     void pop()
     {
-        impl.pop_front();
+        container.pop_front();
     }
-    //safe version of concatination, makes copy of arguments, complexity: O(n)
-    void safe_concat(Queue<T> & other){
-        for(auto v : other.impl){
-            impl.push_back(v);
+    // safe version of concatination, makes copy of arguments, complexity: O(n)
+    void safe_concat(Queue<T, Container> other)
+    {
+        T temp;
+        while (!other.empty())
+        {
+            temp = other.front();
+            push(temp);
+            other.pop();
         }
-    }       
-    //unsafe version of concatination, argument status is undefined, complexity: O(1)
-    void force_concat(Queue<T> & other){
-        impl+=other.impl;
-        
+    }
+    // unsafe version of concatination, argument status is undefined, complexity: O(1)
+    void force_concat(Queue<T, Container> &other)
+    {
+        container += other.container;
     }
 
-    void map(std::function<T(T)> function) override {
+    void map(std::function<T(T)> function) override
+    {
         T temp;
-        LinkedList<T> new_impl = LinkedList<T>();
-        while (!impl.is_empty())
+        Container<T> new_container = Container<T>();
+        while (!container.is_empty())
         {
             temp = front();
-            new_impl.push_back(function(temp));
+            new_container.append(function(temp));
             pop();
         }
-        impl = new_impl;
+        container = new_container;
     }
-    void where(std::function<bool(T)> function) override {
+    void where(std::function<bool(T)> function) override
+    {
         T temp;
-        LinkedList<T> new_impl = LinkedList<T>();
-        while(!impl.is_empty()){
+        Container<T> new_container = Container<T>();
+        while (!container.is_empty())
+        {
             temp = front();
-            if(function(temp)) new_impl.push_back(temp);
+            if (function(temp))
+                new_container.append(temp);
             pop();
         }
-        impl = new_impl;
+        container = new_container;
     }
-    T reduce(std::function<T(T, T)> function, T start_value) override {
-        Queue<T> copy(*this);
+    T reduce(std::function<T(T, T)> function, T start_value) override
+    {
+        Queue<T, Container> copy(*this);
         T temp = function(copy.front(), start_value);
         copy.pop();
         while (!copy.empty())
