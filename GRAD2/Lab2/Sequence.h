@@ -15,13 +15,13 @@ public:
     virtual Sequence<T> * get_subsequence(size_t startIndex, size_t endIndex) = 0;
     
     virtual size_t get_length() const = 0;
-    virtual void append(T item) = 0;
-    virtual void prepend(T item) = 0;
+    virtual void append(const T & item) = 0;
+    virtual void prepend(const T & item) = 0;
+    virtual void insert_at(size_t index,const T & item) = 0;
 
     virtual void pop_front() = 0;
     virtual void pop_back() = 0;
     
-    virtual void insert_at(size_t index, T item) = 0;
     virtual bool is_empty() = 0;
     virtual Sequence<T> * concat(Sequence<T> * list) = 0;
 

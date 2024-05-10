@@ -14,22 +14,22 @@ private:
     size_t segment_size; 
 
 public:
-    //говнокод, подумать
-    SegmentedDeque(size_t segment_size) : buffer{Deque<InnerContainer<T>>(new InnerContainer<T>[]{InnerContainer<T>()}, 1)}, segment_size{segment_size} {
-        InnerContainer<T> container = InnerContainer<T>();
-        buffer.push_back(container);
+\
+    SegmentedDeque(size_t segment_size) : buffer{Deque<InnerContainer<T>>()},segment_size{segment_size} 
+    {
+        buffer.push_back(InnerContainer<T>());
     }
-    SegmentedDeque(T data[], size_t size, size_t segment_size) : buffer{Deque<InnerContainer<T>>(new InnerContainer<T>[]{InnerContainer<T>()}, 1)}, segment_size{segment_size}{
+    SegmentedDeque(T data[], size_t size, size_t segment_size) : buffer{Deque<InnerContainer<T>>()}, segment_size{segment_size}{
+        buffer.push_back(InnerContainer<T>());
         for (size_t i = 0; i < size; i++)
         {
             push_back(data[i]);
         }
     }
     
-    SegmentedDeque(const SegmentedDeque<T, InnerContainer> & other) :buffer{Deque<InnerContainer<T>>()}, segment_size{other.segment_size} {
+    SegmentedDeque(const SegmentedDeque<T, InnerContainer> & other) : buffer{Deque<InnerContainer<T>>()}, segment_size{other.segment_size} {
         for (size_t i = 0; i < other.get_segment_size(); i++)
         {
-            //Копируем контейнеры
             buffer.push_back(InnerContainer<T>(other.buffer[i]));
         }
     }
@@ -37,10 +37,15 @@ public:
     void push_back(const T& value) {
         if (buffer.back().get_length() < segment_size) {
             buffer.back().append(value);
+            std::cout << buffer.back().get_first() << std::endl;
         } else {
-            InnerContainer<T> container = InnerContainer<T>(new T[]{value}, 1);
+            std::cout <<"shit";
+            InnerContainer<T> container;
+            container.append(value);
             buffer.push_back(container);
+            std::cout << buffer.back().get_last() << std::endl;
         }
+
     }
 
     void push_front(const T& value) {

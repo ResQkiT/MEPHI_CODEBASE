@@ -49,12 +49,12 @@ public:
         return impl.get_size();
     }
 
-    void append(T item) override
+    void append(const T & item) override
     {
         impl.push_back(item);
     }
 
-    void prepend(T item) override
+    void prepend(const T & item) override
     {
         impl.push_front(item);
     }
@@ -71,7 +71,7 @@ public:
         return impl.is_empty();
     }
 
-    void insert_at(size_t index, T item) override
+    void insert_at(size_t index,const T & item) override
     {
         auto it = impl.begin();
         LinkedList<T> new_list;
@@ -130,6 +130,10 @@ public:
     LinkedListSequence<T> &operator+=(LinkedListSequence<T> &other)
     {
         impl += other.impl;
+        return *this;
+    }
+    LinkedListSequence<T> &operator=(const LinkedListSequence<T> & other){
+        impl = other.impl;
         return *this;
     }
 };

@@ -66,12 +66,12 @@ public:
         return impl.get_size() == 0;
     }
 
-    void append(T item) override
+    void append(const T & item) override
     {
         impl.push_back(item);
     }
 
-    void prepend(T item) override
+    void prepend(const T & item) override
     {
         DynamicArray<T> new_array;
         new_array.push_back(item);
@@ -97,7 +97,7 @@ public:
         impl.pop_back();
     }
 
-    void insert_at(size_t index, T item) override
+    void insert_at(size_t index,const T & item) override
     {
         DynamicArray<T> new_array;
         for (size_t i = 0; i < index; i++)

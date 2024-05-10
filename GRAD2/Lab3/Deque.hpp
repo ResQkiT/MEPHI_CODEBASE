@@ -18,8 +18,9 @@ public:
     Deque(T data[], size_t size) : container{Container<T>(data, size)} {};
 
     Deque(const Deque<T, Container> &other) : container{other.container} {};
-    
+
     ~Deque() = default;
+
     T &front()
     {
         return container.get_first();
@@ -36,11 +37,11 @@ public:
     {
         return container.get_length();
     }
-    void push_back(T &value)
+    void push_back(const T & value)
     {
         container.append(value);
     }
-    void push_front(T &value)
+    void push_front(const T & value)
     {
         container.prepend(value);
     }
