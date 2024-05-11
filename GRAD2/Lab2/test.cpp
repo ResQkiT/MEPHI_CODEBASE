@@ -27,8 +27,7 @@ namespace tests
         cout << "TEST 1 PASSED!"<< endl;
     }
 
-    //for test 2
-    
+    //test if all func in linked List work correct;
     void test2(){
         int n2 = 3;
         int arr2[n2] = { 1 ,2 ,3 };

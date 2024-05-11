@@ -189,6 +189,7 @@ public:
         DynamicArray<T> * ptr;
 
         Iterator(T *first,int index, DynamicArray<T> * self) : cur{first} ,index{index}, ptr{self} {}
+        Iterator(const Iterator & other) : cur{other.cur}, index{other.index}, ptr{other.ptr}{}
     public:
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = std::ptrdiff_t;
@@ -197,21 +198,18 @@ public:
         using reference = T &; 
 
 
-        Iterator &operator+(difference_type n)
+        Iterator operator+(difference_type n)
         {
             //для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n; 
             if(index + n > ptr->size) throw std::out_of_range("Iterator out of working zone(+)");
-            index += n;
-            cur += n;
-            return *this;
+            Iterator(cur + n, index + n, ptr);
+            return Iterator(cur + n, index + n, ptr);;
         }
 
-        Iterator &operator-(difference_type n)
+        Iterator operator-(difference_type n)
         {
             if(index - n < ptr->size) throw std::out_of_range("Iterator out of working zone(-)");
-            index -= n;
-            cur -= n;
-            return *this;
+            return Iterator(cur - n, index - n, ptr);;
         }
         Iterator &operator++(int)
         {

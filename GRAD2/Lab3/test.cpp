@@ -8,6 +8,7 @@
 #include "../Lab2/LinkedListSequence.h"
 #include "Deque.hpp"
 #include "SegmentedDeque.hpp"
+#include "entities/Person.h"
 
 namespace tests
 {
@@ -175,8 +176,8 @@ namespace tests
 
         cout << "Test 9 passed!" << endl;
     }
-    
-    //test how stack map f works
+
+    // test how stack map f works
     void test10()
     {
         int arr[] = {1, 2, 3, 4, 5};
@@ -202,8 +203,9 @@ namespace tests
         cout << "Test 10 passed!" << endl;
     }
 
-    //test how stack where f works
-    void test11(){
+    // test how stack where f works
+    void test11()
+    {
         int arr[] = {1, 2, 3, 4, 5, 999};
         int answer[] = {1, 3, 5, 999};
         Queue<int> q1(arr, 6);
@@ -222,8 +224,9 @@ namespace tests
 
         cout << "Test 11 passed!" << endl;
     }
-    //test how stack reduce f works
-    void test12(){
+    // test how stack reduce f works
+    void test12()
+    {
         int arr[] = {3, 2, 1};
         Stack<int> q1(arr, 3);
         auto f1 = [](int a, int b)
@@ -232,23 +235,25 @@ namespace tests
         cout << "Test 12 passed!" << endl;
     }
 
-    //test how deque works
-    void test13(){
+    // test how deque works
+    void test13()
+    {
         int arr[] = {3, 2, 1};
         Deque<int> q1(arr, 3);
         assert(!q1.empty());
         assert(q1.front() == arr[0]);
         assert(q1.back() == arr[2]);
         assert(q1.size() == 3);
-        for(int index = 0; index < q1.size(); index++)
+        for (int index = 0; index < q1.size(); index++)
         {
-            assert(q1[index] ==arr[index]);
+            assert(q1[index] == arr[index]);
         }
-        
+
         cout << "Test 13 passed!" << endl;
     }
-    //test map where reduce complex
-    void test14(){
+    // test map where reduce complex
+    void test14()
+    {
         int arr[] = {1, 2, 3, 4, 5};
         int answer[] = {2, 2, 6, 4, 10};
         Deque<int> q1(arr, 5);
@@ -267,7 +272,8 @@ namespace tests
         }
         cout << "Test 14 passed!" << endl;
     }
-    void test15(){
+    void test15()
+    {
         int arr[] = {1, 2, 3, 4, 5, 999};
         int answer[] = {1, 3, 5, 999};
         Deque<int> q1(arr, 6);
@@ -281,7 +287,8 @@ namespace tests
         }
         cout << "Test 15 passed!" << endl;
     }
-    void test16(){
+    void test16()
+    {
         int arr[] = {1, 2, 3};
         Deque<int> q1(arr, 3);
         auto f1 = [](int a, int b)
@@ -289,26 +296,47 @@ namespace tests
         assert(q1.reduce(f1, 4) == 144);
         cout << "Test 16 passed!" << endl;
     }
-    //test Segmented Deque work
-    void test17(){
+    // test Segmented Deque work
+    void test17()
+    {
         int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        SegmentedDeque<int> sd(arr , 10, 3);
+        SegmentedDeque<int> sd(arr, 10, 3);
+        // cout << sd.get_segment_size();
         assert(sd.get_segment_size() == 3);
         assert(sd.size() == 10);
-        assert(sd.number_of_segments() == 3);
+        assert(sd.number_of_segments() == 4);
         assert(sd.back() == 10);
         assert(sd.front() == 1);
         sd.pop_front();
         sd.pop_back();
+        assert(sd.size() == 8);
         assert(sd.front() == 2);
         assert(sd.back() == 9);
-
-        for (size_t i = 0; i < sd.get_segment_size() ; i++)
+        sd.push_front(1);
+        sd.push_back(10);
+        for (size_t i = 0; i < 10; i++)
         {
             assert(sd[i] == arr[i]);
         }
-        cout << "Test 17 passed" << endl;
+        cout << "Test 17 passed!" << endl;
     }
+    //test how append func work in segmented deque
+    void test18(){
+        int arr1[] = {1, 2, 3, 4, 5};
+        int arr2[] = {6, 7, 8, 9, 10, 11};
+        SegmentedDeque<int> sd1(arr1, 5, 2);
+        SegmentedDeque<int> sd2(arr2, 6, 4);
+        sd1.append_from(sd2);
+        assert(sd2.size() == 6);
+        assert(sd1.size() == 11);
+        for (size_t i = 1; i <= sd1.size(); i++)
+        {
+            assert(sd1[i - 1] == i);
+        }
+        cout << "Test 18 passed!" << endl;
+    }
+
+
     void run()
     {
         test1();
@@ -328,12 +356,10 @@ namespace tests
         test15();
         test16();
         test17();
+        test18();
         cout << "ALL TEST PASSED!" << endl;
     }
 } // namespace tests
-
-int main()
-{
-    std::cout << "Testing..." << std::endl;
+void start_tests(){
     tests::run();
 }
