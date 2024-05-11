@@ -203,13 +203,13 @@ public:
             //для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n; 
             if(index + n > ptr->size) throw std::out_of_range("Iterator out of working zone(+)");
             Iterator(cur + n, index + n, ptr);
-            return Iterator(cur + n, index + n, ptr);;
+            return Iterator(cur + n, index + n, ptr);
         }
 
         Iterator operator-(difference_type n)
         {
             if(index - n < ptr->size) throw std::out_of_range("Iterator out of working zone(-)");
-            return Iterator(cur - n, index - n, ptr);;
+            return operator+(-n);
         }
         Iterator &operator++(int)
         {
