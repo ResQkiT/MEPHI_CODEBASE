@@ -22,7 +22,7 @@ public:
     {
         return container.get_last();
     }
-    bool empty()
+    bool empty() 
     {
         return container.is_empty();
     }
@@ -65,13 +65,13 @@ public:
     }
     T reduce(std::function<T(T, T)> function, T start_value) override
     {
-        Stack<T, Container> copy(*this);
-        T temp = function(copy.top(), start_value);
-        copy.pop();
-        while (!copy.empty())
+        T temp = start_value ;
+        while (!empty())
         {
-            temp = function(copy.top(), temp);
-            copy.pop();
+            T front_value = top();
+            T func_res(function(front_value, temp));
+            temp = func_res;
+            pop();
         }
         return temp;
     }

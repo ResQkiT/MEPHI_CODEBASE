@@ -6,15 +6,17 @@
 #include "../Lab2/Sequence.h"
 #include "../Lab2/LinkedListSequence.h"
 
-
 template <class T>
-class SegmentedDeque 
+class SegmentedDeque
 {
 private:
     Deque<DynamicArraySequence<T>> buffer;
     size_t segment_size;
 
 public:
+    SegmentedDeque() : buffer{Deque<DynamicArraySequence<T>>()}, segment_size{5}{
+        buffer.push_back(DynamicArraySequence<T>());
+    };
     SegmentedDeque(size_t segment_size) : buffer{Deque<DynamicArraySequence<T>>()}, segment_size{segment_size}
     {
         buffer.push_back(DynamicArraySequence<T>());
@@ -27,9 +29,9 @@ public:
             push_back(data[i]);
         }
     }
-    SegmentedDeque(const SegmentedDeque<T> &other) : buffer{Deque<DynamicArraySequence<T>>()}, segment_size{other.segment_size}
+    SegmentedDeque(SegmentedDeque<T> &other) : buffer{Deque<DynamicArraySequence<T>>()}, segment_size{other.segment_size}
     {
-        for (size_t i = 0; i < other.get_segment_size(); i++)
+        for (size_t i = 0; i < other.number_of_segments(); i++)
         {
             buffer.push_back(DynamicArraySequence<T>(other.buffer[i]));
         }
@@ -69,6 +71,9 @@ public:
     {
         return buffer.size();
     }
+    bool empty(){
+        return buffer.empty();
+    }
     T &back()
     {
         if (buffer.empty())
@@ -93,6 +98,7 @@ public:
     {
         return get(index);
     }
+ 
     size_t size()
     {
         size_t size = 0;
@@ -102,6 +108,24 @@ public:
         }
         return size;
     }
+    void clear()
+    {
+        size_t c_size = size();
+        for (size_t i = 0; i < c_size; i++)
+        {
+            pop_back();
+        }
+    }
+    T &operator=(SegmentedDeque<T> &other)
+    {
+        clear();
+        for (size_t i = 0; i < other.size(); i++)
+        {
+            push_back(other[i]);
+        }
+        return *this;
+    }
+
     T &pop_back()
     {
         if (buffer.empty())
@@ -109,7 +133,7 @@ public:
             throw std::out_of_range("SegmentedDeque is empty");
         }
 
-        T& value = buffer.back().get_last();
+        T &value = buffer.back().get_last();
         buffer.back().pop_back();
         if (buffer.back().is_empty())
         {
@@ -125,7 +149,7 @@ public:
             throw std::out_of_range("SegmentedDeque is empty");
         }
 
-        T& value = buffer.front().get_first();
+        T &value = buffer.front().get_first();
         buffer.front().pop_front();
         if (buffer.front().is_empty())
         {
@@ -133,7 +157,8 @@ public:
         }
         return value;
     }
-    void append_from(SegmentedDeque<T> & other){
+    void append_from(SegmentedDeque<T> &other)
+    {
         for (size_t i = 0; i < other.size(); i++)
         {
             push_back(other[i]);

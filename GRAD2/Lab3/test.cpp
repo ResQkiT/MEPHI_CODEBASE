@@ -94,7 +94,7 @@ namespace tests
     {
         int arr[] = {1, 2, 3};
         Queue<int> q1(arr, 3);
-        auto f1 = [](int a, int b)
+        auto f1 = [](int a, int b) 
         { return 2 * a + 3 * b; };
         assert(q1.reduce(f1, 4) == 144);
         cout << "Test 5 passed!" << endl;

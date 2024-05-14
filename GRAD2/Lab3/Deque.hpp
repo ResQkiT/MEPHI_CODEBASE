@@ -89,13 +89,13 @@ public:
 
     T reduce(std::function<T(T, T)> function, T start_value) override
     {
-        Deque<T, Container> copy(*this);
-        T temp = function(copy.front(), start_value);
-        copy.pop_front();
-        while (!copy.empty())
+        T temp = start_value;
+        while (!empty())
         {
-            temp = function(copy.front(), temp);
-            copy.pop_front();
+            T front_value = front();
+            T func_res(function(front_value, temp));
+            temp = func_res;
+            pop_front();
         }
         return temp;
     }

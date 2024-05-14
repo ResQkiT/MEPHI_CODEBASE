@@ -36,7 +36,7 @@ public:
         return container.get_length();
     }
 
-    void push(T value)
+    void push(const T & value)
     {
         container.append(value);
     }
@@ -86,16 +86,14 @@ public:
         }
         container = new_container;
     }
-    T reduce(std::function<T(T, T)> function, T start_value) override
-    {
-        Queue<T, Container> copy(*this);
-        T temp = function(copy.front(), start_value);
-        copy.pop();
-        while (!copy.empty())
-        {
-            temp = function(copy.front(), temp);
-            copy.pop();
+    T reduce(std::function<T(T, T)> function, T start_value) override {
+        T temp = start_value;
+        while (!empty()) {
+            T frontValue = front(); // Получаем значение из front()**
+            T func_res(function(frontValue, temp));
+            temp = func_res;
+            pop(); // Удаляем первый элемент
         }
         return temp;
-    }
+    }   
 };
