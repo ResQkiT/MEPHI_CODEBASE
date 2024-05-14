@@ -2,6 +2,7 @@
 #include "adapters/AbstractAdapter.h"
 #include "../Lab2/readio.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -13,6 +14,17 @@ public:
     ActionHandler(): adapter{nullptr}{};
     ActionHandler(AbstractAdapter<T> * adapter) : adapter{adapter}{};
     ~ActionHandler(){delete adapter;};
+
+    const string & get_type(){
+        if(adapter == nullptr) throw new std::runtime_error("Adapter is null");
+        return adapter->get_type();
+    }
+
+    ActionHandler<T> & set_adapter(AbstractAdapter<T> * adapter){
+        if(adapter != nullptr) delete this->adapter;
+        this->adapter = adapter;
+        return *this;
+    }
 
     ActionHandler<T> & input_data(){
         cout << "Input data, into structure, of type: "<< adapter->get_type() << endl;

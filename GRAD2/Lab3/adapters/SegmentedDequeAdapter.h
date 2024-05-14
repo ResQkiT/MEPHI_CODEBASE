@@ -36,7 +36,7 @@ public:
     void prepend(const T & value) override{
         container.push_front(value);
     }
-    const string get_type(){
+    const std::string & get_type() override {
         return type;
     }
 };

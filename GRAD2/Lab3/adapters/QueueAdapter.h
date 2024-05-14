@@ -39,7 +39,7 @@ public:
         cout << "Element wil be appended to endl" << endl;
         append(value);
     }
-    const string get_type(){
+    const std::string & get_type() override {
         return type;
     }
     
