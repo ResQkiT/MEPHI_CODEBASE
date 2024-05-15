@@ -15,7 +15,7 @@
 #include <string>
 
 using namespace std;
-/*
+
 void show_map_where_reduce_example(){
     //Очередь за комплексными обедами :)
     Student arr[10] = {
@@ -30,24 +30,42 @@ void show_map_where_reduce_example(){
         {"Daniel", "Moore", "daniel.moore@example.com", 9, 431},
         {"Lisa", "Anderson", "lisa.anderson@example.com", 10, 176}
     };
+    cout<< "We have created a queue of student, stand`s in a queue in MEPHI cafeteria:" <<endl;
+    Queue<Student> queue(arr, 10);
     for (size_t i = 0; i < 10; i++)
     {
         cout << arr[i].get_name() + " " + arr[i].get_surname() + " , balance: " <<  arr[i].get_money() << endl;
     }
+    cout<< endl << "Now, lets check how many of them could buy a standard 'complex lunch'" << endl ;
     
-    Queue<Student> queue(arr, 10);
     auto is_enough_for_complex = [](Student student){
         return student.get_money()>=195;
     };
-    queue.where(is_enough_for_complex);
-    cout << "Lucky owners of complex lunch ->" << endl;
+    Queue<Student> queue_copy(queue);
+    queue_copy.where(is_enough_for_complex);
+    cout << endl<<"Lucky owners of complex lunch ->" << endl << endl;
+    while (!queue_copy.empty())
+    {
+        cout << queue_copy.front().get_name() + " " + queue_copy.front().get_surname() + " , balance: " <<  queue_copy.front().get_money() << endl;
+        queue_copy.pop();
+    }  
+    cout << "Now, let us give them month grand which is 3100 tugrics"<< endl;
+    auto give_everybody_grand = [](Student student){
+        student.add_money(3100);
+        return Student(student);
+    };
+    queue.map(give_everybody_grand);
+
+    cout <<endl << "Lucky owners of complex lunch NOW->" << endl <<endl;
     while (!queue.empty())
     {
         cout << queue.front().get_name() + " " + queue.front().get_surname() + " , balance: " <<  queue.front().get_money() << endl;
         queue.pop();
     }  
+
+
 } 
-*/
+
 template<class T>
 void run(ActionHandler<T> & handler){
     char working_choose;
@@ -56,12 +74,16 @@ void run(ActionHandler<T> & handler){
     cout << "Handler " + handler.get_type() + " is running\n";
     while (is_running)
     {
-        cout << "Choose command: \n1 - create data sequence\n2 - show data sequence\n \n q - for exit\n";
+        cout << "Choose command: \n1 - create data sequence\n2 - show data sequence\n3 - append\n4 - prepend \n q - for exit\n";
         console_get(working_choose);
         if(working_choose == '1'){
             handler.input_data();
         }else if(working_choose == '2'){
             handler.output_data();
+        }else if(working_choose == '3'){
+            handler.append_element();
+        }else if(working_choose == '4'){
+            handler.prepend_element();
         }else if(working_choose = 'q'){
             is_running = false;
         }
@@ -88,12 +110,16 @@ void set_adapter(ActionHandler<T> & handler){
 }
 
 int main(){
-    //start_tests();
-    //show_map_where_reduce_example();
+    cout << "Would you like to start tests first?(y/n): ";
+    char running_test_choose;
+    console_get(running_test_choose);
+    if (running_test_choose == 'y') start_tests();
+    
+
     char type_choose;
     bool is_running = true;
     while(is_running){
-        cout << "1 - int\n 2 - double\n 3 - char \n 4 - string"<<endl;
+        cout << "1 - int\n 2 - double\n 3 - char \n 4 - string\n q - exit\n m - show map/where/reduce example\n"<<endl;
         console_get(type_choose);
         if (type_choose == '1'){
             ActionHandler<int> handler;
@@ -111,15 +137,12 @@ int main(){
             ActionHandler<string> handler;
             set_adapter(handler);
             run(handler);
+        }else if(type_choose == 'm'){
+            show_map_where_reduce_example();
+        }else if(type_choose == 'q'){
+            is_running = false;
         }else{
             continue;
         }
     }
 }
-/*
-ActionHandler<int> handler(new QueueAdapter<int>());
-    //handler.input_data().output_data();
-    ActionHandler<int> handler2(new SegmentedDequeAdapter<int>());
-    handler2.input_data().output_data();
-
-*/

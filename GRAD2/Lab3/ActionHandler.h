@@ -45,4 +45,21 @@ public:
         adapter->output();
         return *this;
     }
+    ActionHandler<T> & append_element(){
+        cout << "Operation: appending element to beginning" << endl;
+        cout << "Please, enter element(same type as mentioned): ";
+        T elem;
+        console_get(elem);
+        adapter->append(elem);
+        return *this;
+    }
+    ActionHandler<T> & prepend_element(){
+        cout << "Operation: prepending element to ending" << endl;
+        cout << "Please, enter element(same type as mentioned): ";
+        T elem;
+        console_get(elem);
+        adapter->prepend(elem);
+        return *this;
+    }
+    
 };
