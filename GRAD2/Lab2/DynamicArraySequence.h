@@ -32,6 +32,9 @@ public:
     {
         return impl[index];
     }
+    const T& get(size_t index) const{
+        return impl[index];
+    }
 
     DynamicArraySequence<T> *get_subsequence(size_t startIndex, size_t endIndex) override
     {
@@ -62,7 +65,7 @@ public:
     {
         return impl.get_size();
     }
-    bool is_empty() override{
+    bool is_empty() const override{
         return impl.get_size() == 0;
     }
 

@@ -29,7 +29,6 @@ public:
     {
         return impl.get(index);
     }
-
     LinkedListSequence<T> *get_subsequence(size_t start_index, size_t end_index) override
     {
         LinkedList<T> subsequence = LinkedList<T>();
@@ -67,7 +66,7 @@ public:
     {
         impl.pop_back();
     }
-    bool is_empty() override{
+    bool is_empty() const override{
         return impl.is_empty();
     }
 
@@ -99,24 +98,17 @@ public:
         return impl.end();
     }
 
-    /// @brief Добавление любых Sequence за O(n)
-    /// @param list - абстрактная последовательность
-    /// @return возвращает измененный this
-    LinkedListSequence<T> *concat(Sequence<T> *list) override
+    LinkedListSequence<T> &concat(LinkedListSequence<T> &list) 
     {
+        impl += list.impl;
+        return *this;
+    }
+    LinkedListSequence<T> * concat(Sequence<T> * list) override {
         for (size_t i = 0; i < list->get_length(); i++)
         {
             append(list->get(i));
         }
         return this;
-    }
-
-    ///@brief склеивание будет выполнено за O(1) где n - размерность аргумента
-    /// @attention состояние list после выполнения - неопределено!
-    LinkedListSequence<T> &append(LinkedListSequence<T> &list) 
-    {
-        impl += list.impl;
-        return *this;
     }
 
     LinkedListSequence<T> operator+(const LinkedListSequence<T> &other) const
@@ -129,8 +121,7 @@ public:
 
     LinkedListSequence<T> &operator+=(LinkedListSequence<T> &other)
     {
-        impl += other.impl;
-        return *this;
+        return concat(other);
     }
     LinkedListSequence<T> &operator=(const LinkedListSequence<T> & other){
         impl = other.impl;

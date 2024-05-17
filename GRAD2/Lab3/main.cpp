@@ -36,7 +36,7 @@ void show_map_where_reduce_example(){
     {
         cout << arr[i].get_name() + " " + arr[i].get_surname() + " , balance: " <<  arr[i].get_money() << endl;
     }
-    cout<< endl << "Now, lets check how many of them could buy a standard 'complex lunch'" << endl ;
+    cout<< endl << "Now, lets check how many of them could buy a standard 'complex lunch' using <where> function" << endl ;
     
     auto is_enough_for_complex = [](Student student){
         return student.get_money()>=195;
@@ -49,7 +49,7 @@ void show_map_where_reduce_example(){
         cout << queue_copy.front().get_name() + " " + queue_copy.front().get_surname() + " , balance: " <<  queue_copy.front().get_money() << endl;
         queue_copy.pop();
     }  
-    cout << "Now, let us give them month grand which is 3100 tugrics"<< endl;
+    cout << "Now, let us give them month grand which is 3100 tugrics, using <map> function"<< endl;
     auto give_everybody_grand = [](Student student){
         student.add_money(3100);
         return Student(student);

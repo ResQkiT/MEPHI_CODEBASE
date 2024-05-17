@@ -29,11 +29,11 @@ public:
     {
         return container.get_last();
     }
-    bool empty()
+    bool empty() const
     {
         return container.is_empty();
     }
-    size_t size()
+    size_t size() const
     {
         return container.get_length();
     }
@@ -55,11 +55,22 @@ public:
         container.pop_front();
     }
 
+    Deque<T, Container> & concat(Deque<T> & other ){
+        size_t size = other.size();
+        for (size_t i = 0; i < size; i++)
+        {
+            push_back(other[i]);
+        }
+        return *this;
+    }
+
     T &operator[](size_t index)
     {
         return container.get(index);
     }
-
+    const T& operator[](size_t index) const{
+        return container.get(index);
+    }
     void map(std::function<T(T)> function) override
     {
         T temp;

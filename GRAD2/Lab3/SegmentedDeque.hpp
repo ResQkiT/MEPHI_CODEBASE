@@ -67,11 +67,11 @@ public:
     {
         return segment_size;
     }
-    size_t number_of_segments()
+    size_t number_of_segments() const
     {
         return buffer.size();
     }
-    bool empty(){
+    bool empty() const{
         return buffer.empty();
     }
     T &back()
@@ -99,7 +99,7 @@ public:
         return get(index);
     }
  
-    size_t size()
+    size_t size() const
     {
         size_t size = 0;
         for (size_t i = 0; i < number_of_segments(); i++)

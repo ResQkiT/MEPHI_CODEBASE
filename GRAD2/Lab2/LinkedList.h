@@ -40,8 +40,10 @@ public:
 
     LinkedList(T *data, size_t size) : head{nullptr}, tail{nullptr}, size{0}
     {
-        if(size < 0) throw std::invalid_argument("Cannot create LinkedList with negative size");
-        if(data == nullptr) throw std::invalid_argument("LinkedList Constructor must take not null arguments");
+        if (size < 0)
+            throw std::invalid_argument("Cannot create LinkedList with negative size");
+        if (data == nullptr)
+            throw std::invalid_argument("LinkedList Constructor must take not null arguments");
         for (size_t i = 0; i < size; i++)
         {
             this->push_back(data[i]);
@@ -52,7 +54,8 @@ public:
     {
         *this = other;
     }
-    LinkedList(LinkedList<T> && other): size{std::move(other.size)} , head{std::move(other.head)}, tail{std::move(other.tail)}{
+    LinkedList(LinkedList<T> &&other) : size{std::move(other.size)}, head{std::move(other.head)}, tail{std::move(other.tail)}
+    {
         other.size = 0;
         other.head = nullptr;
         other.tail = nullptr;
@@ -63,7 +66,7 @@ public:
         delete_list();
     }
 
-    bool is_empty() const 
+    bool is_empty() const
     {
         return head == nullptr;
     }
@@ -109,35 +112,40 @@ public:
 
     T &front()
     {
-        if (is_empty()) throw std::out_of_range("List is empty");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
 
         return head->data;
     }
 
     const T &front() const
     {
-        if (is_empty()) throw std::out_of_range("List is empty");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
 
         return head->data;
     }
 
     T &back()
     {
-        if (is_empty()) throw std::out_of_range("List is empty");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
 
         return tail->data;
     }
 
     const T &back() const
     {
-        if (is_empty()) throw std::out_of_range("List is empty");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
 
         return tail->data;
     }
 
     void pop_front()
     {
-        if (is_empty()) throw std::out_of_range("List is empty");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
 
         Node<T> *temp = head;
         if (size == 1)
@@ -156,7 +164,8 @@ public:
 
     void pop_back()
     {
-        if (is_empty()) throw std::out_of_range("List is empty");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
 
         Node<T> *temp = tail;
         if (size == 1)
@@ -171,14 +180,17 @@ public:
         size--;
     }
 
-    T & get(size_t index){
-        if(index < 0 || index >= size) throw std::out_of_range("Out of range");
-        if (is_empty()) throw std::out_of_range("List is empty");
+    T &get(size_t index)
+    {
+        if (index < 0 || index >= size)
+            throw std::out_of_range("Out of range");
+        if (is_empty())
+            throw std::out_of_range("List is empty");
         auto it = begin();
-        for (int i = 0; i < index; it++, i++);
+        for (int i = 0; i < index; it++, i++)
+            ;
         return *it;
     }
-
     void clear()
     {
         delete_list();
@@ -186,9 +198,9 @@ public:
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
     {
-        
+
         if (this != &other)
-        { 
+        {
             delete_list();
             head = other.head;
             tail = other.tail;
@@ -218,89 +230,116 @@ public:
                     }
                     curr = curr->next;
                 }
-            } 
+            }
         }
-
+        
         return *this;
     }
-
-    LinkedList<T> & operator+=(LinkedList<T> & other){
-
+    LinkedList<T> &concat(LinkedList<T> &other)
+    {
+        for (auto b : other)
+        {
+            push_back(b);
+        }
+        return *this;
+    }
+    LinkedList<T> &operator+=(LinkedList<T> &other)
+    {
+        return concat(other);
+    }
+    LinkedList<T> &unsafe_concat(LinkedList<T> &other)
+    {
         other.head->prev = tail;
 
-        tail->next =std::move(other.head);
+        tail->next = std::move(other.head);
         other.head = nullptr;
 
         tail = std::move(other.tail);
         other.tail = nullptr;
-        size+= other.size;
+        size += other.size;
         other.size = 0;
 
         return *this;
     }
-
-    class Iterator {
+    class Iterator
+    {
     private:
-        Node<T>* cur;
+        Node<T> *cur;
 
     public:
-        Iterator(Node<T>* head) : cur(head) {}
+        Iterator(Node<T> *head) : cur(head) {}
 
-        Iterator& operator++() {
-            if (cur != nullptr) {
+        Iterator &operator++()
+        {
+            if (cur != nullptr)
+            {
                 cur = cur->next;
             }
             return *this;
         }
 
-        Iterator& operator++(int) {
-            if (cur != nullptr) {
+        Iterator &operator++(int)
+        {
+            if (cur != nullptr)
+            {
                 cur = cur->next;
             }
             return *this;
         }
 
-        Iterator& operator--() {
-            if (cur != nullptr) {
+        Iterator &operator--()
+        {
+            if (cur != nullptr)
+            {
                 cur = cur->prev;
             }
             return *this;
         }
-        Iterator& operator--(int) {
-            if (cur != nullptr) {
+        Iterator &operator--(int)
+        {
+            if (cur != nullptr)
+            {
                 cur = cur->prev;
             }
             return *this;
         }
 
-        bool operator!=(const Iterator& other) const {
+        bool operator!=(const Iterator &other) const
+        {
             return cur != other.cur;
         }
 
-        bool operator==(const Iterator& other) const {
+        bool operator==(const Iterator &other) const
+        {
             return cur == other.cur;
         }
-        
-        T& operator*() {
-            if(cur != nullptr)
+
+        T &operator*()
+        {
+            if (cur != nullptr)
                 return cur->data;
-            else throw std::runtime_error("Iterator refer to null");
+            else
+                throw std::runtime_error("Iterator refer to null");
         }
 
-        T* operator->() {
+        T *operator->()
+        {
             return &cur->data;
         }
     };
 
-    Iterator begin() {
+    Iterator begin()
+    {
         return Iterator(head);
     }
 
-    Iterator end() {
-        if (tail == nullptr) {
+    Iterator end()
+    {
+        if (tail == nullptr)
+        {
             return Iterator(nullptr);
         }
 
-        return Iterator(tail->next); 
+        return Iterator(tail->next);
     }
 };

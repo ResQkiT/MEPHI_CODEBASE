@@ -12,9 +12,26 @@
 
 namespace tests
 {
+    class TestObject{
+    private:
+        bool is_called = false;
+    
+    public:
+        int u = 0;
+        TestObject() : u{0}{};
+        TestObject(int u) : u{u}{};
+        TestObject(const TestObject & other): u{other.u}, is_called{other.is_called}{};
+        void call(){
+            is_called = true;
+        }
+        bool was_called(){
+            return is_called;
+        }
+
+    };
     using namespace std;
     // Complex number operation
-    void test1()
+    void test_complex_number_operations()
     {
         Complex<int> a(5, 2);
         Complex<int> b(-1, -3);
@@ -23,12 +40,10 @@ namespace tests
         assert(a + b == Complex<int>(4, -1));
         assert(a - b == Complex<int>(6, 5));
         assert(a * b == Complex<int>(1, -17));
-
-        cout << "Test 1 passed!" << endl;
     }
 
     // test how queue works
-    void test2()
+    void test_queue_work()
     {
         int arr[] = {1, 2, 3};
         Queue<int> q1(arr, 3);
@@ -39,37 +54,31 @@ namespace tests
         assert(q1.front() == arr[1]);
         q1.push(9);
         assert(q1.back() == 9);
-        cout << "Test 2 passed!" << endl;
     }
 
     // test how map func works
-    void test3()
+    void test_queue_map()
     {
-        int arr[] = {1, 2, 3, 4, 5};
-        int answer[] = {2, 2, 6, 4, 10};
-        Queue<int> q1(arr, 5);
-        auto f1 = [](int a)
+        TestObject arr[] = {1, 2, 3, 4, 5};
+        Queue<TestObject> q1(arr, 5);
+        auto f1 = [](TestObject a)
         {
-            if (a % 2 == 0)
-                return a;
-            else
-                return a * 2;
+            a.call();
+            return a;
         };
+
         q1.map(f1);
         assert(q1.size() == 5);
-        size_t i = 0;
         while (!q1.empty())
         {
-            int temp = q1.front();
+            TestObject temp = q1.front();
+            assert(temp.was_called());
             q1.pop();
-            assert(temp == answer[i]);
-            i++;
         }
-        cout << "Test 3 passed!" << endl;
     }
 
     // test how where func works
-    void test4()
+    void test_queue_where()
     {
         int arr[] = {1, 2, 3, 4, 5, 999};
         int answer[] = {1, 3, 5, 999};
@@ -86,28 +95,25 @@ namespace tests
             assert(temp == answer[i]);
             i++;
         }
-
-        cout << "Test 4 passed!" << endl;
     }
     // test how reduce works
-    void test5()
+    void test_queue_reduce()
     {
         int arr[] = {1, 2, 3};
         Queue<int> q1(arr, 3);
         auto f1 = [](int a, int b) 
         { return 2 * a + 3 * b; };
         assert(q1.reduce(f1, 4) == 144);
-        cout << "Test 5 passed!" << endl;
     }
 
-    // test safe concatination
-    void test6()
+    // test safe concatenation
+    void test_queue_concatenation()
     {
         int arr1[] = {0, 1, 2, 3};
         int arr2[] = {4, 5, 6, 7, 8, 9, 10};
         Queue<int> q1(arr1, 4);
         Queue<int> q2(arr2, 7);
-        q1.safe_concat(q2);
+        q1.concat(q2);
         assert(q2.size() == 7);
         assert(q1.size() == 11);
         size_t i = 0;
@@ -117,29 +123,9 @@ namespace tests
             q1.pop();
             i++;
         }
-        cout << "Test 6 passed!" << endl;
-    }
-    // test unsafe concat
-    void test7()
-    {
-        int arr1[] = {0, 1, 2, 3};
-        int arr2[] = {4, 5, 6, 7, 8, 9, 10};
-        Queue<int> q1(arr1, 4);
-        Queue<int> q2(arr2, 7);
-        q1.force_concat(q2);
-        assert(q2.size() == 0);
-        assert(q1.size() == 11);
-        size_t i = 0;
-        while (!q1.empty())
-        {
-            assert(q1.front() == i);
-            q1.pop();
-            i++;
-        }
-        cout << "Test 7 passed!" << endl;
     }
     // test how Stack work
-    void test8()
+    void test_stack_work()
     {
         int arr[] = {1, 2, 3};
         Stack<int> a(arr, 3);
@@ -153,9 +139,8 @@ namespace tests
             a.pop();
             index--;
         }
-        cout << "Test 8 passed!" << endl;
     }
-    void test9()
+    void test_stack_push_back()
     {
         int answer[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         Stack<int> a;
@@ -174,37 +159,33 @@ namespace tests
             index++;
         }
 
-        cout << "Test 9 passed!" << endl;
     }
 
     // test how stack map f works
-    void test10()
+    void test_stack_map()
     {
-        int arr[] = {1, 2, 3, 4, 5};
-        int answer[] = {2, 2, 6, 4, 10};
-        Stack<int> q1(arr, 5);
-        auto f1 = [](int a)
+        TestObject arr[] = {1, 2, 3, 4, 5}; // 
+        Stack<TestObject> q1(arr, 5);
+        
+        auto f1 = [](TestObject a)
         {
-            if (a % 2 == 0)
-                return a;
-            else
-                return a * 2;
+            a.call();
+            return a;
         };
+
         q1.map(f1);
+        
         assert(q1.size() == 5);
-        size_t i = 4;
         while (!q1.empty())
         {
-            int temp = q1.top();
+            TestObject temp = q1.top();
+            assert(temp.was_called());
             q1.pop();
-            assert(temp == answer[i]);
-            i--;
         }
-        cout << "Test 10 passed!" << endl;
     }
 
     // test how stack where f works
-    void test11()
+    void test_stack_where()
     {
         int arr[] = {1, 2, 3, 4, 5, 999};
         int answer[] = {1, 3, 5, 999};
@@ -221,22 +202,19 @@ namespace tests
             assert(temp == answer[i]);
             i++;
         }
-
-        cout << "Test 11 passed!" << endl;
     }
     // test how stack reduce f works
-    void test12()
+    void test_stack_reduce()
     {
         int arr[] = {3, 2, 1};
         Stack<int> q1(arr, 3);
         auto f1 = [](int a, int b)
         { return 2 * a + 3 * b; };
         assert(q1.reduce(f1, 4) == 144);
-        cout << "Test 12 passed!" << endl;
     }
 
     // test how deque works
-    void test13()
+    void test_deque_works()
     {
         int arr[] = {3, 2, 1};
         Deque<int> q1(arr, 3);
@@ -248,31 +226,38 @@ namespace tests
         {
             assert(q1[index] == arr[index]);
         }
-
-        cout << "Test 13 passed!" << endl;
+    }
+    void test_deque_concat(){
+        int arr1[] = {1, 2, 3};
+        int arr2[] = {4, 5, 6};
+        Deque<int> d1(arr1, 3);
+        Deque<int> d2(arr2, 3);
+        d1.concat(d2);
+        assert(d1.size() == 6);
+        assert(d2.size() == 3);
+        for (size_t i = 0; i < d1.size(); i++)
+        {
+            assert(d1[i] == i + 1);
+        }
     }
     // test map where reduce complex
-    void test14()
+    void test_deque_map()
     {
-        int arr[] = {1, 2, 3, 4, 5};
-        int answer[] = {2, 2, 6, 4, 10};
-        Deque<int> q1(arr, 5);
-        auto f1 = [](int a)
+        TestObject arr[] = {1, 2, 3, 4, 5};
+        Deque<TestObject> q1(arr, 5);
+        auto f1 = [](TestObject a)
         {
-            if (a % 2 == 0)
-                return a;
-            else
-                return a * 2;
+            a.call();
+            return a;
         };
         q1.map(f1);
         assert(q1.size() == 5);
         for (size_t i = 0; i < q1.size(); i++)
         {
-            assert(q1[i] == answer[i]);
+            assert(q1[i].was_called());
         }
-        cout << "Test 14 passed!" << endl;
     }
-    void test15()
+    void test_deque_where()
     {
         int arr[] = {1, 2, 3, 4, 5, 999};
         int answer[] = {1, 3, 5, 999};
@@ -285,19 +270,17 @@ namespace tests
         {
             assert(q1[i] == answer[i]);
         }
-        cout << "Test 15 passed!" << endl;
     }
-    void test16()
+    void test_deque_reduce()
     {
         int arr[] = {1, 2, 3};
         Deque<int> q1(arr, 3);
         auto f1 = [](int a, int b)
         { return 2 * a + 3 * b; };
         assert(q1.reduce(f1, 4) == 144);
-        cout << "Test 16 passed!" << endl;
     }
     // test Segmented Deque work
-    void test17()
+    void test_segmented_deque()
     {
         int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         SegmentedDeque<int> sd(arr, 10, 3);
@@ -318,10 +301,9 @@ namespace tests
         {
             assert(sd[i] == arr[i]);
         }
-        cout << "Test 17 passed!" << endl;
     }
     //test how append func work in segmented deque
-    void test18(){
+    void test_segmented_deque_append_from(){
         int arr1[] = {1, 2, 3, 4, 5};
         int arr2[] = {6, 7, 8, 9, 10, 11};
         SegmentedDeque<int> sd1(arr1, 5, 2);
@@ -333,30 +315,37 @@ namespace tests
         {
             assert(sd1[i - 1] == i);
         }
-        cout << "Test 18 passed!" << endl;
     }
-
+    const static function<void(void)> test_functions[] ={
+            test_complex_number_operations,
+            test_queue_work,
+            test_queue_map,
+            test_queue_where,
+            test_queue_reduce,
+            test_queue_concatenation,
+            test_stack_work,
+            test_stack_push_back,
+            test_stack_map,
+            test_stack_where,
+            test_stack_reduce,
+            test_deque_works,
+            test_deque_concat,
+            test_deque_map,
+            test_deque_where,
+            test_deque_reduce,
+            test_segmented_deque,
+            test_segmented_deque_append_from
+    };
 
     void run()
     {
-        test1();
-        test2();
-        test3();
-        test4();
-        test5();
-        test6();
-        test7();
-        test8();
-        test9();
-        test10();
-        test11();
-        test12();
-        test13();
-        test14();
-        test15();
-        test16();
-        test17();
-        test18();
+        size_t function_number = 1;
+        for(auto function : test_functions){
+            function();
+            cout << "Test "<< function_number << " passed!"<<endl;
+            function_number++;
+        }
+
         cout << "ALL TEST PASSED!" << endl;
     }
 } // namespace tests

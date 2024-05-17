@@ -19,24 +19,24 @@ public:
 
     ~Queue() = default;
 
-    T& front()
+    T &front()
     {
         return container.get_first();
     }
-    T& back()
+    T &back()
     {
         return container.get_last();
     }
-    bool empty()
+    bool empty() const
     {
         return container.is_empty();
     }
-    size_t size()
+    size_t size() const
     {
         return container.get_length();
     }
 
-    void push(const T & value)
+    void push(const T &value)
     {
         container.append(value);
     }
@@ -44,8 +44,8 @@ public:
     {
         container.pop_front();
     }
-    // safe version of concatination, makes copy of arguments, complexity: O(n)
-    void safe_concat(Queue<T, Container> other)
+
+    void concat(Queue<T, Container> other)
     {
         T temp;
         while (!other.empty())
@@ -54,11 +54,6 @@ public:
             push(temp);
             other.pop();
         }
-    }
-    // unsafe version of concatination, argument status is undefined, complexity: O(1)
-    void force_concat(Queue<T, Container> &other)
-    {
-        container += other.container;
     }
 
     void map(std::function<T(T)> function) override
@@ -73,6 +68,7 @@ public:
         }
         container = new_container;
     }
+
     void where(std::function<bool(T)> function) override
     {
         T temp;
@@ -86,14 +82,17 @@ public:
         }
         container = new_container;
     }
-    T reduce(std::function<T(T, T)> function, T start_value) override {
+    
+    T reduce(std::function<T(T, T)> function, T start_value) override
+    {
         T temp = start_value;
-        while (!empty()) {
+        while (!empty())
+        {
             T frontValue = front(); // Получаем значение из front()**
             T func_res(function(frontValue, temp));
             temp = func_res;
             pop(); // Удаляем первый элемент
         }
         return temp;
-    }   
+    }
 };
