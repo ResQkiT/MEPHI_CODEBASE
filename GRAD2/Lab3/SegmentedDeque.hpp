@@ -116,13 +116,9 @@ public:
             pop_back();
         }
     }
-    T &operator=(SegmentedDeque<T> &other)
+    SegmentedDeque &operator=(SegmentedDeque<T> &other)
     {
-        clear();
-        for (size_t i = 0; i < other.size(); i++)
-        {
-            push_back(other[i]);
-        }
+        buffer = other.buffer;
         return *this;
     }
 

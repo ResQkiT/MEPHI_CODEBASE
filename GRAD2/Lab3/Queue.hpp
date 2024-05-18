@@ -95,4 +95,8 @@ public:
         }
         return temp;
     }
+    Queue<T, Container> & operator=(const Queue<T, Container> & other){
+        this->container = other.container;
+        return *this;
+    }
 };

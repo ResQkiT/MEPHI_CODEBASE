@@ -110,4 +110,8 @@ public:
         }
         return temp;
     }
+    Deque<T, Container> & operator=(const Deque<T, Container> & other){
+        this->container = other.container;
+        return *this;
+    }
 };

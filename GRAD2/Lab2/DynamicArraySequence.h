@@ -152,6 +152,11 @@ public:
         impl += other.impl;
         return *this;
     }
+    DynamicArraySequence<T> &operator=(const DynamicArraySequence<T> &other)
+    {
+        impl = other.impl;
+        return *this;
+    }
 };
 
 template <class T>

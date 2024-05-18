@@ -9,7 +9,7 @@ template<class T>
 class QueueAdapter : public AbstractAdapter<T>{
 private:
     Queue<T> container;
-    const string type = "queue";
+    string type = "queue";
 public:
 
     QueueAdapter(): container{Queue<T>()}{}
@@ -39,8 +39,14 @@ public:
         cout << "Element wil be appended to endl" << endl;
         append(value);
     }
-    const std::string & get_type() override {
+    std::string & get_type() override {
         return type;
+    }
+    QueueAdapter<T> * clone(){
+        QueueAdapter<T> * clone = new QueueAdapter();
+        clone->type = this->type;
+        clone->container = this->container; 
+        return clone;
     }
     
 };

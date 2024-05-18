@@ -1,6 +1,6 @@
 #pragma once
 #include "adapters/AbstractAdapter.h"
-#include "../Lab2/readio.h"
+
 #include <iostream>
 #include <string>
 
@@ -15,14 +15,14 @@ public:
     ActionHandler(AbstractAdapter<T> * adapter) : adapter{adapter}{};
     ~ActionHandler(){delete adapter;};
 
-    const string & get_type(){
+    string & get_type(){
         if(adapter == nullptr) throw new std::runtime_error("Adapter is null");
         return adapter->get_type();
     }
 
     ActionHandler<T> & set_adapter(AbstractAdapter<T> * adapter){
         if(adapter != nullptr) delete this->adapter;
-        this->adapter = adapter;
+        this->adapter = adapter->clone();
         return *this;
     }
 

@@ -10,7 +10,7 @@ class StackAdapter : public AbstractAdapter<T>{
 private:
     Stack<T> container;
 
-    const string type = "stack";
+    string type = "stack";
 public:
     StackAdapter() : container{Stack<T>()}{};
     ~StackAdapter() = default;
@@ -39,8 +39,14 @@ public:
         cout << "Element wil be appended to endl" << endl;
         append(value);
     }
-    const std::string & get_type() override{
+    std::string & get_type() override{
         return type;
+    }
+    StackAdapter<T> * clone(){
+        StackAdapter<T> * clone = new StackAdapter<T>();
+        clone->type = this->type;
+        clone->container = this->container; 
+        return clone;
     }
     
 };

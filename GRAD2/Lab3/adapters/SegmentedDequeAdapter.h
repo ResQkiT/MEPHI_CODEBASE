@@ -9,7 +9,7 @@ class SegmentedDequeAdapter : public AbstractAdapter<T>{
 private:
 SegmentedDeque<T> container;
 
-const string type = "segmented stack";
+string type = "segmented stack";
 public:
     SegmentedDequeAdapter() : container{SegmentedDeque<T>()}{};
     ~SegmentedDequeAdapter() = default;
@@ -36,7 +36,13 @@ public:
     void prepend(const T & value) override{
         container.push_front(value);
     }
-    const std::string & get_type() override {
+    std::string & get_type() override {
         return type;
+    }
+    SegmentedDequeAdapter<T> * clone(){
+        SegmentedDequeAdapter<T> * clone = new SegmentedDequeAdapter();
+        clone->type = this->type;
+        clone->container = this->container; 
+        return clone;
     }
 };

@@ -75,4 +75,8 @@ public:
         }
         return temp;
     }
+    Stack<T, Container> & operator=(const Stack<T, Container> & other){
+        this->container = other.container;
+        return *this;
+    }
 };

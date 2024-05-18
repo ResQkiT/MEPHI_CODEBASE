@@ -9,7 +9,7 @@ template<class T>
 class DequeAdapter : public AbstractAdapter<T>{
 private:
     Deque<T> container;
-    const string type = "deque";
+    string type = "deque";
 public:
 
     DequeAdapter(): container{Deque<T>()}{}
@@ -39,8 +39,13 @@ public:
         cout << "Prepending element to ending" <<endl;
         container.push_front(value);
     }
-    const std::string & get_type() override {
+    std::string & get_type() override {
         return type;
     }
-    
+    DequeAdapter<T> * clone(){
+        DequeAdapter<T> * clone = new DequeAdapter();
+        clone->type = this->type;
+        clone->container = this->container; 
+        return clone;
+    }
 };
