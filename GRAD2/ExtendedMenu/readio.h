@@ -2,7 +2,7 @@
 #include <iostream>
 
 template<class T>
-void console_get(T & target){
+void console_get_or_throw(T & target){
     T copy;
     std::cin >> copy;
     if(std::cin.fail ()){

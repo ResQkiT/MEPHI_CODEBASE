@@ -34,8 +34,9 @@ public:
         LinkedList<T> subsequence = LinkedList<T>();
         auto it_from = impl.begin();
 
-        for (size_t i = 0; i < start_index; i++, it_from++)
-            ;
+        for (size_t i = 0; i < start_index; i++){
+            it_from ++;
+        }
         for (size_t i = 0; i < end_index - start_index + 1; i++, it_from++)
         {
             subsequence.push_back(*it_from);
@@ -98,18 +99,8 @@ public:
         return impl.end();
     }
 
-    LinkedListSequence<T> &concat(LinkedListSequence<T> &list) 
-    {
-        impl += list.impl;
-        return *this;
-    }
-    LinkedListSequence<T> * concat(Sequence<T> * list) override {
-        for (size_t i = 0; i < list->get_length(); i++)
-        {
-            append(list->get(i));
-        }
-        return this;
-    }
+   
+
 
     LinkedListSequence<T> operator+(const LinkedListSequence<T> &other) const
     {

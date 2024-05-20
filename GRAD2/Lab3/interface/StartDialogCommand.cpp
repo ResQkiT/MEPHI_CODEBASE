@@ -22,7 +22,7 @@ void run(ActionHandler<T> & handler){
     while (is_running)
     {
         cout << "Choose command: \n1 - create data sequence\n2 - show data sequence\n3 - append\n4 - prepend \n q - for exit\n";
-        console_get(working_choose);
+        console_get_or_throw(working_choose);
         if(working_choose == '1'){
             handler.input_data();
         }else if(working_choose == '2'){
@@ -40,7 +40,7 @@ template<class T>
 void set_adapter(ActionHandler<T> & handler){
     char adapter_choose;
     cout << "1 - stack \n2 - deque\n3 - queue\n4 - segmented deque\n";
-    console_get(adapter_choose);
+    console_get_or_throw(adapter_choose);
     AbstractAdapter<T> * adapter;
     if (adapter_choose == '1')
     {
@@ -60,7 +60,7 @@ void StartDialogCommand::exec(){
     bool is_running = true;
     while(is_running){
         std::cout << "1 - int\n 2 - double\n 3 - char \n 4 - string\n q - exit\n m - show map/where/reduce example\n"<<endl;
-        console_get(type_choose);
+        console_get_or_throw(type_choose);
         if (type_choose == '1'){
             ActionHandler<int> handler;
             set_adapter(handler);

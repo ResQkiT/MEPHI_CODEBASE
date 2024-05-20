@@ -30,12 +30,12 @@ public:
         cout << "Input data, into structure, of type: "<< adapter->get_type() << endl;
         size_t size;
         cout << "Enter count of element in structure: ";
-        console_get(size);
+        console_get_or_throw(size);
         T list[size];
         cout << "Reading data...:";
         for (size_t i = 0; i < size; i++)
         {
-            console_get(list[i]);
+            console_get_or_throw(list[i]);
         }
         adapter->create_working_adt(list, size);
         return *this;
@@ -49,7 +49,7 @@ public:
         cout << "Operation: appending element to beginning" << endl;
         cout << "Please, enter element(same type as mentioned): ";
         T elem;
-        console_get(elem);
+        console_get_or_throw(elem);
         adapter->append(elem);
         return *this;
     }
@@ -57,7 +57,7 @@ public:
         cout << "Operation: prepending element to ending" << endl;
         cout << "Please, enter element(same type as mentioned): ";
         T elem;
-        console_get(elem);
+        console_get_or_throw(elem);
         adapter->prepend(elem);
         return *this;
     }

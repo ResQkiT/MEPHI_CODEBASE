@@ -55,5 +55,8 @@
         "variant": "cpp",
         "map": "cpp"
     },
-    "cmake.sourceDirectory": "/home/resk/main/c/C_MEPHI/GRAD2/Lab3"
+    "cmake.sourceDirectory": "/home/resk/main/c/C_MEPHI/GRAD2/Lab3",
+    "cSpell.words": [
+        "Concatenable"
+    ]
 }

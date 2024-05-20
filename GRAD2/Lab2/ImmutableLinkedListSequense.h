@@ -38,7 +38,9 @@ public:
         LinkedList<T> subsequence = LinkedList<T>();
         auto it_from = impl.begin();
 
-        for (size_t i = 0; i < start_index; i++, it_from++);
+        for (size_t i = 0; i < start_index; i++){
+            it_from ++;
+        }
         for (size_t i = 0; i < end_index - start_index; i++, it_from++)
         {
             subsequence.push_back(*it_from);

@@ -11,7 +11,7 @@ public:
     virtual AbstractActionListener<T> *create_sequence_dialog(){
         std::cout << "1 - to create Mutable Dynamic Array Sequence\n2 - to create Mutable Linked List Sequence\n-1 - to return\n->";
         int choice;
-        console_get(choice);
+        console_get_or_throw(choice);
         switch (choice)
         {
         case 1:

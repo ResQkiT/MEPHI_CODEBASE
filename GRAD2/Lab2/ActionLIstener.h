@@ -21,12 +21,12 @@ public:
     {
         cout << "Creating Immutable Linked List _sequence_container\nenter size of _sequence_container->";
         int n;
-        console_get(n);
+        console_get_or_throw(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            console_get(data[i]);
+            console_get_or_throw(data[i]);
         }
         _sequence_container<T> *linked_list = new _sequence_container<T>(data, n);
         working_container = linked_list;

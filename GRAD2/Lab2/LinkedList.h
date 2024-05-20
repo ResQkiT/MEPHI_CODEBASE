@@ -187,8 +187,9 @@ public:
         if (is_empty())
             throw std::out_of_range("List is empty");
         auto it = begin();
-        for (int i = 0; i < index; it++, i++)
-            ;
+        for (int i = 0; i < index; it++){
+            i++;
+        }
         return *it;
     }
     void clear()
@@ -198,7 +199,7 @@ public:
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
     {
-
+        
         if (this != &other)
         {
             delete_list();
@@ -235,7 +236,7 @@ public:
         
         return *this;
     }
-    LinkedList<T> &concat(LinkedList<T> &other)
+    LinkedList<T> & concat(LinkedList<T> &other)
     {
         for (auto b : other)
         {

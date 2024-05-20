@@ -128,14 +128,6 @@ public:
         return impl.end();
     }
 
-    DynamicArraySequence<T> *concat(Sequence<T> *list) override
-    {
-        for (size_t i = 0; i < list->get_length(); i++)
-        {
-            append(list->get(i));
-        }
-        return this;
-    }
 
     DynamicArraySequence<T> operator+(const DynamicArraySequence<T> &other) const
     {

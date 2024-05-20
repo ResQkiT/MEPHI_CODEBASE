@@ -33,7 +33,7 @@ void work(AbstractActionListener<T> * listener){
         6 - for adding element at begining\n\\
         -1 - for return back\n->";
         int choice;
-        console_get(choice);
+        console_get_or_throw(choice);
         switch (choice)
         {
         case 1:
@@ -74,10 +74,10 @@ int main()
     while (mode == modes::RUNNING)
     {    
         cout << "1 - to work with mutable structures \n2 - to work with immutable structures \n->";
-        console_get(mutable_choice);
+        console_get_or_throw(mutable_choice);
         
         cout <<"Choose type: 1 - int, 2 - double, 3 - char, 4 - string\n->";
-        console_get(type_choice);
+        console_get_or_throw(type_choice);
 
         if(mutable_choice == 1){
             if(type_choice == 1){

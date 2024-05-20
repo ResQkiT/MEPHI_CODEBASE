@@ -179,6 +179,13 @@ public:
         }
         return *this;
     }
+    DynamicArray<T> & concat(DynamicArray<T> * other){
+        for (auto b: other)
+        {
+            push_back(b);
+        }
+        return *this;
+    }
 
     class Iterator
     {

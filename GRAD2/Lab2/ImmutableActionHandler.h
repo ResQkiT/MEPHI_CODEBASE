@@ -27,12 +27,12 @@ public:
     {
         cout << "Creating Immutable Linked List Sequence\nenter size of sequence->";
         int n;
-        console_get(n);
+        console_get_or_throw(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            console_get(data[i]);
+            console_get_or_throw(data[i]);
         }
         ImmutableLinkedListSequence<T> *linked_list = new ImmutableLinkedListSequence<T>(data, n);
         working_sequence = linked_list;
@@ -43,12 +43,12 @@ public:
     {
         cout << "Creating Immutable Dynamic Array Sequence\nenter size of sequence->";
         int n;
-        console_get(n);
+        console_get_or_throw(n);
         T data[n];
         cout << "Enter " << n << " elements of future array\n->";
         for (int i = 0; i < n; i++)
         {
-            console_get(data[i]);
+            console_get_or_throw(data[i]);
         }
 
         ImmutableDynamicArraySequence<T> *dynamic_array = new ImmutableDynamicArraySequence(data, n);
@@ -59,8 +59,8 @@ public:
     {
         cout << "Extracting subsequence\n Enter start index and end index [start index, end index]\n->";
         size_t start_index, end_index;
-        console_get(start_index);
-        console_get(end_index);
+        console_get_or_throw(start_index);
+        console_get_or_throw(end_index);
         ImmutableSequence<T> *subsequence;
         try
         {
@@ -88,7 +88,7 @@ public:
         }
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        console_get(elem);
+        console_get_or_throw(elem);
         working_sequence = working_sequence->prepend(elem);
         return this;
     }
@@ -102,10 +102,10 @@ public:
         }
         int position;
         cout << "Enter position\n->";
-        console_get(position);
+        console_get_or_throw(position);
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        console_get(elem);
+        console_get_or_throw(elem);
         working_sequence = working_sequence->insert_at(position, elem);
         return this;
     }
@@ -119,7 +119,7 @@ public:
         }
         cout << "Enter element with the same declaration type\n->";
         T elem;
-        console_get(elem);
+        console_get_or_throw(elem);
         working_sequence = working_sequence->append(elem);
         return this;
     }
