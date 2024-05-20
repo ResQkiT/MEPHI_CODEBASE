@@ -11,7 +11,7 @@ private:
     size_t size;
     size_t capacity;
 
-    void reallocate(size_t new_capacity)
+    void enlarge(size_t new_capacity)
     {
         if (new_capacity == 0)
         {
@@ -95,7 +95,7 @@ public:
 
             if (new_size > capacity)
             {
-                reallocate(new_size);
+                enlarge(new_size);
             }
 
             for (size_t i = size; i < new_size; ++i)
@@ -124,7 +124,7 @@ public:
     {
         if (size == capacity)
         {
-            reallocate(std::max(capacity, (size_t)1) * 2);
+            enlarge(std::max(capacity, (size_t)1) * 2);
         }
 
         data[size] = value;
@@ -139,7 +139,7 @@ public:
 
     void clear()
     {
-        reallocate(4);
+        enlarge(4);
         size = 0;
     }
 
@@ -166,7 +166,7 @@ public:
     {
         this->capacity = other.capacity;
         this->size = other.size;
-        reallocate(other.capacity);
+        enlarge(other.capacity);
         std::copy(other.data, other.data + size, data);
         return *this;
     }
