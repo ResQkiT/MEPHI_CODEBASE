@@ -213,7 +213,6 @@ namespace tests
         for (int i = 3; i < 5; ++i) {
             assert(list.get(i) == arr[i - 1]);
         }
-        cout << "TEST 17 PASSED!"<< endl;
     }
 
     /// @brief checks if insert_at works correct in LinkedListSequence
@@ -267,7 +266,6 @@ namespace tests
             assert(false);
         }
         catch(const std::exception& e){}
-        cout << "TEST 20 PASSED!"<< endl;
     }
 
     const static function<void(void)> test_functions[] ={

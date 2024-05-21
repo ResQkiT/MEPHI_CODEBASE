@@ -199,48 +199,49 @@ public:
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
     {
-        
-        if (this != &other)
+        if(this == &other){
+            return *this;
+        }
+
+        delete_list();
+        head = other.head;
+        tail = other.tail;
+        size = other.size;
+
+        if (head)
         {
-            delete_list();
-            head = other.head;
-            tail = other.tail;
-            size = other.size;
+            Node<T> *otherCurr = other.head;
+            Node<T> *newCurr = new Node<T>(otherCurr->data);
+            head = newCurr;
 
-            if (head)
+            Node<T> *prev = nullptr;
+            while (otherCurr->next)
             {
-                Node<T> *otherCurr = other.head;
-                Node<T> *newCurr = new Node<T>(otherCurr->data);
-                head = newCurr;
-
-                Node<T> *prev = nullptr;
-                while (otherCurr->next)
+                otherCurr = otherCurr->next;
+                newCurr->next = new Node<T>(otherCurr->data);
+                newCurr = newCurr->next;
+                prev = newCurr;
+            }
+            tail = prev;
+            Node<T> *curr = head;
+            while (curr)
+            {
+                if (curr->next)
                 {
-                    otherCurr = otherCurr->next;
-                    newCurr->next = new Node<T>(otherCurr->data);
-                    newCurr = newCurr->next;
-                    prev = newCurr;
+                    curr->next->prev = curr;
                 }
-                tail = prev;
-                Node<T> *curr = head;
-                while (curr)
-                {
-                    if (curr->next)
-                    {
-                        curr->next->prev = curr;
-                    }
-                    curr = curr->next;
-                }
+                curr = curr->next;
             }
         }
-        
+
         return *this;
     }
     LinkedList<T> &operator+=(LinkedList<T> &other)
     {
         return *concat(&other);
     }
-    LinkedList<T> &unsafe_concat(LinkedList<T> &other)
+
+    LinkedList<T> &move_to_end(LinkedList<T> &other)
     {
         other.head->prev = tail;
 
