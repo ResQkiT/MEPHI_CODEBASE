@@ -38,20 +38,27 @@ void run(ActionHandler<T> & handler){
 }
 template<class T> 
 void set_adapter(ActionHandler<T> & handler){
-    char adapter_choose;
-    cout << "1 - stack \n2 - deque\n3 - queue\n4 - segmented deque\n";
-    console_get_or_throw(adapter_choose);
     AbstractAdapter<T> * adapter;
-    if (adapter_choose == '1')
-    {
-        adapter = new StackAdapter<T>();
-    }else if(adapter_choose == '2'){
-        adapter = new DequeAdapter<T>();
-    }else if(adapter_choose == '3'){
-        adapter = new QueueAdapter<T>();
-    }else if(adapter_choose == '4'){
-        adapter = new SegmentedDequeAdapter<T>();
-    }
+    bool is_choice_ok;  
+    do{
+        is_choice_ok = true;
+        cout << "1 - stack \n2 - deque\n3 - queue\n4 - segmented deque\n";
+        char adapter_choose ;
+        console_get_or_throw(adapter_choose);
+        if (adapter_choose == '1')
+        {
+            adapter = new StackAdapter<T>();
+        }else if(adapter_choose == '2'){
+            adapter = new DequeAdapter<T>();
+        }else if(adapter_choose == '3'){
+            adapter = new QueueAdapter<T>();
+        }else if(adapter_choose == '4'){
+            adapter = new SegmentedDequeAdapter<T>();
+        }else{
+            is_choice_ok = false;
+        }
+    }while (!is_choice_ok);
+
     cout << adapter->get_type() << endl;
     handler.set_adapter(adapter);
 }

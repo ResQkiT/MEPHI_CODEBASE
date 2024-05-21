@@ -36,7 +36,7 @@ void Menu::handle_input(){
     size_t choice;
     std::cout << "Enter option-> ";
     
-    console_get_or_throw(choice);
+    console_get_kindly(choice);
     
     if(choice == 0) {
         std::cout << "Exiting menu..." << std::endl;
