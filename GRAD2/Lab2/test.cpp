@@ -3,7 +3,7 @@
 #include "LinkedList.h"
 #include "DynamicArraySequence.h"
 #include "LinkedListSequence.h"
-
+#include <functional>
 #include <cassert> 
 
 
@@ -12,7 +12,7 @@ namespace tests
     using namespace std;
 
     /// @brief checking is all f works correct;
-    void test1(){
+    void test_dynamic_array(){
         int n1 = 3;
         int arr1[n1] = { 1 ,2 ,3 };
         DynamicArray<int> dynamic(arr1, n1);
@@ -24,11 +24,10 @@ namespace tests
             assert(arr1[i] == dynamic[i]);
             assert(arr1[i] == dynamic.get(i));
         }
-        cout << "TEST 1 PASSED!"<< endl;
     }
 
     //test if all func in linked List work correct;
-    void test2(){
+    void test_linked_list(){
         int n2 = 3;
         int arr2[n2] = { 1 ,2 ,3 };
         LinkedList<int> linked(arr2, n2);
@@ -39,11 +38,10 @@ namespace tests
         {
             assert(arr2[i] == linked.get(i));
         }
-        cout << "TEST 2 PASSED!"<< endl;
     }
 
     /// @brief checks if Dynamic Sequences works correct
-    void test3(){
+    void test_dynamic_sequence(){
         int n3 = 5;
         int arr3[] = {1, 2, 3, 4, 5};
         DynamicArraySequence<int> d_sequence(arr3, n3);
@@ -52,11 +50,10 @@ namespace tests
         {
             assert(d_sequence.get(i) == arr3[i]);
         }
-        cout << "TEST 3 PASSED!"<< endl;
     }
 
     /// @brief checks if Linked Sequences works correct
-    void test4(){
+    void test_linked_sequence(){
         int n4 = 5;
         int arr4[] = {9, 8, 7, 6, 5};
         LinkedListSequence<int> l_sequence(arr4, n4);
@@ -65,48 +62,44 @@ namespace tests
         {
             assert(l_sequence.get(i) == arr4[i]);
         }
-        
-        cout << "TEST 4 PASSED!"<< endl;
     }
 
     /// @brief checks if append works correct in DynamicArraySequence
-    void test5() {
+    void test_dynamic_sequence_append() {
         DynamicArraySequence<int> list;
         list.append(10);
         assert(list.get_length() == 1);
         assert(list.get(0) == 10);
-        cout << "TEST 5 PASSED!"<< endl;
+
     }
 
     /// @brief checks if append works correct in LinkedListSequence
-    void test6() {
+    void test_linked_sequence_append() {
         LinkedListSequence<int> list;
         list.append(10);
         assert(list.get_length() == 1);
         assert(list.get(0) == 10);
-        cout << "TEST 6 PASSED!"<< endl;
+
     }
 
-    /// @brief checks if prepand works correct in DynamicArraySequence
-    void test7() {
+    /// @brief checks if prepend works correct in DynamicArraySequence
+    void test_dynamic_sequence_prepend() {
         DynamicArraySequence<int> list;
         list.prepend(10);
         assert(list.get_length() == 1);
         assert(list.get(0) == 10);
-        cout << "TEST 7 PASSED!"<< endl;
     }
 
     /// @brief checks if prepend works correct in LinkedListSequence
-    void test8() {
+    void test_linked_sequence_prepend() {
         LinkedListSequence<int> list;
         list.prepend(10);
         assert(list.get_length() == 1);
         assert(list.get(0) == 10);
-        cout << "TEST 8 PASSED!"<< endl;
     }
 
     /// @brief checks if concat works correct in DynamicArraySequence
-    void test9(){
+    void test_dynamic_sequence_concat(){
         int arr1[] = {1, 2, 3};
         int arr2[] = {4, 5, 6};
         DynamicArraySequence<int> list1(arr1, 3);
@@ -119,11 +112,10 @@ namespace tests
         for (int i = 3; i < 6; ++i) {
             assert(list1.get(i) == arr2[i - 3]);
         }
-        cout << "TEST 9 PASSED!"<< endl;
     }
 
     /// @brief checks if concat works correct in LinkedListSequence
-    void test10() {
+    void test_linked_sequence_concat() {
         int arr1[] = {1, 2, 3};
         int arr2[] = {4, 5, 6};
         LinkedListSequence<int> list1(arr1, 3);
@@ -136,33 +128,28 @@ namespace tests
         for (int i = 3; i < 6; ++i) {
             assert(list1.get(i) == arr2[i - 3]);
         }
-        cout << "TEST 10 PASSED!"<< endl;
     }
 
     /// @brief checks if subs function work correct with args 0 0 in DynamicArraySequence
-    void test11() {
+    void test_dynamic_sequence_get_subsequence() {
         int arr[] = {1, 2 ,3};
         DynamicArraySequence<int> list(arr , 1);
         DynamicArraySequence<int> * subsequence = list.get_subsequence(0, 0);
         assert(subsequence->get_length() == 1);
         assert(subsequence->get(0) == arr[0]);
-
-        cout << "TEST 11 PASSED!"<< endl;
     }
 
     /// @brief checks if subs function work correct with args 0 0 in LinkedListSequence
-    void test12() {
+    void test_linked_sequence_get_subsequence() {
         int arr[] = {3, 2 ,1};
         LinkedListSequence<int> list(arr , 1);
         LinkedListSequence<int> * subsequence = list.get_subsequence(0, 0);
         assert(subsequence->get_length() == 1);
         assert(subsequence->get(0) == arr[0]);
-        
-        cout << "TEST 12 PASSED!"<< endl;
     }
 
     /// @brief cheks if subs work correct with normal args in DynamicArraySequence
-    void test13(){
+    void test_dynamic_sequence_get_subsequence_normal_arguments(){
         int arr[] = {1, 2, 3, 4, 5};
         DynamicArraySequence<int> list(arr, 5);
         DynamicArraySequence<int> * subsequence = list.get_subsequence(2, 4);
@@ -170,12 +157,10 @@ namespace tests
         for (int i = 0; i < subsequence->get_length(); ++i) {
             assert(subsequence->get(i) == arr[i + 2]);
         }
-        
-        cout << "TEST 13 PASSED!"<< endl;
     }
 
     /// @brief checks if subs work correct with normal args in LinkedListSequence
-    void test14(){
+    void test_linked_sequence_get_subsequence_normal_arguments(){
         int arr[] = {1, 2, 3, 4, 5};
         LinkedListSequence<int> list(arr, 5);
         LinkedListSequence<int> * subsequence = list.get_subsequence(2, 4);
@@ -183,12 +168,10 @@ namespace tests
         for (int i = 0; i < subsequence->get_length(); ++i) {
             assert(subsequence->get(i) == arr[i + 2]);
         }
-        
-        cout << "TEST 14 PASSED!"<< endl;
     }
 
     /// @brief stress test for DynamicArraySequence
-    void test15() {
+    void test_dynamic_sequence_stress() {
         const int n = 1000;
         int arr[n];
         for (int i = 0; i < n; ++i) {
@@ -200,11 +183,10 @@ namespace tests
         for (int i = 0; i < subsequence1->get_length(); ++i) {
             assert(subsequence1->get(i) == arr[i]);
         }
-        cout << "TEST 15 PASSED!"<< endl;
     }
 
     /// @brief stress test fot LinkedListSequence
-    void test16() {
+    void test_linked_sequence_stress() {
         const int n = 1000;
         int arr[n];
         for (int i = 0; i < n; ++i) {
@@ -216,11 +198,10 @@ namespace tests
         for (int i = 0; i < subsequence1->get_length(); ++i) {
             assert(subsequence1->get(i) == arr[i]);
         }
-        cout << "TEST 16 PASSED!"<< endl;
     }
 
     /// @brief checks if insert_at works correct in DynamicArraySequence
-    void test17(){
+    void test_dynamic_sequence_insert_at(){
         int arr[] = {1, 2, 3, 4, 5};
         DynamicArraySequence<int> list(arr, 5);
         list.insert_at(2, 6);
@@ -236,7 +217,7 @@ namespace tests
     }
 
     /// @brief checks if insert_at works correct in LinkedListSequence
-    void test18(){
+    void test_linked_sequence_insert_at(){
         int arr[] = {1, 2, 3, 4, 5};
         LinkedListSequence<int> list(arr, 5);
         list.insert_at(2, 6);
@@ -248,13 +229,12 @@ namespace tests
         for (int i = 3; i < 5; ++i) {
             assert(list.get(i) == arr[i - 1]);
         }
-        cout << "TEST 18 PASSED!"<< endl;
     }
     
     //emergency situations tests
 
     /// @brief test if index out of bounce
-    void test19(){
+    void test_exception_dynamic_sequence_index_out_of_bounds(){
         int arr[] = {1, 2, 3};
         DynamicArraySequence<int> array(arr, 3);
         try
@@ -269,11 +249,10 @@ namespace tests
             assert(false);
         }
         catch(const std::exception& e){}
-        cout << "TEST 19 PASSED!"<< endl;
     }
 
     /// @brief test if index out of bounce
-    void test20(){
+    void test_exception_linked_sequence_index_out_of_bounds(){
         int arr[] = {1, 2, 3};
         LinkedListSequence<int> array(arr, 3);
         try
@@ -290,27 +269,37 @@ namespace tests
         catch(const std::exception& e){}
         cout << "TEST 20 PASSED!"<< endl;
     }
+
+    const static function<void(void)> test_functions[] ={
+        test_dynamic_array,
+        test_linked_list,
+        test_dynamic_sequence,
+        test_linked_sequence,
+        test_dynamic_sequence_append,
+        test_linked_sequence_append,
+        test_dynamic_sequence_prepend,
+        test_linked_sequence_prepend,
+        test_dynamic_sequence_concat,
+        test_linked_sequence_concat,
+        test_dynamic_sequence_get_subsequence,
+        test_linked_sequence_get_subsequence,
+        test_dynamic_sequence_get_subsequence_normal_arguments,
+        test_linked_sequence_get_subsequence_normal_arguments,
+        test_dynamic_sequence_stress,
+        test_linked_sequence_stress,
+        test_dynamic_sequence_insert_at,
+        test_linked_sequence_insert_at,
+        test_exception_dynamic_sequence_index_out_of_bounds,
+        test_exception_linked_sequence_index_out_of_bounds
+    };
+
     void runtests(){
-        test1();
-        test2();
-        test3();
-        test4();
-        test5();
-        test6();
-        test7();
-        test8();
-        test9();
-        test10();
-        test11();
-        test12();
-        test13();
-        test14();
-        test15();
-        test16();
-        test17();
-        test18();
-        test19();
-        test20();
+        size_t function_number = 1;
+        for(auto function : test_functions){
+            function();
+            cout << "Test "<< function_number << " passed!"<<endl;
+            function_number++;
+        }
         std::cout << "ALL TEST PASSED!" << std::endl;
     }
 

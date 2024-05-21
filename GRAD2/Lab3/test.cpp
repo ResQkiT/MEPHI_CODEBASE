@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <string>
+#include <functional>
 #include "Complex.hpp"
 #include "Queue.hpp"
 #include "Stack.hpp"

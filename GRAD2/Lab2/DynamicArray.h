@@ -2,9 +2,10 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include "IConcatenable.h"
 
 template <typename T>
-class DynamicArray
+class DynamicArray : public IConcatenable<T> 
 {
 private:
     T *data;
@@ -76,7 +77,7 @@ public:
         }
     }
 
-    T &get(size_t index) const
+    T &get(size_t index) override
     {
         if(index < 0 || index >= size) throw std::out_of_range("Out of range");
         return *(data + index);
@@ -110,7 +111,7 @@ public:
         }
     }
 
-    size_t get_size() const
+    size_t get_size() const override
     {
         return size;
     }
@@ -120,7 +121,7 @@ public:
         return capacity;
     }
 
-    void push_back(const T &value)
+    void push_back(const T &value) override
     {
         if (size == capacity)
         {
@@ -176,13 +177,6 @@ public:
         for (size_t i = 0; i < other.get_size(); i++)
         {
             this->push_back(other[i]);
-        }
-        return *this;
-    }
-    DynamicArray<T> & concat(DynamicArray<T> * other){
-        for (auto b: other)
-        {
-            push_back(b);
         }
         return *this;
     }

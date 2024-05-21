@@ -13,7 +13,7 @@ public:
 };
 
 template <typename T>
-class LinkedList
+class LinkedList : public IConcatenable<T>
 {
 
 private:
@@ -71,7 +71,7 @@ public:
         return head == nullptr;
     }
 
-    size_t get_size() const
+    size_t get_size() const override
     {
         return size;
     }
@@ -94,7 +94,7 @@ public:
         size++;
     }
 
-    void push_back(const T &value)
+    void push_back(const T &value) override
     {
         Node<T> *new_node = new Node<T>(value);
 
@@ -180,7 +180,7 @@ public:
         size--;
     }
 
-    T &get(size_t index)
+    T &get(size_t index) override
     {
         if (index < 0 || index >= size)
             throw std::out_of_range("Out of range");
@@ -236,17 +236,9 @@ public:
         
         return *this;
     }
-    LinkedList<T> & concat(LinkedList<T> &other)
-    {
-        for (auto b : other)
-        {
-            push_back(b);
-        }
-        return *this;
-    }
     LinkedList<T> &operator+=(LinkedList<T> &other)
     {
-        return concat(other);
+        return *concat(&other);
     }
     LinkedList<T> &unsafe_concat(LinkedList<T> &other)
     {
