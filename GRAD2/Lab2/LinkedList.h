@@ -96,13 +96,13 @@ public:
 
     void push_back(const T &value) override
     {
-        Node<T> *new_node = new Node<T>(value);
-
         if (is_empty())
         {
             push_front(value);
             return;
         }
+     
+        Node<T> *new_node = new Node<T>(value);
 
         tail->next = new_node;
         new_node->prev = tail;
