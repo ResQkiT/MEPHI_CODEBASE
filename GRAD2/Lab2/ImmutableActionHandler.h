@@ -20,7 +20,7 @@ public:
 
     ~ImmutableActionHandler()
     {
-        delete[] working_sequence;
+        delete working_sequence;
     }
 
     ImmutableActionHandler<T> *create_linked_list_sequence() override

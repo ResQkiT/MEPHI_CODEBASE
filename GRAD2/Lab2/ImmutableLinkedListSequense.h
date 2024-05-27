@@ -11,7 +11,13 @@ private:
     LinkedList<T> impl;
 
     ImmutableLinkedListSequence(LinkedList<T> & list) : impl{list}{}
-
+protected:
+    void _add_to_end(T item) override {
+        impl.push_back(item);
+    }
+    ImmutableLinkedListSequence<T> * create_instance() override {
+        return new ImmutableLinkedListSequence<T>();
+    }
 public:
 
     ImmutableLinkedListSequence(): impl{LinkedList<T>()}{}
@@ -81,16 +87,6 @@ public:
         for (size_t i = index; i < impl.get_size(); i++, it++)
         {
             new_list.push_back(*it);
-        }
-
-        return new ImmutableLinkedListSequence<T>(new_list);
-    }
-    ImmutableLinkedListSequence<T> * concat(ImmutableSequence<T> * list) override
-    {
-        LinkedList<T> new_list(impl);
-        for (size_t i = 0; i < new_list.get_size(); i++)
-        {
-            new_list.push_back(list->get(i));
         }
 
         return new ImmutableLinkedListSequence<T>(new_list);

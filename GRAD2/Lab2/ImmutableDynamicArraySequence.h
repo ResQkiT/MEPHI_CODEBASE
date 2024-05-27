@@ -13,6 +13,13 @@ private:
 
     ImmutableDynamicArraySequence(DynamicArray<T> & list) : impl{list} {}
 
+protected:
+    void _add_to_end(T item) override {
+        impl.push_back(item);
+    }
+    ImmutableDynamicArraySequence<T> * create_instance() override {
+        return new ImmutableDynamicArraySequence<T>();
+    }
 public:
 
     ImmutableDynamicArraySequence(): impl{DynamicArray<T>()}{}
@@ -87,15 +94,4 @@ public:
 
         return new ImmutableDynamicArraySequence<T>(new_array);
     }
-
-    ImmutableDynamicArraySequence<T> * concat(ImmutableSequence<T> *list) override
-    {
-        DynamicArray<T> new_array(impl);
-        for (size_t i = 0; i < list->get_length(); i++)
-        {
-            new_array.push_back(list->get(i));
-        }
-        return new ImmutableDynamicArraySequence<T>(new_array);
-    }
-
 };

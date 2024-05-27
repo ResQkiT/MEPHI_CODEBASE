@@ -3,6 +3,9 @@
 template<class T>
 class ImmutableSequence
 {
+protected:
+    virtual void _add_to_end(T item) = 0;
+    virtual ImmutableSequence<T> * create_instance() = 0;
 public:
     virtual ~ImmutableSequence() = default;
 
@@ -19,5 +22,17 @@ public:
     virtual ImmutableSequence<T> * prepend(T item) = 0;
     virtual ImmutableSequence<T> * insert_at(size_t index, T item) = 0;
     
-    virtual ImmutableSequence<T> * concat(ImmutableSequence<T> * list) = 0;
+    ImmutableSequence<T> * concat(ImmutableSequence<T> * list){
+        ImmutableSequence<T> *new_sequence = create_instance();
+        for (size_t i = 0; i < this->get_length(); i++)
+        {
+            new_sequence->_add_to_end(this->get(i));
+        }
+
+        for (size_t i = 0; i < list->get_length(); i++)
+        {
+            new_sequence->_add_to_end(list->get(i));
+        }
+        return new_sequence;
+    }
 };

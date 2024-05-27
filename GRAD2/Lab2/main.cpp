@@ -31,6 +31,7 @@ void work(AbstractActionListener<T> * listener){
         4 - for adding element at the end\n\\
         5 - for adding element at definite possition\n\\
         6 - for adding element at begining\n\\
+        7 - create another list and concat with yours\n\\
         -1 - for return back\n->";
         int choice;
         console_get_or_throw(choice);
@@ -54,7 +55,9 @@ void work(AbstractActionListener<T> * listener){
         case 6:
             listener->add_element_to_begin();
             break;
-        
+        case 7:
+            listener->concat_with_new_sequence();
+            break;
         case -1:
             is_working = false;
             break;
