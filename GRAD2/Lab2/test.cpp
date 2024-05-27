@@ -142,7 +142,7 @@ namespace tests
     /// @brief checks if subs function work correct with args 0 0 in LinkedListSequence
     void test_linked_sequence_get_subsequence() {
         int arr[] = {3, 2 ,1};
-        LinkedListSequence<int> list(arr , 1);
+        LinkedListSequence<int> list(arr , 3);
         LinkedListSequence<int> * subsequence = list.get_subsequence(0, 0);
         assert(subsequence->get_length() == 1);
         assert(subsequence->get(0) == arr[0]);

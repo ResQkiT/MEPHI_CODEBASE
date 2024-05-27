@@ -2,10 +2,10 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
-#include "IConcatenable.h"
+#include "IConcatable.h"
 
 template <typename T>
-class DynamicArray : public IConcatenable<T> 
+class DynamicArray : public IConcatable<T> 
 {
 private:
     T *data;
@@ -59,12 +59,11 @@ public:
 
     DynamicArray(const DynamicArray<T> &other) : size{other.size}, capacity{other.capacity}
     {
-        this->operator=(other);
+        *this = other;
     }
 
-    DynamicArray(DynamicArray<T> &&other) : size{std::move(other.size)}, capacity{std::move(other.capacity)}
+    DynamicArray(DynamicArray<T> &&other) : size{std::move(other.size)}, capacity{std::move(other.capacity)}, data{std::move(other.data)}
     {
-        this->data = std::move(other.data);
         other.capacity = 0;
         other.size = 0;
         other.data = nullptr;

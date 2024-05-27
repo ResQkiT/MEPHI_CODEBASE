@@ -70,17 +70,17 @@ public:
     ImmutableLinkedListSequence<T> * insert_at(size_t index, T item) override
     {
         LinkedList<T> new_list;
-
-        for (size_t i = 0; i < index; i++)
+        auto it = impl.begin();
+        for (size_t i = 0; i < index; i++, it++)
         {
-            new_list.push_back(impl.get(i));
+            new_list.push_back(*it);
         }
         
         new_list.push_back(item);
         
-        for (size_t i = index; i < impl.get_size(); i++)
+        for (size_t i = index; i < impl.get_size(); i++, it++)
         {
-            new_list.push_back(impl.get(i));
+            new_list.push_back(*it);
         }
 
         return new ImmutableLinkedListSequence<T>(new_list);

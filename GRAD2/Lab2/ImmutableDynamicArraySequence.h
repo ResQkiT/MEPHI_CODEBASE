@@ -56,21 +56,17 @@ public:
 
     ImmutableDynamicArraySequence<T> * append(T item) override
     {
-        DynamicArray<T> newDArray(impl);
-        newDArray.push_back(item);
-        return new ImmutableDynamicArraySequence<T>(newDArray);
+        DynamicArray<T> new_array(impl);
+        new_array.push_back(item);
+        return new ImmutableDynamicArraySequence<T>(new_array);
     }
 
     ImmutableDynamicArraySequence<T> * prepend(T item) override
     {
-        DynamicArray<T> newDArray;
-        newDArray.push_back(item);
-        for (size_t i = 0; i < impl.get_size(); i++)
-        {
-            newDArray.push_back(impl[i]);
-        }
-        
-        return new ImmutableDynamicArraySequence<T>(newDArray);
+        DynamicArray<T> new_array;
+        new_array.push_back(item);
+        new_array.concat(&impl);
+        return new ImmutableDynamicArraySequence<T>(new_array);
     }
 
     ImmutableDynamicArraySequence<T> * insert_at(size_t index, T item) override

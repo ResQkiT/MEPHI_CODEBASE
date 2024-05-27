@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "IConcatenable.h"
+#include "IConcatable.h"
 template <typename T>
 class Node
 {
@@ -13,7 +13,7 @@ public:
 };
 
 template <typename T>
-class LinkedList : public IConcatenable<T>
+class LinkedList : public IConcatable<T>
 {
 
 private:
@@ -187,8 +187,8 @@ public:
         if (is_empty())
             throw std::out_of_range("List is empty");
         auto it = begin();
-        for (int i = 0; i < index; it++){
-            i++;
+        for (int i = 0; i < index; i++){
+            it++;
         }
         return *it;
     }
@@ -199,41 +199,16 @@ public:
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
     {
-        if(this == &other){
+        if(other.is_empty()){
             return *this;
         }
 
         delete_list();
-        head = other.head;
-        tail = other.tail;
-        size = other.size;
-
-        if (head)
-        {
-            Node<T> *otherCurr = other.head;
-            Node<T> *newCurr = new Node<T>(otherCurr->data);
-            head = newCurr;
-
-            Node<T> *prev = nullptr;
-            while (otherCurr->next)
-            {
-                otherCurr = otherCurr->next;
-                newCurr->next = new Node<T>(otherCurr->data);
-                newCurr = newCurr->next;
-                prev = newCurr;
-            }
-            tail = prev;
-            Node<T> *curr = head;
-            while (curr)
-            {
-                if (curr->next)
-                {
-                    curr->next->prev = curr;
-                }
-                curr = curr->next;
-            }
+        Node<T> *other_cur = other.head;
+        while(other_cur){
+            push_back(other_cur->data);
+            other_cur = other_cur->next;
         }
-
         return *this;
     }
     LinkedList<T> &operator+=(LinkedList<T> &other)
