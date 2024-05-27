@@ -12,6 +12,8 @@ private:
     size_t size;
     size_t capacity;
 
+    /// @brief Увеличивает объем выделенной памяти
+    /// @param new_capacity - новый выделенный объем
     void enlarge(size_t new_capacity)
     {
         if (new_capacity == 0)
@@ -57,8 +59,7 @@ public:
 
     DynamicArray(const DynamicArray<T> &other) : size{other.size}, capacity{other.capacity}
     {
-        data = new T[capacity];
-        std::copy(other.data, other.data + size, data);
+        this->operator=(other);
     }
 
     DynamicArray(DynamicArray<T> &&other) : size{std::move(other.size)}, capacity{std::move(other.capacity)}
@@ -89,6 +90,7 @@ public:
         *(data + index) = value;
     }
 
+    ///Изменяет размер массива не очищая память, в случае если new_size > size, инициализирует переменные значениями по умолчанию
     void resize(size_t new_size)
     {
         if (new_size > size)
@@ -140,8 +142,7 @@ public:
 
     void clear()
     {
-        enlarge(4);
-        size = 0;
+        resize(0);
     }
 
     T &operator[](size_t index)
@@ -165,10 +166,11 @@ public:
     }
     const DynamicArray<T> &operator=(const DynamicArray<T> &other)
     {
-        this->capacity = other.capacity;
         this->size = other.size;
-        enlarge(other.capacity);
-        std::copy(other.data, other.data + size, data);
+        this->capacity = other.capacity;
+        T * new_data = new T[capacity];
+        std::copy(other.data, other.data + size, new_data);
+        data = new_data;
         return *this;
     }
     DynamicArray<T> &operator+=(const DynamicArray<T> &other)
@@ -203,7 +205,6 @@ public:
         {
             //для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n; 
             if(index + n > ptr->size) throw std::out_of_range("Iterator out of working zone(+)");
-            Iterator(cur + n, index + n, ptr);
             return Iterator(cur + n, index + n, ptr);
         }
 
