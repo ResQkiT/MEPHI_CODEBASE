@@ -36,7 +36,6 @@ private:
         data = new_data;
         capacity = new_capacity;
     }
-
 public:
     DynamicArray() : data{nullptr}, size{0}, capacity{4}
     {
@@ -57,7 +56,7 @@ public:
         std::copy(data, data + size, this->data);
     }
 
-    DynamicArray(const DynamicArray<T> &other) : size{other.size}, capacity{other.capacity}
+    DynamicArray(const DynamicArray<T> &other) : size{other.size}, capacity{other.capacity} , data{nullptr}
     {
         *this = other;
     }
@@ -165,6 +164,7 @@ public:
     }
     const DynamicArray<T> &operator=(const DynamicArray<T> &other)
     {
+        delete[] data;
         this->size = other.size;
         this->capacity = other.capacity;
         T * new_data = new T[capacity];

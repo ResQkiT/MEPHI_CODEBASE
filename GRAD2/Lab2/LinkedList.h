@@ -199,10 +199,6 @@ public:
 
     LinkedList<T> &operator=(const LinkedList<T> &other)
     {
-        if(other.is_empty()){
-            return *this;
-        }
-
         delete_list();
         Node<T> *other_cur = other.head;
         while(other_cur){
