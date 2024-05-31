@@ -192,6 +192,7 @@ public:
         }
         return *it;
     }
+    
     void clear()
     {
         delete_list();
