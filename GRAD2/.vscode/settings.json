@@ -53,7 +53,8 @@
         "text_encoding": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "cassert": "cpp"
     },
     "cmake.sourceDirectory": "/home/resk/main/c/C_MEPHI/GRAD2/Lab3",
     "cSpell.words": [
