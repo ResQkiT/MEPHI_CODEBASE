@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "BinaryTree.h"
 #include "AvlNode.h"
 
@@ -73,8 +74,9 @@ private:
         target = np;
     }
 
-    void update_left_tree(AvlNode<T> *&target, int &revise_balance_factor)
+    void update_left_tree(AvlNode<T> *&target, int revise_balance_factor)
     {
+        std::cout << "update left" << std::endl;
         AvlNode<T> *lc = target->left;
         if (lc->balance_factor == leftheavy)
         {
@@ -87,9 +89,10 @@ private:
             revise_balance_factor = 0;
         }
     }
-    void update_right_tree(AvlNode<T> *&target, int & revise_balance_factor)
+    void update_right_tree(AvlNode<T> *&target, int revise_balance_factor)
     {
-        AvlNode<T> * rc = target->left;
+        std::cout << "update right" << std::endl;
+        AvlNode<T> * rc = target->right;
         if(rc->balance_factor == rightheavy){
             single_rotate_left(target);
             revise_balance_factor = 0;
@@ -102,15 +105,17 @@ private:
 
     void avl_insert(AvlNode<T> *& tree, AvlNode<T> *& new_node, int &revise_balance_factor)
     {
-        int rebalanceCurrNode;
+        int rebalanceCurrNode = 0;
         if (tree == nullptr)
         {
+            std::cout << "adding " << new_node->element << std::endl;
             tree = new_node;
             tree->balance_factor = balanced;
             revise_balance_factor = 1;
         }
         else if (new_node->element < tree->element)
         {
+            std::cout << "adding left " << new_node->element << std::endl;
             avl_insert(tree->left, new_node, rebalanceCurrNode);
             if (rebalanceCurrNode)
             {
@@ -131,8 +136,9 @@ private:
             else
                 revise_balance_factor = 0;
         }
-        else if (new_node->element < tree->element)
+        else if (new_node->element > tree->element)
         {
+            std::cout << "adding right " << new_node->element << std::endl;
             avl_insert(tree->right, new_node, rebalanceCurrNode);
             if (rebalanceCurrNode)
             {
@@ -154,15 +160,27 @@ private:
                 revise_balance_factor = 0;
         }
     }
+    void make_empty(AvlNode<T> *& target){
+        if(target == nullptr)
+            return;
+        make_empty(target->left);
+        make_empty(target->right);
+        //на этом этапе оба потомка очищены, можно спокойно удалять
+        std::cout << "cleaning " << target->element << " ";
+        size --;
+        delete target;
+        target = nullptr;
+    }    
 
 public:
+    void make_empty(){
+        make_empty(this->root);
+    }
     void insert(const T &item)
     {
-        AvlNode<T> *tree_root =this->root;
         AvlNode<T> *new_node = new AvlNode<T>(item, nullptr, nullptr, 0);
         int revise_factor = 0;
-        avl_insert(tree_root, new_node, revise_factor);
-        this->root = tree_root;
+        avl_insert(this->root, new_node, revise_factor);
         this->size++;
     }
     AvlTree(){
@@ -171,9 +189,12 @@ public:
     AvlTree(T arr[], size_t size){
         for (size_t i = 0; i < size; i++)
         {
+
             insert(arr[i]);
         }
     }
-    ~AvlTree() = default;
+    ~AvlTree(){
+        make_empty();
+    }
     // AvlNode(const AvlTree<T> & other){}
 };

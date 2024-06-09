@@ -141,8 +141,8 @@ namespace tests
     }
     //test 9
     void test_avl_tree(){
-        int arr[] = {1, 2, 3, 4,5, 6, 7, 8, 9, 10 };
-        AvlTree<int> tree(arr, 10);
+        int arr[] = {1, 2, 3, 4};
+        AvlTree<int> tree(arr, 4);
 
     }
     

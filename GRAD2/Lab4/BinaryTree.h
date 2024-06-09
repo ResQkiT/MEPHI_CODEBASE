@@ -83,6 +83,7 @@ private:
 
         make_empty(target->left);
         make_empty(target->right);
+        //на этом этапе оба потомка очищены, можно спокойно удалять
         size--;
         delete target;
         target = nullptr;
