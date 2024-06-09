@@ -140,11 +140,21 @@ namespace tests
         
     }
     //test 9
-    void test_avl_tree(){
+    void test_avl_tree_initialization_and_insertion(){
         int arr[] = {1, 2, 3, 4};
         AvlTree<int> tree(arr, 4);
-
+        assert(tree.get_size() == 4);
+        tree.insert(-1);
+        assert(tree.get_size() == 5);
+        tree.insert(15);
+        assert(tree.get_size() == 6);
+        tree.insert(0);
+        assert(tree.get_size() == 7);
+        tree.insert(1);
+        assert(tree.get_size() == 7);
+        
     }
+    void test_avl_insert(){}
     
     const static function<void(void)> test_functions[] = {
         create_binary_tree,
@@ -155,7 +165,7 @@ namespace tests
         test_post_order,
         test_custom_order,
         test_post_order_exception,
-        test_avl_tree
+        test_avl_tree_initialization_and_insertion
     };
     void run(){
         cout << "Starting tests..." << endl;

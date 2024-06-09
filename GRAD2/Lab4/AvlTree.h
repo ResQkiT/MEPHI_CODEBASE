@@ -103,20 +103,22 @@ private:
         }
     }
 
-    void avl_insert(AvlNode<T> *& tree, AvlNode<T> *& new_node, int &revise_balance_factor)
+    void avl_insert(AvlNode<T> *& tree, const T& value, int &revise_balance_factor)
     {
+        
         int rebalanceCurrNode = 0;
         if (tree == nullptr)
         {
-            std::cout << "adding " << new_node->element << std::endl;
-            tree = new_node;
+            std::cout << "adding " << value << std::endl;
+            tree = new AvlNode<T>(value, nullptr, nullptr, 0);
+            this->size++;
             tree->balance_factor = balanced;
             revise_balance_factor = 1;
         }
-        else if (new_node->element < tree->element)
+        else if (value < tree->element)
         {
-            std::cout << "adding left " << new_node->element << std::endl;
-            avl_insert(tree->left, new_node, rebalanceCurrNode);
+            std::cout << "adding left " << value<< std::endl;
+            avl_insert(tree->left, value, rebalanceCurrNode);
             if (rebalanceCurrNode)
             {
                 if (tree->balance_factor == leftheavy)
@@ -136,10 +138,10 @@ private:
             else
                 revise_balance_factor = 0;
         }
-        else if (new_node->element > tree->element)
+        else if (value > tree->element)
         {
-            std::cout << "adding right " << new_node->element << std::endl;
-            avl_insert(tree->right, new_node, rebalanceCurrNode);
+            std::cout << "adding right " << value << std::endl;
+            avl_insert(tree->right, value, rebalanceCurrNode);
             if (rebalanceCurrNode)
             {
                 if (tree->balance_factor == rightheavy)
@@ -178,10 +180,12 @@ public:
     }
     void insert(const T &item)
     {
-        AvlNode<T> *new_node = new AvlNode<T>(item, nullptr, nullptr, 0);
         int revise_factor = 0;
-        avl_insert(this->root, new_node, revise_factor);
-        this->size++;
+        avl_insert(this->root, item, revise_factor);
+        
+    }
+    size_t get_size(){
+        return this->size;
     }
     AvlTree(){
         this->root = nullptr;

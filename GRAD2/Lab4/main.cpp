@@ -4,8 +4,22 @@
 #include "../ExtendedMenu/Menu.h"
 #include "../ExtendedMenu/ICommand.h"
 #include "../ExtendedMenu/MultiCommand.h"
+#include "Property.h"
+
+template<class T>
+class Test{
+
+public:
+    Property<int> a;
+    Test(): a{0} {};
+};
 
 int main(){
+    Test<int> test;
+    std::cout << test.a;
+    test.a = 5;
+    std::cout << test.a;
+
     Menu menu;
     MultiCommand<StartTestCommand> command;
     MenuElement main_menu_element_list[]={

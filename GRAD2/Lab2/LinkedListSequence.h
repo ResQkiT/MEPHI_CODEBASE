@@ -99,9 +99,6 @@ public:
         return impl.end();
     }
 
-   
-
-
     LinkedListSequence<T> operator+(const LinkedListSequence<T> &other) const
     {
         LinkedListSequence<T> newLinkedListSequence;
@@ -114,6 +111,7 @@ public:
     {
         return concat(other);
     }
+    
     LinkedListSequence<T> &operator=(const LinkedListSequence<T> & other){
         impl = other.impl;
         return *this;
