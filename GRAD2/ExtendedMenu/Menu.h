@@ -16,6 +16,7 @@ public:
     ~Menu();
     void print_menu();
     void add_menu_element(const MenuElement & menu_element);
+    void add_menu_element(const MenuElement list_of_elements[] , size_t size);
     void exec() override;
     Menu * clone() override;
     void handle_input();

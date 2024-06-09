@@ -24,6 +24,12 @@ void Menu::print_menu(){
 void Menu::add_menu_element(const MenuElement & menu_element){
     menu[menu.size() + 1] = menu_element;
 }
+void Menu::add_menu_element(const MenuElement list_of_elements[] , size_t size){
+    for (size_t i = 0; i < size; i++)
+    {
+        add_menu_element(list_of_elements[i]);
+    }  
+}
 void Menu::exec(){
     run();
     while (is_running())

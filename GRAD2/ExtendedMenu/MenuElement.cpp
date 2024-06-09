@@ -6,7 +6,7 @@ MenuElement::MenuElement() : element_name{""}, runtime_command{nullptr}
 {
 }
 
-MenuElement::MenuElement(std::string name, ICommand * command) : element_name{name} , runtime_command{command->clone()}{
+MenuElement::MenuElement(std::string name, ICommand * command) : element_name{name}, runtime_command{command->clone()}{
 }   
 
 std::string MenuElement::get_name()
@@ -18,7 +18,9 @@ MenuElement::MenuElement(const MenuElement &other) : element_name{other.element_
 {
 }
 
-MenuElement::~MenuElement() = default;
+MenuElement::~MenuElement(){
+    delete runtime_command;
+}
 
 void MenuElement::exec(){
     if(runtime_command == nullptr){
@@ -28,8 +30,8 @@ void MenuElement::exec(){
     runtime_command->exec();
 }
 MenuElement & MenuElement::operator=(const MenuElement & other){
-
     element_name = other.element_name;
+    delete runtime_command;
     runtime_command = other.runtime_command->clone();
     return *this;
 }

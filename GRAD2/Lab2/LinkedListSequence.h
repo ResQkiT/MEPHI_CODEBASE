@@ -118,4 +118,5 @@ public:
         impl = other.impl;
         return *this;
     }
+
 };
