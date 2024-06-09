@@ -10,24 +10,22 @@ concept Comparable = requires(T a, T b) {
     a > b;
 };
 
-
-
-
-
-template <class T> requires Comparable<T>
+template <class T>
 class BinaryTree
 {
+protected:
+    size_t size = 0;
+    BinaryNode<T> * root = nullptr;
 private:
-    size_t size;
-    BinaryNode<T> *root;
 
     BinaryNode<T> *clone(const BinaryNode<T> *other)
     {
         if (other == nullptr)
             return nullptr;
         else
-            return new BinaryNode<T>(other->element, clone(other->left_node), clone(other->right_node));
+            return new BinaryNode<T>(other->element, clone(other->left), clone(other->right));
     }
+
 
     void insert(const T &value, BinaryNode<T> *&target)
     {
@@ -39,11 +37,11 @@ private:
         }
         else if (value < target->element)
         {
-            insert(value, target->left_node);
+            insert(value, target->left);
         }
         else if (value > target->element)
         {
-            insert(value, target->right_node);
+            insert(value, target->right);
         }
         // не вставляем повторяющиеся данные
     }
@@ -56,22 +54,22 @@ private:
         {
             if (theElement < target->element)
             {
-                remove(theElement, target->left_node);
+                remove(theElement, target->left);
             }
             else if (theElement > target->element)
             {
-                remove(theElement, target->right_node);
+                remove(theElement, target->right);
             }
-            else if (target->left_node != nullptr && target->right_node != nullptr)
+            else if (target->left != nullptr && target->right != nullptr)
             {
                 // свайп минимального элемента и текущего
-                target->element = find_min(target->right_node)->element;
-                remove(target->element, target->right_node);
+                target->element = find_min(target->right)->element;
+                remove(target->element, target->right);
             }
             else
             { // наподумать
                 BinaryNode<T> *old_node = target;
-                target = (nullptr != target->left_node) ? target->left_node : target->right_node;
+                target = (nullptr != target->left) ? target->left : target->right;
                 size--;
                 delete old_node;
             }
@@ -83,8 +81,8 @@ private:
         if (target == nullptr)
             return;
 
-        make_empty(target->left_node);
-        make_empty(target->right_node);
+        make_empty(target->left);
+        make_empty(target->right);
         size--;
         delete target;
         target = nullptr;
@@ -96,11 +94,11 @@ private:
             return false;
         else if (value < target->element)
         {
-            return find(value, target->left_node);
+            return find(value, target->left);
         }
         else if (value > target->element)
         {
-            return find(value, target->right_node);
+            return find(value, target->right);
         }
         else
         { // value == target->element
@@ -111,9 +109,9 @@ private:
     {
         if (nullptr != target_node)
         {
-            while (nullptr != target_node->left_node)
+            while (nullptr != target_node->left)
             {
-                target_node = target_node->left_node;
+                target_node = target_node->left;
             }
         }
 
@@ -123,9 +121,9 @@ private:
     {
         if (nullptr != target_node)
         {
-            while (nullptr != target_node->right_node)
+            while (nullptr != target_node->right)
             {
-                target_node = target_node->right_node;
+                target_node = target_node->right;
             }
         }
         return target_node;
@@ -136,25 +134,25 @@ private:
             return;
         std::cout << target_node->element << " ";
         buffer.append(target_node->element);
-        pre_order(target_node->left_node, buffer);
-        pre_order(target_node->right_node, buffer);
+        pre_order(target_node->left, buffer);
+        pre_order(target_node->right, buffer);
     }
     void in_order(BinaryNode<T> *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
-        in_order(target_node->left_node, buffer);
+        in_order(target_node->left, buffer);
         std::cout << target_node->element << " ";
         buffer.append(target_node->element);
-        in_order(target_node->right_node, buffer);
+        in_order(target_node->right, buffer);
     }
     void post_order(BinaryNode<T> *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
 
-        post_order(target_node->left_node, buffer);
-        post_order(target_node->right_node, buffer);
+        post_order(target_node->left, buffer);
+        post_order(target_node->right, buffer);
         std::cout << target_node->element << " ";
         buffer.append(target_node->element);
     }
@@ -173,10 +171,10 @@ private:
                 buffer.append(target_node->element);
                 break;
             case 'l':
-                custom_order(order, target_node->left_node, buffer);
+                custom_order(order, target_node->left, buffer);
                 break;
             case 'r':
-                custom_order(order, target_node->right_node, buffer);
+                custom_order(order, target_node->right, buffer);
                 break;
             default:
                 break;
@@ -190,23 +188,7 @@ private:
         {
             return 0;
         }
-        return std::max(get_children_count(node->left_node), get_children_count(node->right_node)) + 1;
-    }
-
-    BinaryNode<T> *rotate_right(BinaryNode<T> *prev_root)
-    {
-        BinaryNode<T> *new_root = prev_root->left_node;
-        prev_root->right_node = new_root->right_node;
-        new_root->right_node = prev_root;
-        return new_root;
-    }
-
-    BinaryNode<T> *rotate_left(BinaryNode<T> *prev_root)
-    {
-        BinaryNode<T> *new_root = prev_root->right_node;
-        prev_root->right_node = new_root->left_node;
-        new_root->left_node= prev_root;
-        return new_root;
+        return std::max(get_children_count(node->left), get_children_count(node->right)) + 1;
     }
 
     int get_balance(BinaryNode<T> *node)
@@ -215,7 +197,7 @@ private:
         {
             return 0;
         }
-        return get_children_count(node->left_node) - get_children_count(node->right_node);
+        return get_children_count(node->right) - get_children_count(node->left);
     }
 protected:
     BinaryNode<T> * get_root(){
@@ -305,28 +287,6 @@ public:
             T temp = copy.find_min(copy.root)->element;
             copy.remove(temp);
             this->insert(temp);
-        }
-    }
-    void balance()
-    {
-        int balance = get_balance(root);
-
-        if (balance > 1)
-        {
-            if (get_balance(root->left_node) < 0)
-            {
-                root->left_node = rotate_left(root->left_node);
-            }
-            this->root = rotate_right(root);
-        }
-
-        if (balance < -1)
-        {
-            if (get_balance(root->right_node) > 0)
-            {
-                root->right_node = rotate_right(root->right_node);
-            }
-            this->root = rotate_left(root);
         }
     }
 };

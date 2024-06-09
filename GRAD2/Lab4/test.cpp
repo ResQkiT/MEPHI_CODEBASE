@@ -140,20 +140,12 @@ namespace tests
         
     }
     //test 9
-    void test_balance(){
-        size_t test_size = 10;
-        int arr[test_size] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        BinaryTree<int> tree(arr, test_size);
-        DynamicArraySequence<int> list;
-        tree.pre_order(list);
-        tree.in_order(list);
-        tree.post_order(list);
-        tree.balance();
-        std::cout << "After:" << std::endl;
-        tree.pre_order(list);
-        tree.in_order(list);
-        tree.post_order(list);
-        }
+    void test_avl_tree(){
+        int arr[] = {1, 2, 3, 4,5, 6, 7, 8, 9, 10 };
+        AvlTree<int> tree(arr, 10);
+
+    }
+    
     const static function<void(void)> test_functions[] = {
         create_binary_tree,
         delete_binary_tree,
@@ -163,7 +155,7 @@ namespace tests
         test_post_order,
         test_custom_order,
         test_post_order_exception,
-        test_balance
+        test_avl_tree
     };
     void run(){
         cout << "Starting tests..." << endl;
