@@ -24,12 +24,12 @@ void run(ActionHandler<T> & handler){
         if(working_choose == '1'){
             handler.input_data();
         }else if(working_choose == '2'){
-            handler.output_data();
+            handler.in_order_output_data();
         }else if(working_choose == '3'){
-            handler.append_element();
+            handler.insert_element();
         }else if(working_choose == '4'){
-            handler.prepend_element();
-        }else if(working_choose = 'q'){
+            handler.remove_element();
+        }else if(working_choose == 'q'){
             is_running = false;
         }
     }

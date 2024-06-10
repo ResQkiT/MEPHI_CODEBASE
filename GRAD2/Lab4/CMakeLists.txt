@@ -5,6 +5,8 @@ add_executable(main
 main.cpp
 test.cpp
 interface/StartTestCommand.cpp
+interface/StartDialogCommand.cpp
 ../ExtendedMenu/Menu.cpp 
 ../ExtendedMenu/MenuElement.cpp 
+
 )

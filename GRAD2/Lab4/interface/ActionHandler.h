@@ -1,5 +1,5 @@
 #pragma once
-#include "adapters/AbstractAdapter.h"
+#include "AbstractAdapter.h"
 
 #include <iostream>
 #include <string>
@@ -37,28 +37,38 @@ public:
         {
             console_get_or_throw(list[i]);
         }
-        adapter->create_working_adt(list, size);
+        adapter->create_working_atd(list, size);
         return *this;
     }  
-    ActionHandler<T> & output_data(){
+    ActionHandler<T> & pre_order_output_data(){
         cout << "Current data in work: "<<endl;
-        adapter->output();
+        adapter->pre_order_output();
         return *this;
     }
-    ActionHandler<T> & append_element(){
-        cout << "Operation: appending element to beginning" << endl;
+    ActionHandler<T> & in_order_output_data(){
+        cout << "Current data in work: "<<endl;
+        adapter->in_order_output();
+        return *this;
+    }
+    ActionHandler<T> & post_order_output_data(){
+        cout << "Current data in work: "<<endl;
+        adapter->post_order_output();
+        return *this;
+    }
+    ActionHandler<T> & insert_element(){
+        cout << "Operation: appending element" << endl;
         cout << "Please, enter element(same type as mentioned): ";
         T elem;
         console_get_or_throw(elem);
-        adapter->append(elem);
+        adapter->insert(elem);
         return *this;
     }
-    ActionHandler<T> & prepend_element(){
+    ActionHandler<T> & remove_element(){
         cout << "Operation: prepending element to ending" << endl;
         cout << "Please, enter element(same type as mentioned): ";
         T elem;
         console_get_or_throw(elem);
-        adapter->prepend(elem);
+        adapter->remove(elem);
         return *this;
     }
     

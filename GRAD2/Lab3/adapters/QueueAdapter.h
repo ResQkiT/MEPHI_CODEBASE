@@ -43,7 +43,7 @@ public:
         return type;
     }
     QueueAdapter<T> * clone(){
-        QueueAdapter<T> * clone = new QueueAdapter();
+        QueueAdapter<T> * clone = new QueueAdapter<T>();
         clone->type = this->type;
         clone->container = this->container; 
         return clone;

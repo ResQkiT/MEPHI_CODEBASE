@@ -3,20 +3,14 @@
 #include "BinaryNode.h"
 #include "../Lab2/Sequence.h"
 #include <string>
+#include "Comparable.h"
 
-template <class T>
-concept Comparable = requires(T a, T b) {
-    a < b;
-    a > b;
-};
-
-template <class T>
+template <class T> requires Comparable<T>
 class BinaryTree
 {
-protected:
+private:
     size_t size = 0;
     BinaryNode<T> * root = nullptr;
-private:
 
     BinaryNode<T> *clone(const BinaryNode<T> *other)
     {
@@ -183,27 +177,6 @@ private:
         }
     }
 
-    int get_children_count(BinaryNode<T> *node)
-    {
-        if (node == nullptr)
-        {
-            return 0;
-        }
-        return std::max(get_children_count(node->left), get_children_count(node->right)) + 1;
-    }
-
-    int get_balance(BinaryNode<T> *node)
-    {
-        if (node == nullptr)
-        {
-            return 0;
-        }
-        return get_children_count(node->right) - get_children_count(node->left);
-    }
-protected:
-    BinaryNode<T> * get_root(){
-        return this->root;
-    }
 public:
     BinaryTree() : size{0}, root{nullptr} {}
 

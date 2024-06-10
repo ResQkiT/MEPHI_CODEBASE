@@ -1,132 +1,16 @@
 #include <iostream>
 #include "AvlNode.h"
 #include "../Lab2/Sequence.h"
+#include "Comparable.h"
 
-template <typename T>
+template <class T> requires Comparable<T>
 class AvlTree
 {
-public:
+private:
 
     AvlNode<T> *root = nullptr;
     size_t size = 0;
-    AvlTree(){
-    }
-    AvlTree(const T arr[], size_t size){
-        for (size_t i = 0; i < size; i++)
-        {
-            insert(arr[i]);
-        }
-        
-    }
-    ~AvlTree()
-    {
-        size = 0;
-        make_empty(root);
-    }
-    size_t get_size(){
-        return size;
-    }
-    void insert(T value)
-    {
-        root = insert(root, value);
-    }
-    void remove(T value)
-    {
-        root = remove(root, value);
-    }
-    AvlNode<T> *find(T value)
-    {
-        return find(root, value);
-    }
-    void pre_order(Sequence<T> &buffer) const
-    {
-        pre_order(root, buffer);
-        std::cout << '\n';
-    }
 
-    void in_order(Sequence<T> &buffer) const
-    {
-        in_order(root, buffer);
-        std::cout << '\n';
-    }
-
-    void post_order(Sequence<T> &buffer) const
-    {
-        post_order(root, buffer);
-        std::cout << '\n';
-    }
-    //"R"-root "r"-right "l"-left
-    void custom_order(std::string &order, Sequence<T> &buffer) const
-    {
-        custom_order(order, root, buffer);
-        std::cout << '\n';
-    }
-
-private:
-    void pre_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
-    {
-        if (target_node == nullptr)
-            return;
-        std::cout << target_node->element << " ";
-        buffer.append(target_node->element);
-        pre_order(target_node->left, buffer);
-        pre_order(target_node->right, buffer);
-    }
-    void in_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
-    {
-        if (target_node == nullptr)
-            return;
-        in_order(target_node->left, buffer);
-        std::cout << target_node->element << " ";
-        buffer.append(target_node->element);
-        in_order(target_node->right, buffer);
-    }
-    void post_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
-    {
-        if (target_node == nullptr)
-            return;
-
-        post_order(target_node->left, buffer);
-        post_order(target_node->right, buffer);
-        std::cout << target_node->element << " ";
-        buffer.append(target_node->element);
-    }
-    void custom_order(std::string &order, AvlNode<T> *target_node, Sequence<T> &buffer) const
-    {
-        if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
-            throw std::invalid_argument("Incorrect order");
-        if (target_node == nullptr)
-            return;
-        for (int i = 0; i < 3; i++)
-        {
-            switch (order.at(i))
-            {
-            case 'R':
-                std::cout << target_node->element << " ";
-                buffer.append(target_node->element);
-                break;
-            case 'l':
-                custom_order(order, target_node->left, buffer);
-                break;
-            case 'r':
-                custom_order(order, target_node->right, buffer);
-                break;
-            default:
-                break;
-            }
-        }
-    }
-    void make_empty(AvlNode<T> *&target)
-    {
-        if (target == nullptr)
-            return;
-        make_empty(target->left);
-        make_empty(target->right);
-        // на этом этапе оба потомка очищены, можно спокойно удалять
-        std::cout << "cleaning " << target->element << " ";
-        delete target;
-        target = nullptr;
-    }
     int height(AvlNode<T> *head)
     {
         if (head == nullptr)
@@ -151,6 +35,14 @@ private:
         head->height = 1 + std::max(height(head->left), height(head->right));
         newhead->height = 1 + std::max(height(newhead->left), height(newhead->right));
         return newhead;
+    }
+
+    AvlNode<T> *clone(const AvlNode<T> *other)
+    {
+        if (other == nullptr)
+            return nullptr;
+        else
+            return new AvlNode<T>(other->element, clone(other->left), clone(other->right));
     }
 
     AvlNode<T> *insert(AvlNode<T> *head, T value)
@@ -194,6 +86,7 @@ private:
         }
         return head;
     }
+
     AvlNode<T> *remove(AvlNode<T> *head, T value)
     {
         if (head == nullptr)
@@ -261,6 +154,19 @@ private:
         }
         return head;
     }
+
+    void make_empty(AvlNode<T> *&target)
+    {
+        if (target == nullptr)
+            return;
+        make_empty(target->left);
+        make_empty(target->right);
+        // на этом этапе оба потомка очищены, можно спокойно удалять
+        std::cout << "cleaning " << target->element << " ";
+        delete target;
+        target = nullptr;
+    }
+    
     AvlNode<T> *find(AvlNode<T> *head, T value)
     {
         if (head == nullptr)
@@ -272,5 +178,117 @@ private:
             return find(head->left, value);
         if (key < value)
             return find(head->right, value);
+    }
+
+    void pre_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (target_node == nullptr)
+            return;
+        std::cout << target_node->element << " ";
+        buffer.append(target_node->element);
+        pre_order(target_node->left, buffer);
+        pre_order(target_node->right, buffer);
+    }
+    void in_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (target_node == nullptr)
+            return;
+        in_order(target_node->left, buffer);
+        std::cout << target_node->element << " ";
+        buffer.append(target_node->element);
+        in_order(target_node->right, buffer);
+    }
+    void post_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (target_node == nullptr)
+            return;
+
+        post_order(target_node->left, buffer);
+        post_order(target_node->right, buffer);
+        std::cout << target_node->element << " ";
+        buffer.append(target_node->element);
+    }
+    void custom_order(std::string &order, AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
+            throw std::invalid_argument("Incorrect order");
+        if (target_node == nullptr)
+            return;
+        for (int i = 0; i < 3; i++)
+        {
+            switch (order.at(i))
+            {
+            case 'R':
+                std::cout << target_node->element << " ";
+                buffer.append(target_node->element);
+                break;
+            case 'l':
+                custom_order(order, target_node->left, buffer);
+                break;
+            case 'r':
+                custom_order(order, target_node->right, buffer);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    
+    
+
+public:
+    AvlTree()
+    {
+    }
+    AvlTree(const T arr[], size_t size)
+    {
+        for (size_t i = 0; i < size; i++)
+        {
+            insert(arr[i]);
+        }
+    }
+    ~AvlTree()
+    {
+        size = 0;
+        make_empty(root);
+    }
+    size_t get_size()
+    {
+        return size;
+    }
+    void insert(T value)
+    {
+        root = insert(root, value);
+    }
+    void remove(T value)
+    {
+        root = remove(root, value);
+    }
+    AvlNode<T> *find(T value)
+    {
+        return find(root, value);
+    }
+    void pre_order(Sequence<T> &buffer) const
+    {
+        pre_order(root, buffer);
+        std::cout << '\n';
+    }
+
+    void in_order(Sequence<T> &buffer) const
+    {
+        in_order(root, buffer);
+        std::cout << '\n';
+    }
+
+    void post_order(Sequence<T> &buffer) const
+    {
+        post_order(root, buffer);
+        std::cout << '\n';
+    }
+    //"R"-root "r"-right "l"-left
+    void custom_order(std::string &order, Sequence<T> &buffer) const
+    {
+        custom_order(order, root, buffer);
+        std::cout << '\n';
     }
 };
