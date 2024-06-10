@@ -145,6 +145,7 @@ namespace tests
         AvlTree<int> tree(arr, 4);
         assert(tree.get_size() == 4);
         tree.insert(-1);
+        tree.insert(-1);
         assert(tree.get_size() == 5);
         tree.insert(15);
         assert(tree.get_size() == 6);
@@ -154,7 +155,113 @@ namespace tests
         assert(tree.get_size() == 7);
         
     }
-    void test_avl_insert(){}
+    
+    //test 10
+    void test_avl_find(){
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1 , 6, 9};
+        AvlTree<int> tree(arr, test_size);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(tree.find(arr[i]));
+        }
+    }
+    //test 11
+    void test_pre_order_avl(){
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1 , 6, 9};
+        int answer_pre_order_list[test_size] = {5, 3, 2, 1, 4, 8, 7, 6, 10, 9};
+
+        AvlTree<int> tree(arr, test_size);
+        assert(tree.get_size() == test_size);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(tree.find(arr[i]));
+        }
+        DynamicArraySequence<int> list;
+        DynamicArraySequence<int> answerList(answer_pre_order_list, test_size);
+        tree.pre_order(list);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(list.get(i) == answerList.get(i));
+        }
+    }
+    //test 12
+    void test_in_order_avl(){
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1 , 6, 9};
+        int answer_pre_order_list[test_size] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+        AvlTree<int> tree(arr, test_size);
+        assert(tree.get_size() == test_size);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(tree.find(arr[i]));
+        }
+        DynamicArraySequence<int> list;
+        DynamicArraySequence<int> answerList(answer_pre_order_list, test_size);
+        tree.in_order(list);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(list.get(i) == answerList.get(i));
+        }
+    }
+    //test 13
+    void test_post_order_avl(){
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1 , 6, 9};
+        int answer_pre_order_list[test_size] = {1, 2, 4, 3, 6, 7, 9, 10, 8, 5};
+
+        AvlTree<int> tree(arr, test_size);
+        assert(tree.get_size() == test_size);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(tree.find(arr[i]));
+        }
+        DynamicArraySequence<int> list;
+        DynamicArraySequence<int> answerList(answer_pre_order_list, test_size);
+        tree.post_order(list);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(list.get(i) == answerList.get(i));
+        }
+    }
+    //test 14
+    void test_custom_order_avl(){
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1 , 6, 9};
+        int answer_custom_order_list[test_size] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+        AvlTree<int> tree(arr, test_size);
+        assert(tree.get_size() == test_size);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(tree.find(arr[i]));
+        }
+        DynamicArraySequence<int> list;
+        DynamicArraySequence<int> answerList(answer_custom_order_list, test_size);
+        std::string order = "rRl";
+        tree.custom_order(order, list);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            assert(list.get(i) == answerList.get(i));
+        }
+    }
+    void test_avl_tree_deletion(){
+        size_t test_size = 10;
+        int arr[test_size] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+        AvlTree<int> tree(arr, test_size);
+        assert(tree.get_size() == test_size);
+        DynamicArraySequence<int> list;
+        tree.pre_order(list);
+        tree.in_order(list);
+        tree.post_order(list);
+        for (size_t i = 0; i < test_size; i++)
+        {
+            tree.remove(arr[i]);
+            assert(tree.get_size() == test_size - 1 - i);
+        }
+        
+    }
     
     const static function<void(void)> test_functions[] = {
         create_binary_tree,
@@ -165,7 +272,13 @@ namespace tests
         test_post_order,
         test_custom_order,
         test_post_order_exception,
-        test_avl_tree_initialization_and_insertion
+        test_avl_tree_initialization_and_insertion,
+        test_avl_find,
+        test_pre_order_avl,
+        test_in_order,
+        test_post_order,
+        test_custom_order,
+        test_avl_tree_deletion
     };
     void run(){
         cout << "Starting tests..." << endl;

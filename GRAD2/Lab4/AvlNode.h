@@ -3,17 +3,17 @@
 template<class T>
 class AvlNode {
 public:
-    int balance_factor;
+    T element;
     AvlNode<T> * left;
     AvlNode<T> * right;
-    T element;
+    int height;
 public:
-    AvlNode(const T &element, AvlNode<T> *left, AvlNode<T> *right, int balance_factor)
-            : element{element}, left{left}, right{right}, balance_factor{balance_factor} {};
+    AvlNode(const T &element, AvlNode<T> *left, AvlNode<T> *right, int height)
+            : element{element}, left{left}, right{right}, height{height} {};
 
     AvlNode(const T &element)
-            : element{element}, left{nullptr}, right{nullptr}, balance_factor{0} {};
+            : element{element}, left{nullptr}, right{nullptr}, height{1} {};
 
     AvlNode(const AvlNode<T> *other)
-        : element{other->element}, left{other->leftNode}, right{other->rightNod}, balance_factor{other->balance_factor} {}
+        : element{other->element}, left{other->leftNode}, right{other->rightNod}, height{other->height} {}
 };

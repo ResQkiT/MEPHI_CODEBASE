@@ -67,7 +67,7 @@ private:
                 remove(target->element, target->right);
             }
             else
-            { // наподумать
+            { 
                 BinaryNode<T> *old_node = target;
                 target = (nullptr != target->left) ? target->left : target->right;
                 size--;

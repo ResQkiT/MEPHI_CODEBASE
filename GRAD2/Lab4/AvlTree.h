@@ -1,204 +1,276 @@
-#pragma once
 #include <iostream>
-#include "BinaryTree.h"
 #include "AvlNode.h"
+#include "../Lab2/Sequence.h"
 
-const int leftheavy = -1;
-const int balanced = 0;
-const int rightheavy = 1;
-
-template<class T>
+template <typename T>
 class AvlTree
 {
-private:
-    AvlNode<T> * root = nullptr;
+public:
+
+    AvlNode<T> *root = nullptr;
     size_t size = 0;
-
-    void single_rotate_left(AvlNode<T> *&target)
-    {
-        AvlNode<T> *rc;
-        rc = target->right;
-        target->balance_factor = balanced;
-        rc->balance_factor = balanced;
-        target->right = rc->left;
-        rc->left = target;
-
-        target = rc;
+    AvlTree(){
     }
-    void single_rotate_right(AvlNode<T> *&target)
-    {
-        AvlNode<T> *lc;
-        lc = target->left;
-        target->balance_factor = balanced;
-        lc->balance_factor = balanced;
-        target->left = lc->right;
-        lc->right = target;
-        target = lc;
-    }
-    void double_rotate_left(AvlNode<T> *&target)
-    {
-        AvlNode<T> *np = target->right ,*lc = np->left;
-        if(lc->balance_factor = leftheavy){
-            target->balance_factor = balanced;
-            np->balance_factor = leftheavy;
-        }
-        else{
-            target->balance_factor = leftheavy;
-            np->balance_factor = balanced;
-        }
-        lc->balance_factor = balanced;
-
-        np->left = lc->right;
-        lc->right = np;
-        target->right = lc->left;
-        lc->left = target;
-        target = lc;
-    }
-    void double_rotate_right(AvlNode<T> *&target)
-    {
-        AvlNode<T> *lc = target->left, *np = lc->right;
-
-        if(np->balance_factor == rightheavy){
-            target->balance_factor = balanced;
-            lc->balance_factor = rightheavy;
-        }
-        else{
-            target->balance_factor = rightheavy;
-            lc->balance_factor = balanced;
-        }
-        np->balance_factor = balanced;
-        lc->right = np->left;
-        np->left = lc;
-        target->left = np->right;
-        np->right = target;
-        target = np;
-    }
-
-    void update_left_tree(AvlNode<T> *&target, int revise_balance_factor)
-    {
-        std::cout << "update left" << std::endl;
-        AvlNode<T> *lc = target->left;
-        if (lc->balance_factor == leftheavy)
+    AvlTree(const T arr[], size_t size){
+        for (size_t i = 0; i < size; i++)
         {
-            single_rotate_right(target);
-            revise_balance_factor = 0;
+            insert(arr[i]);
         }
-        else if (lc->balance_factor == rightheavy)
-        {
-            double_rotate_right(target);
-            revise_balance_factor = 0;
-        }
-    }
-    void update_right_tree(AvlNode<T> *&target, int revise_balance_factor)
-    {
-        std::cout << "update right" << std::endl;
-        AvlNode<T> * rc = target->right;
-        if(rc->balance_factor == rightheavy){
-            single_rotate_left(target);
-            revise_balance_factor = 0;
-        }
-        else if (rc->balance_factor == leftheavy){
-            double_rotate_left(target);
-            revise_balance_factor = 0;
-        }
-    }
-
-    void avl_insert(AvlNode<T> *& tree, const T& value, int &revise_balance_factor)
-    {
         
-        int rebalanceCurrNode = 0;
-        if (tree == nullptr)
-        {
-            std::cout << "adding " << value << std::endl;
-            tree = new AvlNode<T>(value, nullptr, nullptr, 0);
-            this->size++;
-            tree->balance_factor = balanced;
-            revise_balance_factor = 1;
-        }
-        else if (value < tree->element)
-        {
-            std::cout << "adding left " << value<< std::endl;
-            avl_insert(tree->left, value, rebalanceCurrNode);
-            if (rebalanceCurrNode)
-            {
-                if (tree->balance_factor == leftheavy)
-                    update_left_tree(tree, revise_balance_factor);
+    }
+    ~AvlTree()
+    {
+        size = 0;
+        make_empty(root);
+    }
+    size_t get_size(){
+        return size;
+    }
+    void insert(T value)
+    {
+        root = insert(root, value);
+    }
+    void remove(T value)
+    {
+        root = remove(root, value);
+    }
+    AvlNode<T> *find(T value)
+    {
+        return find(root, value);
+    }
+    void pre_order(Sequence<T> &buffer) const
+    {
+        pre_order(root, buffer);
+        std::cout << '\n';
+    }
 
-                else if (tree->balance_factor == balanced)
-                {
-                    tree->balance_factor = leftheavy;
-                    revise_balance_factor = 1;
-                }
-                else
-                {
-                    tree->balance_factor = balanced;
-                    revise_balance_factor = 0;
-                }
-            }
-            else
-                revise_balance_factor = 0;
-        }
-        else if (value > tree->element)
-        {
-            std::cout << "adding right " << value << std::endl;
-            avl_insert(tree->right, value, rebalanceCurrNode);
-            if (rebalanceCurrNode)
-            {
-                if (tree->balance_factor == rightheavy)
-                    update_right_tree(tree, revise_balance_factor);
+    void in_order(Sequence<T> &buffer) const
+    {
+        in_order(root, buffer);
+        std::cout << '\n';
+    }
 
-                else if (tree->balance_factor == balanced)
-                {
-                    tree->balance_factor = rightheavy;
-                    revise_balance_factor = 1;
-                }
-                else
-                {
-                    tree->balance_factor = balanced;
-                    revise_balance_factor = 0;
-                }
+    void post_order(Sequence<T> &buffer) const
+    {
+        post_order(root, buffer);
+        std::cout << '\n';
+    }
+    //"R"-root "r"-right "l"-left
+    void custom_order(std::string &order, Sequence<T> &buffer) const
+    {
+        custom_order(order, root, buffer);
+        std::cout << '\n';
+    }
+
+private:
+    void pre_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (target_node == nullptr)
+            return;
+        std::cout << target_node->element << " ";
+        buffer.append(target_node->element);
+        pre_order(target_node->left, buffer);
+        pre_order(target_node->right, buffer);
+    }
+    void in_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (target_node == nullptr)
+            return;
+        in_order(target_node->left, buffer);
+        std::cout << target_node->element << " ";
+        buffer.append(target_node->element);
+        in_order(target_node->right, buffer);
+    }
+    void post_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (target_node == nullptr)
+            return;
+
+        post_order(target_node->left, buffer);
+        post_order(target_node->right, buffer);
+        std::cout << target_node->element << " ";
+        buffer.append(target_node->element);
+    }
+    void custom_order(std::string &order, AvlNode<T> *target_node, Sequence<T> &buffer) const
+    {
+        if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
+            throw std::invalid_argument("Incorrect order");
+        if (target_node == nullptr)
+            return;
+        for (int i = 0; i < 3; i++)
+        {
+            switch (order.at(i))
+            {
+            case 'R':
+                std::cout << target_node->element << " ";
+                buffer.append(target_node->element);
+                break;
+            case 'l':
+                custom_order(order, target_node->left, buffer);
+                break;
+            case 'r':
+                custom_order(order, target_node->right, buffer);
+                break;
+            default:
+                break;
             }
-            else
-                revise_balance_factor = 0;
         }
     }
-    void make_empty(AvlNode<T> *& target){
-        if(target == nullptr)
+    void make_empty(AvlNode<T> *&target)
+    {
+        if (target == nullptr)
             return;
         make_empty(target->left);
         make_empty(target->right);
-        //на этом этапе оба потомка очищены, можно спокойно удалять
+        // на этом этапе оба потомка очищены, можно спокойно удалять
         std::cout << "cleaning " << target->element << " ";
-        size --;
         delete target;
         target = nullptr;
-    }    
-
-public:
-    void make_empty(){
-        make_empty(this->root);
     }
-    void insert(const T &item)
+    int height(AvlNode<T> *head)
     {
-        int revise_factor = 0;
-        avl_insert(this->root, item, revise_factor);
-        
+        if (head == nullptr)
+            return 0;
+        return head->height;
     }
-    size_t get_size(){
-        return this->size;
+    AvlNode<T> *right_rotate(AvlNode<T> *head)
+    {
+        AvlNode<T> *newhead = head->left;
+        head->left = newhead->right;
+        newhead->right = head;
+        head->height = 1 + std::max(height(head->left), height(head->right));
+        newhead->height = 1 + std::max(height(newhead->left), height(newhead->right));
+        return newhead;
     }
-    AvlTree(){
-        this->root = nullptr;
-    }
-    AvlTree(T arr[], size_t size){
-        for (size_t i = 0; i < size; i++)
-        {
 
-            insert(arr[i]);
+    AvlNode<T> *left_rotate(AvlNode<T> *head)
+    {
+        AvlNode<T> *newhead = head->right;
+        head->right = newhead->left;
+        newhead->left = head;
+        head->height = 1 + std::max(height(head->left), height(head->right));
+        newhead->height = 1 + std::max(height(newhead->left), height(newhead->right));
+        return newhead;
+    }
+
+    AvlNode<T> *insert(AvlNode<T> *head, T value)
+    {
+        if (head == nullptr)
+        {
+            size += 1;
+            AvlNode<T> *temp = new AvlNode<T>(value);
+            return temp;
         }
+        if (value < head->element)
+            head->left = insert(head->left, value);
+        else if (value > head->element)
+            head->right = insert(head->right, value);
+
+        head->height = 1 + std::max(height(head->left), height(head->right));
+        int bal = height(head->left) - height(head->right);
+        if (bal > 1)
+        {
+            if (value < head->left->element)
+            {
+                return right_rotate(head);
+            }
+            else
+            {
+                head->left = left_rotate(head->left);
+                return right_rotate(head);
+            }
+        }
+        else if (bal < -1)
+        {
+            if (value > head->right->element)
+            {
+                return left_rotate(head);
+            }
+            else
+            {
+                head->right = right_rotate(head->right);
+                return left_rotate(head);
+            }
+        }
+        return head;
     }
-    ~AvlTree(){
-        make_empty();
+    AvlNode<T> *remove(AvlNode<T> *head, T value)
+    {
+        if (head == nullptr)
+            return nullptr;
+        if (value < head->element)
+        {
+            head->left = remove(head->left, value);
+        }
+        else if (value > head->element)
+        {
+            head->right = remove(head->right, value);
+        }
+        else
+        {
+            AvlNode<T> *r = head->right;
+            if (head->right == nullptr)
+            {
+                AvlNode<T> *l = head->left;
+                delete head;
+                size--;
+                head = l;
+            }
+            else if (head->left == nullptr)
+            {
+                delete head;
+                size--;
+                head = r;
+            }
+            else
+            {
+                while (r->left != nullptr)
+                    r = r->left;
+                head->element = r->element;
+                head->right = remove(head->right, r->element);
+            }
+        }
+        if (head == nullptr)
+            return head;
+        head->height = 1 + std::max(height(head->left), height(head->right));
+
+        int bal = height(head->left) - height(head->right);
+        if (bal > 1)
+        {
+            if (height(head->left) >= height(head->right))
+            {
+                return right_rotate(head);
+            }
+            else
+            {
+                head->left = left_rotate(head->left);
+                return right_rotate(head);
+            }
+        }
+        else if (bal < -1)
+        {
+            if (height(head->right) >= height(head->left))
+            {
+                return left_rotate(head);
+            }
+            else
+            {
+                head->right = right_rotate(head->right);
+                return left_rotate(head);
+            }
+        }
+        return head;
     }
-    // AvlNode(const AvlTree<T> & other){}
+    AvlNode<T> *find(AvlNode<T> *head, T value)
+    {
+        if (head == nullptr)
+            return nullptr;
+        T key = head->element;
+        if (key == value)
+            return head;
+        if (key > value)
+            return find(head->left, value);
+        if (key < value)
+            return find(head->right, value);
+    }
 };
