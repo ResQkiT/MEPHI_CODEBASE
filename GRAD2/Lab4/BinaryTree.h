@@ -176,13 +176,11 @@ private:
             }
         }
     }
-
 public:
     BinaryTree() : size{0}, root{nullptr} {}
 
-    BinaryTree(const BinaryTree &other) : size{other.size}, root{nullptr}
+    BinaryTree(const BinaryTree &other) : size{other.size}, root{clone(other.root)}
     {
-        this->root = clone(other.root);
     }
     BinaryTree(const T &theElement) : size{1}, root{nullptr}
     {
@@ -195,7 +193,7 @@ public:
             insert(arr[i]);
         }
     }
-
+    
     ~BinaryTree()
     {
         make_empty(root);
@@ -263,4 +261,5 @@ public:
             this->insert(temp);
         }
     }
+    
 };

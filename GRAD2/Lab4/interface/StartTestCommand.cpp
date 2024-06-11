@@ -2,7 +2,6 @@
 
 StartTestCommand::StartTestCommand()
 {
-
 }
 
 StartTestCommand::~StartTestCommand() = default;

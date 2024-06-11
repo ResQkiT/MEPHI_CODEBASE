@@ -14,9 +14,13 @@ private:
 
 public:
     AvlTreeAdapter() : container{AvlTree<T>()}{}
+    AvlTreeAdapter(const AvlTreeAdapter<T> & other) : container{other.container}{
+        type = other.type;
+    }
     ~AvlTreeAdapter() = default;
 
     void create_working_atd(T list[], size_t size) override{
+        container.make_empty();
         for (size_t i = 0; i < size; i++)
         {
             container.insert(list[i]);
@@ -48,18 +52,16 @@ public:
         container.remove(value);
     }
     void find(const T& value) override {
-        if(container.find(value)){
+        if(container.find(value))
             cout << "Element was successfully found" << endl;
-        }else cout << "Oops...element noy in avl tree" << endl;
+        else cout << "Oops...element noy in avl tree" << endl;
     }
     std::string &get_type() override
     {
         return type;
     }
     AvlTreeAdapter<T> * clone() override{
-        AvlTreeAdapter<T> * clone = new AvlTreeAdapter<T>();
-        clone->type = this->type;
-        clone->container = this->container;
+        AvlTreeAdapter<T> * clone = new AvlTreeAdapter<T>(*this);
         return clone;
     } 
 };

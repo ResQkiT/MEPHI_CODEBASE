@@ -12,9 +12,11 @@ class BinaryTreeAdapter : public AbstractAdapter<T>
 private:
     BinaryTree<T> container;
     string type = "avl tree";
-
 public:
     BinaryTreeAdapter() : container{BinaryTree<T>()} {}
+    BinaryTreeAdapter(const BinaryTreeAdapter<T> & other) : container{other.container}{
+        type = other.type;
+    }
     ~BinaryTreeAdapter() = default;
 
     void create_working_atd(T list[], size_t size) override
@@ -69,9 +71,7 @@ public:
     }
     BinaryTreeAdapter<T> * clone() override
     {
-        BinaryTreeAdapter<T> *clone = new BinaryTreeAdapter<T>();
-        clone->type = this->type;
-        clone->container = this->container;
+        BinaryTreeAdapter<T> * clone = new BinaryTreeAdapter<T>(*this);
         return clone;
     }
 };

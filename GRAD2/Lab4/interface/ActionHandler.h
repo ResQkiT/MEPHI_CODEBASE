@@ -41,22 +41,22 @@ public:
         return *this;
     }  
     ActionHandler<T> & pre_order_output_data(){
-        cout << "Current data in work: "<<endl;
+        cout << "Current data in work (pre-order): "<<endl;
         adapter->pre_order_output();
         return *this;
     }
     ActionHandler<T> & in_order_output_data(){
-        cout << "Current data in work: "<<endl;
+        cout << "Current data in work (in order): "<<endl;
         adapter->in_order_output();
         return *this;
     }
     ActionHandler<T> & post_order_output_data(){
-        cout << "Current data in work: "<<endl;
+        cout << "Current data in work(post order): "<<endl;
         adapter->post_order_output();
         return *this;
     }
     ActionHandler<T> & insert_element(){
-        cout << "Operation: appending element" << endl;
+        cout << "Operation: insert element" << endl;
         cout << "Please, enter element(same type as mentioned): ";
         T elem;
         console_get_or_throw(elem);
@@ -64,11 +64,19 @@ public:
         return *this;
     }
     ActionHandler<T> & remove_element(){
-        cout << "Operation: prepending element to ending" << endl;
+        cout << "Operation: removing element to ending" << endl;
         cout << "Please, enter element(same type as mentioned): ";
         T elem;
         console_get_or_throw(elem);
         adapter->remove(elem);
+        return *this;
+    }
+    ActionHandler<T> & find_element(){
+        cout << "Operation: finding element" << endl;
+        cout << "Please, enter element(same type as mentioned): ";
+        T elem;
+        console_get_or_throw(elem);
+        adapter->find(elem);
         return *this;
     }
     

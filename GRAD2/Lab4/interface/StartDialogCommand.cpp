@@ -19,16 +19,22 @@ void run(ActionHandler<T> & handler){
     cout << "Handler " + handler.get_type() + " is running\n";
     while (is_running)
     {
-        cout << "Choose command: \n1 - create data sequence\n2 - show data sequence\n3 - append\n4 - prepend \n q - for exit\n";
+        cout << "Choose command: \n1 - create data sequence\n2 -'pre-order'\n3 - 'in-order'\n4 - 'post-order' \n4 - 'custom-order'\n5 - insert\n6 - remove\n7 - find\n q - exit\n";
         console_get_or_throw(working_choose);
         if(working_choose == '1'){
             handler.input_data();
         }else if(working_choose == '2'){
-            handler.in_order_output_data();
+            handler.pre_order_output_data();
         }else if(working_choose == '3'){
-            handler.insert_element();
+            handler.in_order_output_data();
         }else if(working_choose == '4'){
+            handler.post_order_output_data();
+        }else if(working_choose == '5'){
+            handler.insert_element();
+        }else if(working_choose == '6'){
             handler.remove_element();
+        }else if(working_choose == '7'){
+            handler.find_element();
         }else if(working_choose == 'q'){
             is_running = false;
         }
@@ -54,19 +60,20 @@ void set_adapter(ActionHandler<T> & handler){
 
     cout << adapter->get_type() << endl;
     handler.set_adapter(adapter);
+    delete adapter;
 }
 void StartDialogCommand::exec(){
     char type_choose;
     bool is_running = true;
     while(is_running){
-        std::cout << "1 - int\n 2 - double\n 3 - char \n q - exit\n"<<endl;
+        std::cout << "1 - int\n 2 - long int\n 3 - char \n q - exit\n"<<endl;
         console_get_or_throw(type_choose);
         if (type_choose == '1'){
             ActionHandler<int> handler;
             set_adapter(handler);
             run(handler);
         }else if(type_choose == '2'){
-            ActionHandler<double> handler;
+            ActionHandler<long long> handler;
             set_adapter(handler);
             run(handler);
         }else if(type_choose == '3'){

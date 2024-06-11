@@ -11,6 +11,15 @@ private:
     AvlNode<T> *root = nullptr;
     size_t size = 0;
 
+    AvlNode<T> *clone(const AvlNode<T> *other)
+    {
+        if (other == nullptr)
+            return nullptr;
+        else
+            return new AvlNode<T>(other->element, clone(other->left), clone(other->right), other->height);
+    }
+
+
     int height(AvlNode<T> *head)
     {
         if (head == nullptr)
@@ -35,14 +44,6 @@ private:
         head->height = 1 + std::max(height(head->left), height(head->right));
         newhead->height = 1 + std::max(height(newhead->left), height(newhead->right));
         return newhead;
-    }
-
-    AvlNode<T> *clone(const AvlNode<T> *other)
-    {
-        if (other == nullptr)
-            return nullptr;
-        else
-            return new AvlNode<T>(other->element, clone(other->left), clone(other->right));
     }
 
     AvlNode<T> *insert(AvlNode<T> *head, T value)
@@ -162,8 +163,8 @@ private:
         make_empty(target->left);
         make_empty(target->right);
         // на этом этапе оба потомка очищены, можно спокойно удалять
-        std::cout << "cleaning " << target->element << " ";
         delete target;
+        size--;
         target = nullptr;
     }
     
@@ -233,11 +234,12 @@ private:
             }
         }
     }
-    
-    
 
 public:
-    AvlTree()
+    AvlTree() : size{0}, root{nullptr}
+    {
+    }
+    AvlTree(const AvlTree &other) : size{other.size}, root{clone(other.root)}
     {
     }
     AvlTree(const T arr[], size_t size)
@@ -263,6 +265,9 @@ public:
     void remove(T value)
     {
         root = remove(root, value);
+    }
+    void make_empty(){
+        make_empty(root);
     }
     AvlNode<T> *find(T value)
     {

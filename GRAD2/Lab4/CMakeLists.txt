@@ -6,6 +6,7 @@ main.cpp
 test.cpp
 interface/StartTestCommand.cpp
 interface/StartDialogCommand.cpp
+interface/StressTestCommand.cpp
 ../ExtendedMenu/Menu.cpp 
 ../ExtendedMenu/MenuElement.cpp 
 
