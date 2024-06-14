@@ -5,16 +5,31 @@
 #include "Comparable.h"
 
 template <class T>
-    requires Comparable<T>
 class BinaryTree
 {
-private:
+public:
+
     class BinaryNode
     {
     public:
         T element;
         BinaryNode *left;
         BinaryNode *right;
+
+        
+        BinaryNode * get_left(){
+            return left;
+        }
+        BinaryNode * get_right(){
+            return right;
+        }
+
+        virtual void set_left(BinaryNode * left_node){
+            this->left = left_node;
+        }
+        virtual void set_right(BinaryNode * right_node){
+            this->right = right_node;
+        }
 
         BinaryNode(const T &element, BinaryNode *left, BinaryNode *right)
             : element{element}, left{left}, right{right} {};
@@ -26,6 +41,7 @@ private:
             : element{other->element}, left{other->leftNode}, right{other->rightNod} {}
     };
 
+protected:
     size_t size = 0;
     BinaryNode *root = nullptr;
 
@@ -37,153 +53,153 @@ private:
             return new BinaryNode(other->element, clone(other->left), clone(other->right));
     }
 
-    void insert(const T &value, BinaryNode *&target)
+    void insert(BinaryNode *& head, const T & value)
     {
 
-        if (target == nullptr)
+        if (head == nullptr)
         {
             size++;
-            target = new BinaryNode(value);
+            head = new BinaryNode(value);
         }
-        else if (value < target->element)
+        else if (value < head->element)
         {
-            insert(value, target->left);
+            insert(head->left, value);
         }
-        else if (value > target->element)
+        else if (value > head->element)
         {
-            insert(value, target->right);
+            insert(head->right, value);
         }
         // не вставляем повторяющиеся данные
     }
 
-    void remove(const T &theElement, BinaryNode *&target)
+    void remove(BinaryNode *& head, const T &value)
     {
-        if (target == nullptr)
+        if (head == nullptr)
             return;
         else
         {
-            if (theElement < target->element)
+            if (value < head->element)
             {
-                remove(theElement, target->left);
+                remove(head->left, value);
             }
-            else if (theElement > target->element)
+            else if (value > head->element)
             {
-                remove(theElement, target->right);
+                remove(head->right, value);
             }
-            else if (target->left != nullptr && target->right != nullptr)
+            else if (head->left != nullptr && head->right != nullptr)
             {
                 // свайп минимального элемента и текущего
-                target->element = find_min(target->right)->element;
-                remove(target->element, target->right);
+                head->element = find_min(head->right)->element;
+                remove(head->right, value);
             }
             else
             {
-                BinaryNode *old_node = target;
-                target = (nullptr != target->left) ? target->left : target->right;
+                BinaryNode *old_node = head;
+                head = (nullptr != head->left) ? head->left : head->right;
                 size--;
                 delete old_node;
             }
         }
     }
 
-    void make_empty(BinaryNode *&target)
+    void make_empty(BinaryNode *&head)
     {
-        if (target == nullptr)
+        if (head == nullptr)
             return;
 
-        make_empty(target->left);
-        make_empty(target->right);
+        make_empty(head->left);
+        make_empty(head->right);
         // на этом этапе оба потомка очищены, можно спокойно удалять
         size--;
-        delete target;
-        target = nullptr;
+        delete head;
+        head = nullptr;
     }
 
-    bool find(const T &value, BinaryNode *target) const
+    bool find(const T &value, BinaryNode *head) const
     {
-        if (target == nullptr)
+        if (head == nullptr)
             return false;
-        else if (value < target->element)
+        else if (value < head->element)
         {
-            return find(value, target->left);
+            return find(value, head->left);
         }
-        else if (value > target->element)
+        else if (value > head->element)
         {
-            return find(value, target->right);
+            return find(value, head->right);
         }
         else
-        { // value == target->element
+        { // value == head->element
             return true;
         }
     }
-    BinaryNode *find_min(BinaryNode *target_node) const
+    BinaryNode *find_min(BinaryNode *head_node) const
     {
-        if (nullptr != target_node)
+        if (nullptr != head_node)
         {
-            while (nullptr != target_node->left)
+            while (nullptr != head_node->left)
             {
-                target_node = target_node->left;
+                head_node = head_node->left;
             }
         }
 
-        return target_node;
+        return head_node;
     }
-    BinaryNode *find_max(BinaryNode *target_node) const
+    BinaryNode *find_max(BinaryNode *head_node) const
     {
-        if (nullptr != target_node)
+        if (nullptr != head_node)
         {
-            while (nullptr != target_node->right)
+            while (nullptr != head_node->right)
             {
-                target_node = target_node->right;
+                head_node = head_node->right;
             }
         }
-        return target_node;
+        return head_node;
     }
-    void pre_order(BinaryNode *target_node, Sequence<T> &buffer) const
+    void pre_order(BinaryNode *head_node, Sequence<T> &buffer) const
     {
-        if (target_node == nullptr)
+        if (head_node == nullptr)
             return;
-        std::cout << target_node->element << " ";
-        buffer.append(target_node->element);
-        pre_order(target_node->left, buffer);
-        pre_order(target_node->right, buffer);
+        std::cout << head_node->element << " ";
+        buffer.append(head_node->element);
+        pre_order(head_node->left, buffer);
+        pre_order(head_node->right, buffer);
     }
-    void in_order(BinaryNode *target_node, Sequence<T> &buffer) const
+    void in_order(BinaryNode *head_node, Sequence<T> &buffer) const
     {
-        if (target_node == nullptr)
+        if (head_node == nullptr)
             return;
-        in_order(target_node->left, buffer);
-        std::cout << target_node->element << " ";
-        buffer.append(target_node->element);
-        in_order(target_node->right, buffer);
+        in_order(head_node->left, buffer);
+        std::cout << head_node->element << " ";
+        buffer.append(head_node->element);
+        in_order(head_node->right, buffer);
     }
-    void post_order(BinaryNode *target_node, Sequence<T> &buffer) const
+    void post_order(BinaryNode *head_node, Sequence<T> &buffer) const
     {
-        if (target_node == nullptr)
+        if (head_node == nullptr)
             return;
 
-        post_order(target_node->left, buffer);
-        post_order(target_node->right, buffer);
-        std::cout << target_node->element << " ";
-        buffer.append(target_node->element);
+        post_order(head_node->left, buffer);
+        post_order(head_node->right, buffer);
+        std::cout << head_node->element << " ";
+        buffer.append(head_node->element);
     }
-    void custom_order(std::string &order, BinaryNode *target_node, Sequence<T> &buffer) const
+    void custom_order(std::string &order, BinaryNode *head_node, Sequence<T> &buffer) const
     {
-        if (target_node == nullptr)
+        if (head_node == nullptr)
             return;
         for (int i = 0; i < 3; i++)
         {
             switch (order.at(i))
             {
             case 'R':
-                std::cout << target_node->element << " ";
-                buffer.append(target_node->element);
+                std::cout << head_node->element << " ";
+                buffer.append(head_node->element);
                 break;
             case 'l':
-                custom_order(order, target_node->left, buffer);
+                custom_order(order, head_node->left, buffer);
                 break;
             case 'r':
-                custom_order(order, target_node->right, buffer);
+                custom_order(order, head_node->right, buffer);
                 break;
             default:
                 break;
@@ -197,9 +213,9 @@ public:
     BinaryTree(const BinaryTree &other) : size{other.size}, root{clone(other.root)}
     {
     }
-    BinaryTree(const T &theElement) : size{1}, root{nullptr}
+    BinaryTree(const T &value) : size{1}, root{nullptr}
     {
-        root = new BinaryNode(theElement);
+        root = new BinaryNode(value);
     }
     BinaryTree(T arr[], size_t size) : size{0}, root{nullptr}
     {
@@ -209,19 +225,19 @@ public:
         }
     }
 
-    ~BinaryTree()
+    virtual ~BinaryTree()
     {
         make_empty(root);
     }
 
-    void insert(const T &theElement)
+    virtual void insert(const T& value)
     {
-        insert(theElement, root);
+        insert(root, value);
     }
 
-    void remove(const T &theElement)
+    virtual void remove(const T &value)
     {
-        remove(theElement, root);
+        remove(root, value);
     }
 
     void make_empty()
@@ -238,9 +254,9 @@ public:
         return size;
     }
 
-    bool find(const T &theElement) const
+    bool find(const T &value) const
     {
-        return find(theElement, root);
+        return find(value, root);
     }
 
     void pre_order(Sequence<T> &buffer) const
