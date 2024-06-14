@@ -169,8 +169,6 @@ private:
     }
     void custom_order(std::string &order, BinaryNode *target_node, Sequence<T> &buffer) const
     {
-        if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
-            throw std::invalid_argument("Incorrect order");
         if (target_node == nullptr)
             return;
         for (int i = 0; i < 3; i++)
@@ -265,6 +263,8 @@ public:
     //"R"-root "r"-right "l"-left
     void custom_order(std::string &order, Sequence<T> &buffer) const
     {
+        if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
+            throw std::invalid_argument("Incorrect order");
         custom_order(order, root, buffer);
         std::cout << '\n';
     }
