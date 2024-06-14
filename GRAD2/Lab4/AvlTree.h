@@ -287,9 +287,9 @@ public:
     {
         make_empty(root);
     }
-    AvlNode *find(T value)
+    bool find(T value)
     {
-        return find(root, value);
+        return find(root, value) != nullptr;
     }
     void pre_order(Sequence<T> &buffer) const
     {
