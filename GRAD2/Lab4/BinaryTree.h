@@ -1,33 +1,49 @@
 #pragma once
 #include <iostream>
-#include "BinaryNode.h"
 #include "../Lab2/Sequence.h"
 #include <string>
 #include "Comparable.h"
 
-template <class T> requires Comparable<T>
+template <class T>
+    requires Comparable<T>
 class BinaryTree
 {
 private:
-    size_t size = 0;
-    BinaryNode<T> * root = nullptr;
+    class BinaryNode
+    {
+    public:
+        T element;
+        BinaryNode *left;
+        BinaryNode *right;
 
-    BinaryNode<T> *clone(const BinaryNode<T> *other)
+        BinaryNode(const T &element, BinaryNode *left, BinaryNode *right)
+            : element{element}, left{left}, right{right} {};
+
+        BinaryNode(const T &element)
+            : element{element}, left{nullptr}, right{nullptr} {};
+
+        BinaryNode(const BinaryNode *other)
+            : element{other->element}, left{other->leftNode}, right{other->rightNod} {}
+    };
+
+    size_t size = 0;
+    BinaryNode *root = nullptr;
+
+    BinaryNode *clone(const BinaryNode *other)
     {
         if (other == nullptr)
             return nullptr;
         else
-            return new BinaryNode<T>(other->element, clone(other->left), clone(other->right));
+            return new BinaryNode(other->element, clone(other->left), clone(other->right));
     }
 
-
-    void insert(const T &value, BinaryNode<T> *&target)
+    void insert(const T &value, BinaryNode *&target)
     {
 
         if (target == nullptr)
         {
             size++;
-            target = new BinaryNode<T>(value);
+            target = new BinaryNode(value);
         }
         else if (value < target->element)
         {
@@ -40,7 +56,7 @@ private:
         // не вставляем повторяющиеся данные
     }
 
-    void remove(const T &theElement, BinaryNode<T> *&target)
+    void remove(const T &theElement, BinaryNode *&target)
     {
         if (target == nullptr)
             return;
@@ -61,8 +77,8 @@ private:
                 remove(target->element, target->right);
             }
             else
-            { 
-                BinaryNode<T> *old_node = target;
+            {
+                BinaryNode *old_node = target;
                 target = (nullptr != target->left) ? target->left : target->right;
                 size--;
                 delete old_node;
@@ -70,20 +86,20 @@ private:
         }
     }
 
-    void make_empty(BinaryNode<T> *&target)
+    void make_empty(BinaryNode *&target)
     {
         if (target == nullptr)
             return;
 
         make_empty(target->left);
         make_empty(target->right);
-        //на этом этапе оба потомка очищены, можно спокойно удалять
+        // на этом этапе оба потомка очищены, можно спокойно удалять
         size--;
         delete target;
         target = nullptr;
     }
 
-    bool find(const T &value, BinaryNode<T> *target) const
+    bool find(const T &value, BinaryNode *target) const
     {
         if (target == nullptr)
             return false;
@@ -100,7 +116,7 @@ private:
             return true;
         }
     }
-    BinaryNode<T> *find_min(BinaryNode<T> *target_node) const
+    BinaryNode *find_min(BinaryNode *target_node) const
     {
         if (nullptr != target_node)
         {
@@ -112,7 +128,7 @@ private:
 
         return target_node;
     }
-    BinaryNode<T> *find_max(BinaryNode<T> *target_node) const
+    BinaryNode *find_max(BinaryNode *target_node) const
     {
         if (nullptr != target_node)
         {
@@ -123,7 +139,7 @@ private:
         }
         return target_node;
     }
-    void pre_order(BinaryNode<T> *target_node, Sequence<T> &buffer) const
+    void pre_order(BinaryNode *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
@@ -132,7 +148,7 @@ private:
         pre_order(target_node->left, buffer);
         pre_order(target_node->right, buffer);
     }
-    void in_order(BinaryNode<T> *target_node, Sequence<T> &buffer) const
+    void in_order(BinaryNode *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
@@ -141,7 +157,7 @@ private:
         buffer.append(target_node->element);
         in_order(target_node->right, buffer);
     }
-    void post_order(BinaryNode<T> *target_node, Sequence<T> &buffer) const
+    void post_order(BinaryNode *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
@@ -151,7 +167,7 @@ private:
         std::cout << target_node->element << " ";
         buffer.append(target_node->element);
     }
-    void custom_order(std::string &order, BinaryNode<T> *target_node, Sequence<T> &buffer) const
+    void custom_order(std::string &order, BinaryNode *target_node, Sequence<T> &buffer) const
     {
         if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
             throw std::invalid_argument("Incorrect order");
@@ -176,6 +192,7 @@ private:
             }
         }
     }
+
 public:
     BinaryTree() : size{0}, root{nullptr} {}
 
@@ -184,7 +201,7 @@ public:
     }
     BinaryTree(const T &theElement) : size{1}, root{nullptr}
     {
-        root = new BinaryNode<T>(theElement);
+        root = new BinaryNode(theElement);
     }
     BinaryTree(T arr[], size_t size) : size{0}, root{nullptr}
     {
@@ -193,7 +210,7 @@ public:
             insert(arr[i]);
         }
     }
-    
+
     ~BinaryTree()
     {
         make_empty(root);
@@ -261,5 +278,4 @@ public:
             this->insert(temp);
         }
     }
-    
 };

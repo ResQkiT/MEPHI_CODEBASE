@@ -1,34 +1,51 @@
 #include <iostream>
-#include "AvlNode.h"
 #include "../Lab2/Sequence.h"
 #include "Comparable.h"
 
-template <class T> requires Comparable<T>
+template <class T>
+    requires Comparable<T>
 class AvlTree
 {
 private:
+    class AvlNode
+    {
+    public:
+        T element;
+        AvlNode *left;
+        AvlNode *right;
+        int height;
 
-    AvlNode<T> *root = nullptr;
+    public:
+        AvlNode(const T &element, AvlNode *left, AvlNode *right, int height)
+            : element{element}, left{left}, right{right}, height{height} {};
+
+        AvlNode(const T &element)
+            : element{element}, left{nullptr}, right{nullptr}, height{1} {};
+
+        AvlNode(const AvlNode *other)
+            : element{other->element}, left{other->leftNode}, right{other->rightNod}, height{other->height} {}
+    };
+
+    AvlNode *root = nullptr;
     size_t size = 0;
 
-    AvlNode<T> *clone(const AvlNode<T> *other)
+    AvlNode *clone(const AvlNode *other)
     {
         if (other == nullptr)
             return nullptr;
         else
-            return new AvlNode<T>(other->element, clone(other->left), clone(other->right), other->height);
+            return new AvlNode(other->element, clone(other->left), clone(other->right), other->height);
     }
 
-
-    int height(AvlNode<T> *head)
+    int height(AvlNode *head)
     {
         if (head == nullptr)
             return 0;
         return head->height;
     }
-    AvlNode<T> *right_rotate(AvlNode<T> *head)
+    AvlNode *right_rotate(AvlNode *head)
     {
-        AvlNode<T> *newhead = head->left;
+        AvlNode *newhead = head->left;
         head->left = newhead->right;
         newhead->right = head;
         head->height = 1 + std::max(height(head->left), height(head->right));
@@ -36,9 +53,9 @@ private:
         return newhead;
     }
 
-    AvlNode<T> *left_rotate(AvlNode<T> *head)
+    AvlNode *left_rotate(AvlNode *head)
     {
-        AvlNode<T> *newhead = head->right;
+        AvlNode *newhead = head->right;
         head->right = newhead->left;
         newhead->left = head;
         head->height = 1 + std::max(height(head->left), height(head->right));
@@ -46,12 +63,12 @@ private:
         return newhead;
     }
 
-    AvlNode<T> *insert(AvlNode<T> *head, T value)
+    AvlNode *insert(AvlNode *head, T value)
     {
         if (head == nullptr)
         {
             size += 1;
-            AvlNode<T> *temp = new AvlNode<T>(value);
+            AvlNode *temp = new AvlNode(value);
             return temp;
         }
         if (value < head->element)
@@ -88,7 +105,7 @@ private:
         return head;
     }
 
-    AvlNode<T> *remove(AvlNode<T> *head, T value)
+    AvlNode *remove(AvlNode *head, T value)
     {
         if (head == nullptr)
             return nullptr;
@@ -102,10 +119,10 @@ private:
         }
         else
         {
-            AvlNode<T> *r = head->right;
+            AvlNode *r = head->right;
             if (head->right == nullptr)
             {
-                AvlNode<T> *l = head->left;
+                AvlNode *l = head->left;
                 delete head;
                 size--;
                 head = l;
@@ -156,7 +173,7 @@ private:
         return head;
     }
 
-    void make_empty(AvlNode<T> *&target)
+    void make_empty(AvlNode *&target)
     {
         if (target == nullptr)
             return;
@@ -167,8 +184,8 @@ private:
         size--;
         target = nullptr;
     }
-    
-    AvlNode<T> *find(AvlNode<T> *head, T value)
+
+    AvlNode *find(AvlNode *head, T value)
     {
         if (head == nullptr)
             return nullptr;
@@ -181,7 +198,7 @@ private:
             return find(head->right, value);
     }
 
-    void pre_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    void pre_order(AvlNode *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
@@ -190,7 +207,7 @@ private:
         pre_order(target_node->left, buffer);
         pre_order(target_node->right, buffer);
     }
-    void in_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    void in_order(AvlNode *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
@@ -199,7 +216,7 @@ private:
         buffer.append(target_node->element);
         in_order(target_node->right, buffer);
     }
-    void post_order(AvlNode<T> *target_node, Sequence<T> &buffer) const
+    void post_order(AvlNode *target_node, Sequence<T> &buffer) const
     {
         if (target_node == nullptr)
             return;
@@ -209,7 +226,7 @@ private:
         std::cout << target_node->element << " ";
         buffer.append(target_node->element);
     }
-    void custom_order(std::string &order, AvlNode<T> *target_node, Sequence<T> &buffer) const
+    void custom_order(std::string &order, AvlNode *target_node, Sequence<T> &buffer) const
     {
         if (order.size() != 3 || !order.contains("R") || !order.contains("l") || !order.contains("r"))
             throw std::invalid_argument("Incorrect order");
@@ -266,10 +283,11 @@ public:
     {
         root = remove(root, value);
     }
-    void make_empty(){
+    void make_empty()
+    {
         make_empty(root);
     }
-    AvlNode<T> *find(T value)
+    AvlNode *find(T value)
     {
         return find(root, value);
     }
