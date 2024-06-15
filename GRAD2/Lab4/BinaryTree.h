@@ -7,7 +7,7 @@
 template <class T>
 class BinaryTree
 {
-public:
+protected:
 
     class BinaryNode
     {
@@ -39,9 +39,10 @@ public:
 
         BinaryNode(const BinaryNode *other)
             : element{other->element}, left{other->leftNode}, right{other->rightNod} {}
+        
+        virtual ~BinaryNode() = default;
     };
 
-protected:
     size_t size = 0;
     BinaryNode *root = nullptr;
 
@@ -225,7 +226,7 @@ public:
         }
     }
 
-    virtual ~BinaryTree()
+    ~BinaryTree()
     {
         make_empty(root);
     }

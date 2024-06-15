@@ -6,7 +6,7 @@
 template<class T>
 class AvlTree : public BinaryTree<T>
 {
-public:
+protected:
     class AvlNode : public BinaryTree<T>::BinaryNode
     {
     public:
@@ -34,9 +34,8 @@ public:
 
         AvlNode(const AvlNode *other)
             : BinaryTree<T>::BinaryNode(other), height{other->height} {}
+        ~AvlNode() = default;
     };
-protected:
-
 
     AvlNode *clone(const AvlNode *other)
     {
