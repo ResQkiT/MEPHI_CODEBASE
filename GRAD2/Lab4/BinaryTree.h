@@ -226,7 +226,7 @@ public:
         }
     }
 
-    ~BinaryTree()
+    virtual ~BinaryTree()
     {
         make_empty(root);
     }
