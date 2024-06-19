@@ -500,7 +500,83 @@ namespace tests
         }
         
     }
+    //test 28
+    void test_set_convert_to_string(){
+        size_t test_size = 5;
+        int arr[test_size] = {1, 2, 3, 4, 5};
+        std::string answer = "1 2 3 4 5 ";
+        Set<int> set(arr, test_size);
 
+        assert(set.to_string() == answer);
+    }
+    //test 29
+    void test_set_string_init(){
+        size_t test_size = 5;
+        std::string str = "1 2 3 4 5";
+        int answer[test_size] = {1, 2, 3, 4, 5};
+        Set<int> set(str);
+        for(auto var : answer)
+        {
+            assert(set.find(var));
+        }
+    }
+    //test 30
+    void test_set_map()
+    {
+        size_t test_size = 10;
+        TestObject arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1, 6, 9};
+        auto function = [](TestObject obj)
+        {
+            obj.call();
+            return obj;
+        };
+
+        Set<TestObject> set(arr, test_size);
+        assert(set.size() == test_size);
+
+        set.map(function);
+        assert(set.size() == test_size);
+
+        for (auto var : set)
+        {
+            assert(var.was_called());
+        }
+    }
+    //test 31
+    void test_set_where()
+    {
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1, 6, 9};
+        int answer[5] = {1, 3, 5, 7, 9};
+        auto function = [](int a){ return a % 2 == 1; };
+
+        Set<int> set(arr, test_size);
+        assert(set.size() == test_size);
+
+        set.where(function);
+        assert(set.size() == 5);
+
+        auto it = set.begin();
+        for (size_t i = 0; i < set.size(); i++)
+        {
+            assert(answer[i] == *it);
+            it++;
+        }
+    }
+    //test 32
+    void test_set_reduce()
+    {
+        size_t test_size = 10;
+        int arr[test_size] = {5, 3, 8, 2, 4, 7, 10, 1, 6, 9};
+        auto function = [](int a, int b) { return a + b; };
+        int correct_answer = 55;
+        Set<int> set(arr, test_size);
+        assert(set.size() == test_size);
+
+        int value = set.reduce(function);
+        assert(value == correct_answer);
+    }
+    
     const static function<void(void)> test_functions[] = {
         create_binary_tree,
         delete_binary_tree,
@@ -528,7 +604,12 @@ namespace tests
         test_set_deletion,
         test_set_union,
         test_set_intersection,
-        test_set_difference
+        test_set_difference,
+        test_set_convert_to_string,
+        test_set_string_init,
+        test_set_map,
+        test_set_where,
+        test_set_reduce
     };
     void run()
     {

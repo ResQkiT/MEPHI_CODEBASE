@@ -3,8 +3,7 @@
 #include "../../ExtendedMenu/readio.h"
 
 #include "AbstractAdapter.h"
-#include "BinaryTreeAdapter.h"
-#include "AvlTreeAdapter.h"
+#include "TreeAdapter.h"
 #include "ActionHandler.h"
 
 StartDialogCommand::StartDialogCommand(){}
@@ -50,9 +49,9 @@ void set_adapter(ActionHandler<T> & handler){
         char adapter_choose ;
         console_get_or_throw(adapter_choose);
         if (adapter_choose == '1'){
-            adapter = new BinaryTreeAdapter<T>();
+            adapter = new TreeAdapter<T, BinaryTree>();
         }else if(adapter_choose == '2'){
-            adapter = new AvlTreeAdapter<T>();
+            adapter = new TreeAdapter<T, AvlTree>();
         }else{
             is_choice_ok = false;
         }

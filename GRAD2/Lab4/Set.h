@@ -3,7 +3,8 @@
 #include "AvlTree.h"
 #include <iterator>
 #include <string>
-#include <sstream>      // std::istringstream
+#include <sstream>
+
 
 template <class T, template <class> class Container = AvlTree>
 class Set
@@ -20,7 +21,7 @@ public:
 
     Set(const std::string &str) : tree{Container<T>()}
     {
-        std::istringstream iss(str);
+        std::stringstream iss(str);
         T temp;
         while (iss >> temp)
             tree.insert(temp);
@@ -51,10 +52,11 @@ public:
         tree.remove(value);
     }
 
-    std::string to_string() const {
+    std::string to_string() const
+    {
         std::vector<T> elements;
-        std::istringstream iss;
-        for(T var : *this)
+        std::stringstream iss;
+        for (T var : *this)
         {
             iss << var << " ";
         }
@@ -108,6 +110,20 @@ public:
     bool equal(const Set<T, Container> &set) const
     {
         return this->subSet(set) && set.subSet(*this);
+    }
+
+    Set<T, Container>& map(std::function<T(T)> function) {
+        this->tree.map(function);
+        return *this;
+    }
+
+    Set<T, Container>& where(std::function<bool(T)> function) {
+        this->tree.where(function);
+        return *this;
+    }
+
+    T reduce(std::function<T(T, T)> function) {
+        return tree.reduce(function);
     }
 
     class Iterator

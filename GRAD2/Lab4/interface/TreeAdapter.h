@@ -1,23 +1,26 @@
 #pragma once
 #include "../BinaryTree.h"
-#include <string>
+#include "../AvlTree.h"
 #include "AbstractAdapter.h"
+
+#include <string>
 #include "../../Lab2/DynamicArraySequence.h"
 
 using namespace std;
 
-template <class T>
-class BinaryTreeAdapter : public AbstractAdapter<T>
+template <class T, template<class> class Container>
+class TreeAdapter : public AbstractAdapter<T>
 {
 private:
-    BinaryTree<T> container;
-    string type = "avl tree";
+    Container<T> container;
+    string type = "binary/avl tree";
+
 public:
-    BinaryTreeAdapter() : container{BinaryTree<T>()} {}
-    BinaryTreeAdapter(const BinaryTreeAdapter<T> & other) : container{other.container}{
+    TreeAdapter() : container{Container<T>()} {}
+    TreeAdapter(const TreeAdapter<T, Container> & other) : container{other.container}{
         type = other.type;
     }
-    ~BinaryTreeAdapter() = default;
+    ~TreeAdapter() = default;
 
     void create_working_atd(T list[], size_t size) override
     {
@@ -31,22 +34,22 @@ public:
     {
         cout << "Printing elements in 'pre'-order" << endl;
         DynamicArraySequence<T> order;
-        cout << order << "\n";
         container.pre_order(order);
+        cout << order << "\n";
     }
     void in_order_output() override
     {
         cout << "Printing elements in 'in'-order" << endl;
         DynamicArraySequence<T> order;
-        cout << order << "\n";
         container.in_order(order);
+        cout << order << "\n";
     }
     void post_order_output() override
     {
         cout << "Printing elements in 'post'- order" << endl;
         DynamicArraySequence<T> order;
-        cout << order << "\n";
         container.post_order(order);
+        cout << order << "\n";
     }
     void insert(const T &value) override
     {
@@ -69,9 +72,9 @@ public:
     {
         return type;
     }
-    BinaryTreeAdapter<T> * clone() override
+    TreeAdapter<T, Container> * clone() override
     {
-        BinaryTreeAdapter<T> * clone = new BinaryTreeAdapter<T>(*this);
+        TreeAdapter<T, Container> * clone = new TreeAdapter<T, Container>(*this);
         return clone;
     }
 };

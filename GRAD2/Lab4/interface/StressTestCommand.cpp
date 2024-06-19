@@ -31,7 +31,7 @@ void stress_test_binary_tree(long long first_test_count )
     
     auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
     
-    cout << "Inserting " << first_test_count << " elements in: " << elapsed_ms << " ms" << endl;
+    cout << "Inserting " << first_test_count << " elements in: " << elapsed_ms << endl;
 }
 void stress_test_avl_tree(long long first_test_count )
 {

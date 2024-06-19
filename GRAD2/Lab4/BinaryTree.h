@@ -3,12 +3,12 @@
 #include "../Lab2/Sequence.h"
 #include <string>
 #include "Comparable.h"
-#include "MWRAble.h"
 #include <vector>
+#include <functional>
 
 template <class T>
     requires Comparable<T>
-class BinaryTree : public MWRAble<T, T>
+class BinaryTree 
 {
 protected:
     class BinaryNode
@@ -94,7 +94,6 @@ protected:
             }
             else if (head->left != nullptr && head->right != nullptr)
             {
-                // свайп минимального элемента и текущего
                 head->element = find_min(head->right)->element;
                 remove(head->right, value);
             }
@@ -134,7 +133,7 @@ protected:
             return find(value, head->right);
         }
         else
-        { // value == head->element
+        {
             return true;
         }
     }
@@ -321,7 +320,7 @@ public:
             this->insert(temp);
         }
     }
-    void map(std::function<T(T)> function) override
+    void map(std::function<T(T)> function)
     {
         BinaryTree<T> copy(*this);
         make_empty();
@@ -331,7 +330,7 @@ public:
         }
     }
 
-    void where(std::function<bool(T)> function) override
+    void where(std::function<bool(T)> function) 
     {
         BinaryTree<T> copy(*this);
         make_empty();
@@ -342,7 +341,7 @@ public:
         }
     }
 
-    T reduce(std::function<T(T, T)> function) override
+    T reduce(std::function<T(T, T)> function)
     {
         return reduce(root, function);
     }
