@@ -24,10 +24,10 @@ protected:
             return right;
         }
 
-        virtual void set_left(BinaryNode * left_node){
+        void set_left(BinaryNode * left_node){
             this->left = left_node;
         }
-        virtual void set_right(BinaryNode * right_node){
+        void set_right(BinaryNode * right_node){
             this->right = right_node;
         }
 
