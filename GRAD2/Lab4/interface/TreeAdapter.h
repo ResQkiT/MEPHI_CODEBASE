@@ -1,9 +1,8 @@
 #pragma once
+#include <string>
 #include "../BinaryTree.h"
 #include "../AvlTree.h"
 #include "AbstractAdapter.h"
-
-#include <string>
 #include "../../Lab2/DynamicArraySequence.h"
 
 using namespace std;

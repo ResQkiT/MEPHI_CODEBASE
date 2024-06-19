@@ -1,7 +1,7 @@
 #include <iostream>
 #include "StartDialogCommand.h"
 #include "../../ExtendedMenu/readio.h"
-
+#include "SetAdapter.h"
 #include "AbstractAdapter.h"
 #include "TreeAdapter.h"
 #include "ActionHandler.h"
@@ -18,7 +18,7 @@ void run(ActionHandler<T> & handler){
     cout << "Handler " + handler.get_type() + " is running\n";
     while (is_running)
     {
-        cout << "Choose command: \n1 - create data sequence\n2 -'pre-order'\n3 - 'in-order'\n4 - 'post-order' \n4 - 'custom-order'\n5 - insert\n6 - remove\n7 - find\n q - exit\n";
+        cout << "Choose command: \n1 - create data sequence\n2 -'pre-order'\n3 - 'in-order'\n4 - 'post-order'\n5 - insert\n6 - remove\n7 - find\n q - exit\n";
         console_get_or_throw(working_choose);
         if(working_choose == '1'){
             handler.input_data();
@@ -45,13 +45,15 @@ void set_adapter(ActionHandler<T> & handler){
     bool is_choice_ok;  
     do{
         is_choice_ok = true;
-        cout << "1 - simple search tree \n2 - AVL search tree\n";
+        cout << "1 - simple search tree \n2 - AVL search tree\n3 - Set\n";
         char adapter_choose ;
         console_get_or_throw(adapter_choose);
         if (adapter_choose == '1'){
             adapter = new TreeAdapter<T, BinaryTree>();
         }else if(adapter_choose == '2'){
             adapter = new TreeAdapter<T, AvlTree>();
+        }else if(adapter_choose == '3'){
+            adapter = new SetAdapter<T>();
         }else{
             is_choice_ok = false;
         }
