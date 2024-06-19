@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include "../Lab2/Sequence.h"
 #include "Comparable.h"
