@@ -2,8 +2,10 @@
 #include <vector>
 #include "AvlTree.h"
 #include <iterator>
+#include <string>
+#include <sstream>      // std::istringstream
 
-template <class T, template<class> class Container = AvlTree>
+template <class T, template <class> class Container = AvlTree>
 class Set
 {
 private:
@@ -14,7 +16,15 @@ public:
 
     Set(T arr[], size_t size) : tree(Container<T>(arr, size)) {}
 
-    Set(const Set<T> &other) : tree{other.tree} {};
+    Set(const Set<T, Container> &other) : tree{other.tree} {};
+
+    Set(const std::string &str) : tree{Container<T>()}
+    {
+        std::istringstream iss(str);
+        T temp;
+        while (iss >> temp)
+            tree.insert(temp);
+    }
 
     size_t size() const
     {
@@ -22,8 +32,8 @@ public:
     }
 
     void insert(const T &value)
-    { 
-        tree.insert(value); 
+    {
+        tree.insert(value);
     }
 
     bool find(const T &value) const
@@ -31,50 +41,71 @@ public:
         return tree.find(value);
     }
 
+    void clear()
+    {
+        this->tree.make_empty();
+    }
+
     void remove(const T &value)
     {
         tree.remove(value);
     }
 
-    Set<T> set_union(Set<T> & other)
-    {
-        Set<T> res;
-        for (T x : tree)
-            res.insert(x);
-        for (T x : other)
-            res.insert(x); 
-        return res;
-    }
-
-    Set<T> set_intersection(Set<T> &other)
-    {
-        Set<T> res;
-        for (T x : tree)  
-            if (other.find(x)) 
-                res.insert(x);
-        return res;
-    }
-   
-    Set<T> difference(Set<T> &other)
-    {
-        Set<T> res;
-        for (T x : tree)   
-            if (!other.find(x)) 
-                res.insert(x);
-        return res;
-    }
-
-    bool is_sub_set(const Set<T> &set) const
-    {
-        for (T x : tree)
-        { 
-            if (!set.find(x))
-                return false; 
+    std::string to_string() const {
+        std::vector<T> elements;
+        std::istringstream iss;
+        for(T var : *this)
+        {
+            iss << var << " ";
         }
-        return true; 
+        return iss.str();
     }
 
-    bool equal(const Set<T> & set) const
+    Set<T, Container> &set_union(Set<T, Container> &other)
+    {
+        for (T x : other)
+        {
+            this->insert(x);
+        }
+
+        return *this;
+    }
+
+    Set<T, Container> &set_intersection(Set<T, Container> &other)
+    {
+        Set<T, Container> copy(*this);
+        this->clear();
+
+        for (T x : copy)
+            if (other.find(x))
+                this->insert(x);
+
+        return *this;
+    }
+
+    Set<T, Container> &set_difference(Set<T, Container> &other)
+    {
+        Set<T, Container> copy(*this);
+        this->clear();
+
+        for (T x : copy)
+            if (!other.find(x))
+                this->insert(x);
+
+        return *this;
+    }
+
+    bool is_sub_set(const Set<T, Container> &set) const
+    {
+        for (T x : tree)
+        {
+            if (!set.find(x))
+                return false;
+        }
+        return true;
+    }
+
+    bool equal(const Set<T, Container> &set) const
     {
         return this->subSet(set) && set.subSet(*this);
     }
@@ -90,7 +121,7 @@ public:
         using value_type = T;
         using pointer = T *;
         using reference = T &;
-        
+
         Iterator(typename BinaryTree<T>::Iterator iterator) : iterator(iterator) {}
         reference operator*() const
         {
@@ -121,6 +152,7 @@ public:
             return a.iterator != b.iterator;
         };
     };
+
 public:
     Iterator begin() const
     {

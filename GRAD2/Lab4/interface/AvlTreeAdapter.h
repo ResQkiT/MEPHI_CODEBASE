@@ -4,6 +4,7 @@
 #include "AbstractAdapter.h"
 #include "../../Lab2/DynamicArraySequence.h"
 
+
 using namespace std;
 
 template<class T>
@@ -30,20 +31,21 @@ public:
     void pre_order_output() override {
         cout << "Printing elements in 'pre'-order" << endl;
         DynamicArraySequence<T> order;
-        cout << order << "\n";
         container.pre_order(order);
+        cout << order << "\n";
+
     } 
     void in_order_output() override{
         cout << "Printing elements in 'in'-order" << endl;
         DynamicArraySequence<T> order;
-        cout << order << "\n";
         container.in_order(order);
+        cout << order << "\n";
     }
     void post_order_output() override{
         cout << "Printing elements in 'post'- order"<< endl;
         DynamicArraySequence<T> order;
-        cout << order << "\n";
         container.post_order(order);
+        cout << order << "\n";
     }
     void insert(const T& value) override {
         container.insert(value);

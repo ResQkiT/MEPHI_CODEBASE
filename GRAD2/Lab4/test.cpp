@@ -442,13 +442,62 @@ namespace tests
         }
         assert(set.size() == 0);
     }
-    void test_seet_union(){
+    //test 25
+    void test_set_union(){
         size_t size1 = 10;
-        size_t size2 = 10;
+        size_t size2 = 11;
+        size_t answer_size = 15;
         int arr1[size1] = {1, 2, 3, 4 ,5 ,6, 7, 8, 9, 10};
-        int arr2[size2] = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+        int arr2[size2] = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int answer_arr[answer_size] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
         Set<int> set1(arr1, size1);
         Set<int> set2(arr2, size2);
+        
+        set1.set_union(set2);
+        assert(set1.size() == answer_size);
+
+        for (size_t i = 0; i < answer_size; i++)
+        {
+            assert(set1.find(answer_arr[i]));
+        }
+    }
+    //test 26
+    void test_set_intersection(){
+        size_t size1 = 10;
+        size_t size2 = 11;
+        size_t answer_size = 6;
+        int arr1[size1] = {1, 2, 3, 4 ,5 ,6, 7, 8, 9, 10};
+        int arr2[size2] = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int answer_arr[answer_size] = {5, 6, 7, 8, 9, 10};
+        Set<int> set1(arr1, size1);
+        Set<int> set2(arr2, size2);
+        
+        set1.set_intersection(set2);
+        assert(set1.size() == answer_size);
+
+        for (size_t i = 0; i < answer_size; i++)
+        {
+            assert(set1.find(answer_arr[i]));
+        }
+    }
+    //test 27
+    void test_set_difference(){
+        size_t size1 = 10;
+        size_t size2 = 11;
+        size_t answer_size = 4;
+        int arr1[size1] = {1, 2, 3, 4 ,5 ,6, 7, 8, 9, 10};
+        int arr2[size2] = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int answer_arr[answer_size] = {1, 2, 3, 4};
+        Set<int> set1(arr1, size1);
+        Set<int> set2(arr2, size2);
+        
+        set1.set_difference(set2);
+        assert(set1.size() == answer_size);
+        
+        for (size_t i = 0; i < answer_size; i++)
+        {
+            assert(set1.find(answer_arr[i]));
+        }
         
     }
 
@@ -476,7 +525,10 @@ namespace tests
         test_binary_tree_equal,
         test_avl_tree_equal,
         test_set_init,
-        test_set_deletion
+        test_set_deletion,
+        test_set_union,
+        test_set_intersection,
+        test_set_difference
     };
     void run()
     {

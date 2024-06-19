@@ -16,9 +16,9 @@ namespace tests
     class TestObject{
     private:
         bool is_called = false;
+        int u = 0;
     
     public:
-        int u = 0;
         TestObject() : u{0}{};
         TestObject(int u) : u{u}{};
         TestObject(const TestObject & other): u{other.u}, is_called{other.is_called}{};
@@ -27,6 +27,15 @@ namespace tests
         }
         bool was_called(){
             return is_called;
+        }
+        bool operator<(const TestObject& other){
+            return this->u < other.u;
+        }
+        bool operator>(const TestObject& other){
+            return this->u > other.u;
+        }
+        bool operator==(const TestObject& other){
+            return this->u == other.u;
         }
 
     };

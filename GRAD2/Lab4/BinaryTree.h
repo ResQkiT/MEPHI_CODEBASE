@@ -352,7 +352,6 @@ public:
         return equal(this->root, other.root);
     }
 
-protected:
     class Iterator
     {
     private:
@@ -412,7 +411,6 @@ protected:
         };
     };
 
-public:
     Iterator begin() const
     {
         return Iterator(root, 0);
