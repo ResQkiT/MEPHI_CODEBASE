@@ -7,6 +7,7 @@
 
 template <class T, template <class> class Container = DynamicArraySequence>
     requires std::derived_from<Container<T>, Sequence<T>>
+    
 class Deque : public MWRAble<T, T>
 {
 private:

@@ -187,7 +187,7 @@ public:
         if (is_empty())
             throw std::out_of_range("List is empty");
         auto it = begin();
-        for (int i = 0; i < index; i++){
+        for (size_t i = 0; i < index; i++){
             it++;
         }
         return *it;
@@ -282,10 +282,9 @@ public:
 
         T &operator*()
         {
-            if (cur != nullptr)
-                return cur->data;
-            else
+            if (cur == nullptr)
                 throw std::runtime_error("Iterator refer to null");
+            return cur->data;
         }
 
         T *operator->()

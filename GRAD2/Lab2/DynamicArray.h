@@ -5,7 +5,7 @@
 #include "IConcatable.h"
 
 template <typename T>
-class DynamicArray : public IConcatable<T> 
+class DynamicArray : public IConcatable<T>
 {
 private:
     T *data;
@@ -36,27 +36,31 @@ private:
         data = new_data;
         capacity = new_capacity;
     }
+
 public:
     DynamicArray() : data{nullptr}, size{0}, capacity{4}
     {
         this->data = new T[this->capacity];
     }
 
-    DynamicArray(size_t size) : size{size}, capacity{2 * size}
+    DynamicArray(size_t size) : data{nullptr}, size{size}, capacity{2 * size}
     {
-        if(size < 0) throw std::invalid_argument("Cannot create DynamicArray with negative size");
+        if (size < 0)
+            throw std::invalid_argument("Cannot create DynamicArray with negative size");
         this->data = new T[capacity];
     }
 
-    DynamicArray(const T *data, size_t size) : size{size}, capacity{2 * size}
+    DynamicArray(const T *data, size_t size) : data{nullptr}, size{size}, capacity{2 * size}
     {
-        if(size < 0) throw std::invalid_argument("Cannot create DynamicArray with negative size");
-        if(data == nullptr) throw std::invalid_argument("DynamicArray constructor must take not null arguments");
+        if (size < 0)
+            throw std::invalid_argument("Cannot create DynamicArray with negative size");
+        if (data == nullptr)
+            throw std::invalid_argument("DynamicArray constructor must take not null arguments");
         this->data = new T[capacity];
         std::copy(data, data + size, this->data);
     }
 
-    DynamicArray(const DynamicArray<T> &other) : size{other.size}, capacity{other.capacity} , data{nullptr}
+    DynamicArray(const DynamicArray<T> &other) : data{nullptr}, size{other.size}, capacity{other.capacity}
     {
         *this = other;
     }
@@ -78,17 +82,19 @@ public:
 
     T &get(size_t index) override
     {
-        if(index < 0 || index >= size) throw std::out_of_range("Out of range");
+        if (index < 0 || index >= size)
+            throw std::out_of_range("Out of range");
         return *(data + index);
     }
 
     void set(size_t index, const T &value)
     {
-        if(index < 0 || index >= size) throw std::out_of_range("Out of range");
+        if (index < 0 || index >= size)
+            throw std::out_of_range("Out of range");
         *(data + index) = value;
     }
 
-    ///Изменяет размер массива не очищая память, в случае если new_size > size, инициализирует переменные значениями по умолчанию
+    /// Изменяет размер массива не очищая память, в случае если new_size > size, инициализирует переменные значениями по умолчанию
     void resize(size_t new_size)
     {
         if (new_size > size)
@@ -134,7 +140,8 @@ public:
 
     void pop_back()
     {
-        if (size == 0) throw std::out_of_range("Array is empty");
+        if (size == 0)
+            throw std::out_of_range("Array is empty");
         size--;
     }
 
@@ -167,7 +174,7 @@ public:
         delete[] data;
         this->size = other.size;
         this->capacity = other.capacity;
-        T * new_data = new T[capacity];
+        T *new_data = new T[capacity];
         std::copy(other.data, other.data + size, new_data);
         data = new_data;
         return *this;
@@ -184,53 +191,59 @@ public:
 
     class Iterator
     {
-    friend DynamicArray;
+        friend DynamicArray;
+
     private:
         T *cur;
-        int index;
-        DynamicArray<T> * ptr;
+        size_t index;
+        DynamicArray<T> *ptr;
 
-        Iterator(T *first,int index, DynamicArray<T> * self) : cur{first} ,index{index}, ptr{self} {}
-        Iterator(const Iterator & other) : cur{other.cur}, index{other.index}, ptr{other.ptr}{}
+        Iterator(T *first, size_t index, DynamicArray<T> *self) : cur{first}, index{index}, ptr{self} {}
+        Iterator(const Iterator &other) : cur{other.cur}, index{other.index}, ptr{other.ptr} {}
+
     public:
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = std::ptrdiff_t;
         using value_type = T;
         using pointer = T *;
-        using reference = T &; 
-
+        using reference = T &;
 
         Iterator operator+(difference_type n)
         {
-            //для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n; 
-            if(index + n > ptr->size) throw std::out_of_range("Iterator out of working zone(+)");
+            // для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n;
+            if (index + n > ptr->size)
+                throw std::out_of_range("Iterator out of working zone(+)");
             return Iterator(cur + n, index + n, ptr);
         }
 
         Iterator operator-(difference_type n)
         {
-            if(index - n < ptr->size) throw std::out_of_range("Iterator out of working zone(-)");
+            if (index - n < ptr->size)
+                throw std::out_of_range("Iterator out of working zone(-)");
             return operator+(-n);
         }
         Iterator &operator++(int)
         {
-            if(index+1 > ptr->size) throw std::out_of_range("Iterator out of working zone(|++)");
-            index ++;
-            cur ++;
+            if (index + 1 > ptr->size)
+                throw std::out_of_range("Iterator out of working zone(|++)");
+            index++;
+            cur++;
             return *this;
         }
 
         Iterator &operator--(int)
         {
-            if(index-1 > ptr->size) throw std::out_of_range("Iterator out of working zone(|--)");
-            index --;
-            cur --;
+            if (index - 1 > ptr->size)
+                throw std::out_of_range("Iterator out of working zone(|--)");
+            index--;
+            cur--;
             return *this;
         }
 
         Iterator &operator++()
         {
-            if(index + 1 > ptr->size) throw std::out_of_range("Iterator out of working zone(++|)");
+            if (index + 1 > ptr->size)
+                throw std::out_of_range("Iterator out of working zone(++|)");
             ++index;
             ++cur;
             return *this;
@@ -238,7 +251,8 @@ public:
 
         Iterator &operator--()
         {
-            if(index - 1 > ptr->size) throw std::out_of_range("Iterator out of working zone(--|)");
+            if (index - 1 > ptr->size)
+                throw std::out_of_range("Iterator out of working zone(--|)");
             --index;
             --cur;
             return *this;
@@ -247,15 +261,17 @@ public:
         bool operator!=(const Iterator &it) const { return cur != it.cur; }
         bool operator==(const Iterator &it) const { return cur == it.cur; }
 
-        reference operator*() { 
-            if(cur != nullptr)
+        reference operator*()
+        {
+            if (cur != nullptr)
                 return *cur;
-            else throw std::runtime_error("Iterator refer to null");
+            else
+                throw std::runtime_error("Iterator refer to null");
         }
     };
 
-    Iterator begin() { return Iterator(data,0, this); }
-    
-    Iterator end() { return Iterator(data + size,size, this); }
-    friend Iterator;    
+    Iterator begin() { return Iterator(data, 0, this); }
+
+    Iterator end() { return Iterator(data + size, size, this); }
+    friend Iterator;
 };

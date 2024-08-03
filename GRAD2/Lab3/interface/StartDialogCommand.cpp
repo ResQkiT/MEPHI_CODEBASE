@@ -31,7 +31,7 @@ void run(ActionHandler<T> & handler){
             handler.append_element();
         }else if(working_choose == '4'){
             handler.prepend_element();
-        }else if(working_choose = 'q'){
+        }else if(working_choose == 'q'){
             is_running = false;
         }
     }

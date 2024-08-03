@@ -11,6 +11,8 @@
 #include "MutableActionHandler.h"
 #include "ImmutableActionHandler.h"
 
+#include "test.h"
+
 enum class modes{  STARTING,
                     RUNNING,
                     ENDING};
@@ -72,6 +74,12 @@ int main()
 {  
     cout << "Lets create first data structure!: " << endl;
     modes mode = modes::RUNNING;
+    cout << "Start tests?(y/n)" << endl;
+    char t;
+    cin >> t;
+    if(t == 'y')
+        run_tests();
+        
     int mutable_choice;
     int type_choice;
     while (mode == modes::RUNNING)

@@ -302,11 +302,7 @@ namespace tests
     }
 
 } // namespace tests
-int main(){
-    std::cout << "TEST " << "\n";
-    tests::runtests();
-}
-int run(){
+void run_tests(){
     std::cout << "TEST " << "\n";
     tests::runtests();
 }

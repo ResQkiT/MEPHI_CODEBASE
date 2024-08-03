@@ -15,11 +15,11 @@ namespace tests
 {
     class TestObject{
     private:
-        bool is_called = false;
         int u = 0;
+        bool is_called = false;
     
     public:
-        TestObject() : u{0}{};
+        TestObject() {};
         TestObject(int u) : u{u}{};
         TestObject(const TestObject & other): u{other.u}, is_called{other.is_called}{};
         void call(){
@@ -126,7 +126,7 @@ namespace tests
         q1.concat(q2);
         assert(q2.size() == 7);
         assert(q1.size() == 11);
-        size_t i = 0;
+        int i = 0;
         while (!q1.empty())
         {
             assert(q1.front() == i);
@@ -142,7 +142,7 @@ namespace tests
         assert(!a.empty());
         assert(a.size() == 3);
         assert(a.top() == 3);
-        size_t index = 2;
+        int index = 2;
         while (!a.empty())
         {
             assert(a.top() == arr[index]);
@@ -232,7 +232,7 @@ namespace tests
         assert(q1.front() == arr[0]);
         assert(q1.back() == arr[2]);
         assert(q1.size() == 3);
-        for (int index = 0; index < q1.size(); index++)
+        for (size_t index = 0; index < q1.size(); index++)
         {
             assert(q1[index] == arr[index]);
         }
@@ -247,7 +247,7 @@ namespace tests
         assert(d2.size() == 3);
         for (size_t i = 0; i < d1.size(); i++)
         {
-            assert(d1[i] == i + 1);
+            assert((size_t)d1[i] == (i + 1));
         }
     }
     // test map where reduce complex
@@ -323,7 +323,7 @@ namespace tests
         assert(sd1.size() == 11);
         for (size_t i = 1; i <= sd1.size(); i++)
         {
-            assert(sd1[i - 1] == i);
+            assert((size_t)sd1[i - 1] == i);
         }
     }
     const static function<void(void)> test_functions[] ={
