@@ -56,6 +56,7 @@ public:
         working_sequence = dynamic_array;
         return this;
     }
+
     MutableActionHandler<T> *get_n_show_subsequence() override
     {
         cout << "Extracting subsequence\n Enter start index and end index [start index, end index]\n->";
@@ -79,6 +80,7 @@ public:
         }
         return this;
     }
+
     MutableActionHandler<T> *add_element_to_begin() override
     {
         cout << "Adding element to begin of sequence\n";
@@ -93,6 +95,7 @@ public:
         working_sequence->prepend(elem);
         return this;
     }
+
     MutableActionHandler<T> *add_element_to_position() override
     {
         cout << "Adding element to mentioned position\n";
@@ -110,6 +113,7 @@ public:
         working_sequence->insert_at(position, elem);
         return this;
     }
+
     MutableActionHandler<T> *add_element_to_end() override
     {
         cout << "Adding element to end of sequence\n";
@@ -124,6 +128,7 @@ public:
         working_sequence->append(elem);
         return this;
     }
+
     MutableActionHandler<T> *print_working_sequence() override
     {
         if (working_sequence == nullptr)
@@ -139,6 +144,7 @@ public:
         cout << "\n";
         return this;
     }
+    
     MutableActionHandler<T> *concat_with_new_sequence() override
     {
         MutableActionHandler<T> new_action_handler;

@@ -7,19 +7,20 @@
 template<class T>
 class ImmutableLinkedListSequence : public ImmutableSequence<T>{
 private:
-
     LinkedList<T> impl;
 
     ImmutableLinkedListSequence(LinkedList<T> & list) : impl{list}{}
+
 protected:
     void _add_to_end(T item) override {
         impl.push_back(item);
     }
+    
     ImmutableLinkedListSequence<T> * create_instance() override {
         return new ImmutableLinkedListSequence<T>();
     }
-public:
 
+public:
     ImmutableLinkedListSequence(): impl{LinkedList<T>()}{}
 
     ImmutableLinkedListSequence(T items[], size_t size): impl{LinkedList<T>(items, size)} {}

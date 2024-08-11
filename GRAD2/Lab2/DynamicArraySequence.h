@@ -7,7 +7,6 @@ template <class T>
 class DynamicArraySequence : public Sequence<T>
 {
 private:
-
     DynamicArray<T> impl; 
 
     DynamicArraySequence(DynamicArray<T> array) : impl{array} {}
@@ -32,6 +31,7 @@ public:
     {
         return impl[index];
     }
+
     const T& get(size_t index) const{
         return impl[index];
     }
@@ -65,6 +65,7 @@ public:
     {
         return impl.get_size();
     }
+
     bool is_empty() const override{
         return impl.get_size() == 0;
     }
@@ -96,6 +97,7 @@ public:
         
         impl = new_impl;
     }   
+
     void pop_back(){
         impl.pop_back();
     }
@@ -118,11 +120,11 @@ public:
         impl = new_array;
     }
 
-    // спорное архитектурное решение
     typename DynamicArray<T>::Iterator get_begin()
     {
         return impl.begin();
     }
+
     typename DynamicArray<T>::Iterator get_end()
     {
         return impl.end();
@@ -144,6 +146,7 @@ public:
         impl += other.impl;
         return *this;
     }
+    
     DynamicArraySequence<T> &operator=(const DynamicArraySequence<T> &other)
     {
         impl = other.impl;

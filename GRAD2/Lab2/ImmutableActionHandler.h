@@ -1,4 +1,4 @@
-#pragma one
+#pragma once
 #include <iostream>
 #include <cstddef>
 #include "ImmutableSequence.h"
@@ -55,6 +55,7 @@ public:
         working_sequence = dynamic_array;
         return this;
     }
+
     ImmutableActionHandler<T> *get_n_show_subsequence() override
     {
         cout << "Extracting subsequence\n Enter start index and end index [start index, end index]\n->";
@@ -78,6 +79,7 @@ public:
         }
         return this;
     }
+
     ImmutableActionHandler<T> *add_element_to_begin() override
     {
         cout << "Adding element to begin of immutable sequence, sequence will be copied and replaced with redacted one\n";
@@ -92,6 +94,7 @@ public:
         working_sequence = working_sequence->prepend(elem);
         return this;
     }
+
     ImmutableActionHandler<T> *add_element_to_position() override
     {
         cout << "Adding element to mentioned position of immutable sequence, sequence will be copied and replaced with redacted one\n";
@@ -109,6 +112,7 @@ public:
         working_sequence = working_sequence->insert_at(position, elem);
         return this;
     }
+
     ImmutableActionHandler<T> *add_element_to_end() override
     {
         cout << "Adding element to end of immutable sequence, sequence will be copied and replaced with redacted one\n";
@@ -123,6 +127,7 @@ public:
         working_sequence = working_sequence->append(elem);
         return this;
     }
+
     ImmutableActionHandler<T> *print_working_sequence() override
     {
         if (working_sequence == nullptr)
@@ -138,6 +143,7 @@ public:
         cout << "\n";
         return this;
     }
+    
     ImmutableActionHandler<T> *concat_with_new_sequence() override
     {
         ImmutableActionHandler<T> new_action_handler;

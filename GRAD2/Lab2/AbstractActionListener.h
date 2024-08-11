@@ -25,6 +25,7 @@ public:
             break;
         }
     }
+    
     virtual AbstractActionListener<T> *create_linked_list_sequence() = 0;
     virtual AbstractActionListener<T> *create_dynamic_array_sequence() = 0;
     virtual AbstractActionListener<T> *get_n_show_subsequence() = 0;

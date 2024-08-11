@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "IConcatable.h"
+
 template <typename T>
 class Node
 {
@@ -15,7 +16,6 @@ public:
 template <typename T>
 class LinkedList : public IConcatable<T>
 {
-
 private:
     Node<T> *head;
     Node<T> *tail;
@@ -54,6 +54,7 @@ public:
     {
         *this = other;
     }
+
     LinkedList(LinkedList<T> &&other) : size{std::move(other.size)}, head{std::move(other.head)}, tail{std::move(other.tail)}
     {
         other.size = 0;
@@ -101,7 +102,7 @@ public:
             push_front(value);
             return;
         }
-     
+
         Node<T> *new_node = new Node<T>(value);
 
         tail->next = new_node;
@@ -187,12 +188,13 @@ public:
         if (is_empty())
             throw std::out_of_range("List is empty");
         auto it = begin();
-        for (size_t i = 0; i < index; i++){
+        for (size_t i = 0; i < index; i++)
+        {
             it++;
         }
         return *it;
     }
-    
+
     void clear()
     {
         delete_list();
@@ -202,7 +204,8 @@ public:
     {
         delete_list();
         Node<T> *other_cur = other.head;
-        while(other_cur){
+        while (other_cur)
+        {
             push_back(other_cur->data);
             other_cur = other_cur->next;
         }
@@ -227,6 +230,7 @@ public:
 
         return *this;
     }
+    
     class Iterator
     {
     private:

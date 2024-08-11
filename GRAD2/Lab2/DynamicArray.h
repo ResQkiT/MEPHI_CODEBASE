@@ -7,13 +7,12 @@
 template <typename T>
 class DynamicArray : public IConcatable<T>
 {
+//что то написал в виме. Удалить
 private:
     T *data;
     size_t size;
     size_t capacity;
 
-    /// @brief Увеличивает объем выделенной памяти
-    /// @param new_capacity - новый выделенный объем
     void enlarge(size_t new_capacity)
     {
         if (new_capacity == 0)
@@ -169,6 +168,7 @@ public:
 
         return data[index];
     }
+
     const DynamicArray<T> &operator=(const DynamicArray<T> &other)
     {
         delete[] data;
@@ -179,6 +179,7 @@ public:
         data = new_data;
         return *this;
     }
+
     DynamicArray<T> &operator+=(const DynamicArray<T> &other)
     {
 
@@ -222,6 +223,7 @@ public:
                 throw std::out_of_range("Iterator out of working zone(-)");
             return operator+(-n);
         }
+
         Iterator &operator++(int)
         {
             if (index + 1 > ptr->size)
@@ -273,5 +275,6 @@ public:
     Iterator begin() { return Iterator(data, 0, this); }
 
     Iterator end() { return Iterator(data + size, size, this); }
+    
     friend Iterator;
 };

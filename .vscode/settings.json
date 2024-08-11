@@ -6,5 +6,8 @@
         "templates.h": "c",
         "all_possible_sums.h": "c",
         "sum_as_template.h": "c"
-    }
+    },
+    "cSpell.words": [
+        "Concatable"
+    ]
 }

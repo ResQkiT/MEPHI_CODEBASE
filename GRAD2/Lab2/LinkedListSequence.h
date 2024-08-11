@@ -63,10 +63,12 @@ public:
     {
         impl.pop_front();
     }
+
     void pop_back() override
     {
         impl.pop_back();
     }
+    
     bool is_empty() const override{
         return impl.is_empty();
     }
@@ -116,5 +118,4 @@ public:
         impl = other.impl;
         return *this;
     }
-
 };

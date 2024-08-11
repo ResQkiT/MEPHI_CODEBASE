@@ -8,7 +8,6 @@ template <class T>
 class ImmutableDynamicArraySequence : public ImmutableSequence<T>
 {
 private:
-
     DynamicArray<T> impl;
 
     ImmutableDynamicArraySequence(DynamicArray<T> & list) : impl{list} {}
@@ -17,11 +16,12 @@ protected:
     void _add_to_end(T item) override {
         impl.push_back(item);
     }
+
     ImmutableDynamicArraySequence<T> * create_instance() override {
         return new ImmutableDynamicArraySequence<T>();
     }
-public:
 
+public:
     ImmutableDynamicArraySequence(): impl{DynamicArray<T>()}{}
 
     ImmutableDynamicArraySequence(T items[], size_t size): impl{DynamicArray<T>(items, size)} {}
