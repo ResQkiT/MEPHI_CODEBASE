@@ -21,7 +21,7 @@ public:
         return data;
     }
 
-    const T* operator->(){
+    const T* operator->() const{
         return data;
     }
 
@@ -29,7 +29,7 @@ public:
         return *data;
     }
 
-    const T& operator*(){
+    const T& operator*() const{
         return *data;
     }
 

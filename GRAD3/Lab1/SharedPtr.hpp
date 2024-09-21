@@ -24,6 +24,9 @@ class SharedPtr {
     SharedPtr(T* ptr) : data_(new SharedData<T>{.ptr_=ptr, .shared_counter_=1, .weak_counter_=0}) {
     }
 
+    SharedPtr(std::nullptr_t ptr) : data_((new SharedData<T>{.ptr_=ptr, .shared_counter_=1, .weak_counter_=0})){
+    }
+
     ~SharedPtr() {
         --data_->shared_counter_;
         if (data_->shared_counter_ == 0 && data_->ptr_ != nullptr) {
@@ -59,10 +62,38 @@ class SharedPtr {
         return data_->ptr_;
     }
 
+    SharedPtr<T>& operator=(const SharedPtr<T>& other){
+        if(this->data_->ptr_ != nullptr){
+            if (this->data_->shared_counter_ == 1)
+            {
+                if(this->data_->ptr_ != other.data_->ptr_){
+                    //TODO: Дописать
+                    
+                }
+            }
+            
+        }
+    }
+
     operator bool() const {
         return data_->ptr_ != nullptr;
     }
 
+    bool operator==(const SharedPtr<T>& other){
+        return data_ == other.data_;
+    }
+
+    bool operator!=(const SharedPtr& other){
+        return data_ != other.data_;
+    }
+
+    bool operator==(std::nullptr_t other){
+        return !this;
+    }
+
+    bool operator!=(std::nullptr_t other){
+        return this;
+    }
 private:
     SharedData<T>* data_;
 
@@ -86,10 +117,8 @@ class WeakPtr {
 
     ~WeakPtr() {
         --data_->weak_counter_;
-//        std::cout << "Decreasing weak counter" << std::endl;
         if (data_->shared_counter_ + data_->weak_counter_ == 0) {
             delete data_;
-//            std::cout << "Delete data_" << std::endl;
         }
     }
 
