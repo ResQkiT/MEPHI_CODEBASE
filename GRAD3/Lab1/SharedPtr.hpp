@@ -83,7 +83,7 @@ class SharedPtr {
         return data_ == other.data_;
     }
 
-    bool operator!=(const SharedPtr& other){
+    bool operator!=(const SharedPtr<T>& other){
         return data_ != other.data_;
     }
 
@@ -129,7 +129,9 @@ class WeakPtr {
     const SharedPtr<T> Lock() const {
         return SharedPtr<T>(data_);
     }
-   private:
+
+    //TODO: bool expired()
+private:
     SharedData<T>* data_;
 };
 
