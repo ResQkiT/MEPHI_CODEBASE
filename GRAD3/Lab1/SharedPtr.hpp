@@ -63,15 +63,23 @@ class SharedPtr {
     }
 
     SharedPtr<T>& operator=(const SharedPtr<T>& other){
-        if(this->data_->ptr_ != nullptr){
-            if (this->data_->shared_counter_ == 1)
-            {
-                if(this->data_->ptr_ != other.data_->ptr_){
-                    //TODO: Дописать
-                    
-                }
-            }
-            
+        if (this == &other || this->data_->ptr_ == other.data_->ptr_){
+            return *this;
+        }
+
+        if (this->data_->ptr_ != nullptr) {
+            this->data_->shared_counter_ = 0;
+            this->data_->weak_counter_ = 0;
+            delete this->data_->ptr_;
+        }
+
+        this->data_ = other.data_->ptr_;
+
+        if (other.data_->ptr_ != nullptr) {
+            this->data_->shared_counter_ = other.data_->shared_counter_;
+            this->data_->shared_counter_ ++;
+        } else {
+            this->data_->shared_counter_ = 0;
         }
     }
 
@@ -128,6 +136,14 @@ class WeakPtr {
 
     const SharedPtr<T> Lock() const {
         return SharedPtr<T>(data_);
+    }
+
+    size_t use_count() const{
+        return this->data_->weak_counter_;
+    }
+
+    bool expired() const{
+        return use_count() == 0;
     }
 
     //TODO: bool expired()
