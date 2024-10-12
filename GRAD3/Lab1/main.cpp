@@ -20,6 +20,7 @@ class IListManager {
 public:
     virtual void push_back(const std::string& value) = 0;
     virtual void push_front(const std::string& value) = 0;
+    virtual void insert_at(const std::string& value, size_t index) = 0;
     virtual std::string get(size_t index) = 0;
     virtual void output(std::string& output) = 0;
     virtual ~IListManager() = default;
@@ -56,6 +57,19 @@ public:
         }
     }
 
+    // Вставить элемент по индексу
+    void insert_at(const std::string& value, size_t index) override {
+        if constexpr (std::is_same_v<T, int>) {
+            list.insert_at(std::stoi(value), index);
+        } else if constexpr (std::is_same_v<T, double>) {
+            list.insert_at(std::stod(value), index);
+        } else if constexpr (std::is_same_v<T, float>) {
+            list.insert_at(std::stof(value), index);
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            list.insert_at(value, index);
+        }
+    }
+
     // Получить элемент по индексу
     std::string get(size_t index) override {
         if (index >= list.size()) {
@@ -85,6 +99,11 @@ public:
 int main() {
     std::string enter = "";
     auto enter_label = Input(&enter);  // Поле ввода
+
+    std::string index_enter = "";      // Поле для индекса
+    auto index_label = Input(&index_enter);  // Поле для индекса
+
+    bool show_index_input = false;  // Управляет отображением поля ввода индекса
 
     std::string output;  // Поле для вывода
 
@@ -136,12 +155,29 @@ int main() {
         }
     };
 
+    // Действие при нажатии на кнопку Insert
+    auto insert_at_in_list_action = [&]() {
+        show_index_input = true;  // Показать поле для индекса
+    };
+
+    // Действие при вставке элемента по индексу
+    auto insert_at_element_action = [&]() {
+        if (list_manager && !enter.empty() && !index_enter.empty()) {
+            size_t index = std::stoi(index_enter);
+            list_manager->insert_at(enter, index);
+            enter = "";  // Очистить поля ввода
+            index_enter = "";
+            show_index_input = false;  // Скрыть поле для индекса
+        }
+    };
+
     // Действие при нажатии на кнопку Get
     auto get_element_action = [&]() {
-        if (!enter.empty()) {
-            size_t index = std::stoi(enter);
+        output = "";
+        if (!index_enter.empty()) {
+            size_t index = std::stoi(index_enter);
             output = list_manager->get(index);  // Получить элемент по индексу
-            enter = "";  // Очистить поле ввода после получения
+            index_enter = "";  // Очистить поле ввода после получения
         }
     };
 
@@ -149,9 +185,6 @@ int main() {
     auto write_list = [&]() {
         if (list_manager) {
             list_manager->output(output);
-        }
-        else{
-            output = "no listManager";
         }
     };
 
@@ -164,7 +197,7 @@ int main() {
     };
 
     // Кнопка выхода
-    auto exit_button = Button("exit", [&] { screen.Exit(); }, ButtonOption::Ascii()) ;
+    auto exit_button = Button("exit", [&] { screen.Exit(); }, ButtonOption::Ascii()) | align_right;
 
     // Объединение всех компонентов интерфейса
     auto all_container = Container::Vertical({
@@ -177,27 +210,29 @@ int main() {
             Toggle(&type_list, &selected) | borderRounded,  // Переключатель типа
             Container::Horizontal({
                 Renderer([] { return text("input->"); }),
-                enter_label 
-            }) | borderDashed | size(WIDTH, EQUAL, 30)
+                enter_label,
+                Renderer([]{return text("index->"); }),
+                index_label   // Поле для ввода индекса показывается при необходимости
+            }) | borderDashed | size(WIDTH, EQUAL, 50)
         }),
         Container::Vertical({
             Container::Horizontal({
                 Button("Append", push_back_in_list_action, ButtonOption::Simple()) | flex,
                 Button("Prepend", push_front_in_list_action, ButtonOption::Simple()) | flex,
-                Button("Insert", []{}, ButtonOption::Simple()) | flex,
+                Button("Insert at index", insert_at_element_action, ButtonOption::Simple()) | flex,
                 Button("Get", get_element_action, ButtonOption::Simple()) | flex,
             }),
             Container::Horizontal({
-                Button("GetFirst", []{}, ButtonOption::Simple()) | flex,
-                Button("GetLast", []{}, ButtonOption::Simple()) | flex,
-                Button("GetSize", []{}, ButtonOption::Simple()) | flex,
-                Button("Print", write_list, ButtonOption::Simple()) | flex
+                Button("GetFirst", [] {}, ButtonOption::Simple()) | flex,
+                Button("GetLast", [] {}, ButtonOption::Simple()) | flex,
+                Button("GetSize", [] {}, ButtonOption::Simple()) | flex,
+                Button("Print", write_list, ButtonOption::Simple()) | flex,
             }),
         }),
         Renderer([] { return separator(); }),
         Renderer([&] {
             check_type_change();  // Проверяем изменение типа перед каждым обновлением экрана
-            return text(output) | size(HEIGHT, EQUAL, 3) | border ;
+            return text(output)  |size(HEIGHT, EQUAL, 3) | border; 
         })
     });
 
