@@ -2,6 +2,7 @@
 #include <string>  // for char_traits, operator+, string, basic_string
 #include <vector>
 #include <iostream>  // for std::stoi, std::stod
+#include <sstream> 
 
 #include "ftxui/component/captured_mouse.hpp"     // for ftxui
 #include "ftxui/component/component.hpp"          // for Input, Renderer, Vertical
@@ -11,7 +12,9 @@
 #include "ftxui/dom/elements.hpp"                 // for text, hbox, separator, Element, operator|, vbox, border
 #include "ftxui/util/ref.hpp"                     // for Ref
 
+
 #include "LinkedList.hpp"  // Предположим, что у вас есть реализация LinkedList
+#include "tests.h"
 
 using namespace ftxui;
 
@@ -22,6 +25,7 @@ public:
     virtual void push_front(const std::string& value) = 0;
     virtual void insert_at(const std::string& value, size_t index) = 0;
     virtual std::string get(size_t index) = 0;
+    virtual size_t get_size() = 0;
     virtual void output(std::string& output) = 0;
     virtual ~IListManager() = default;
 };
@@ -88,11 +92,15 @@ public:
         output = "";
         for (size_t i = 0; i < list.size(); i++) {
             if constexpr (std::is_same_v<T, std::string>) {
-                output += list.get(i) + " ";
+                output += list.get(i) + "->";
             } else {
-                output += std::to_string(list.get(i)) + " ";
+                output += std::to_string(list.get(i)) + "->";
             }
         }
+    }
+
+    size_t get_size() override{
+        return list.size();
     }
 };
 
@@ -155,11 +163,6 @@ int main() {
         }
     };
 
-    // Действие при нажатии на кнопку Insert
-    auto insert_at_in_list_action = [&]() {
-        show_index_input = true;  // Показать поле для индекса
-    };
-
     // Действие при вставке элемента по индексу
     auto insert_at_element_action = [&]() {
         if (list_manager && !enter.empty() && !index_enter.empty()) {
@@ -196,6 +199,36 @@ int main() {
         }
     };
 
+    auto get_first_action = [&](){
+        output = "";
+        if (list_manager) {
+            size_t index = 0;
+            output ="First element in list: " + list_manager->get(index);  // Получить элемент по индексу
+            index_enter = "";  // Очистить поле ввода после получения
+        }
+    };
+
+    auto get_last_action = [&](){
+        output = "";
+        if (list_manager) {
+            size_t index = list_manager->get_size() - 1;
+            output ="First element in list: " + list_manager->get(index);  // Получить элемент по индексу
+            index_enter = "";  // Очистить поле ввода после получения
+        }
+    };
+
+    auto get_size_action = [&](){
+        output = "";
+        if(list_manager){
+            output ="Size of current list: " + std::to_string(list_manager->get_size());
+        }
+    };
+
+    auto run_test_action = [&](){
+        std::ostringstream os;
+        run_tests(os);
+        output = os.str();
+    };
     // Кнопка выхода
     auto exit_button = Button("exit", [&] { screen.Exit(); }, ButtonOption::Ascii()) | align_right;
 
@@ -223,17 +256,21 @@ int main() {
                 Button("Get", get_element_action, ButtonOption::Simple()) | flex,
             }),
             Container::Horizontal({
-                Button("GetFirst", [] {}, ButtonOption::Simple()) | flex,
-                Button("GetLast", [] {}, ButtonOption::Simple()) | flex,
-                Button("GetSize", [] {}, ButtonOption::Simple()) | flex,
+                Button("GetFirst", get_first_action, ButtonOption::Simple()) | flex,
+                Button("GetLast", get_last_action, ButtonOption::Simple()) | flex,
+                Button("GetSize", get_size_action, ButtonOption::Simple()) | flex,
                 Button("Print", write_list, ButtonOption::Simple()) | flex,
+                Button("Run tests", run_test_action, ButtonOption::Simple()) | flex
             }),
         }),
         Renderer([] { return separator(); }),
+
         Renderer([&] {
             check_type_change();  // Проверяем изменение типа перед каждым обновлением экрана
-            return text(output)  |size(HEIGHT, EQUAL, 3) | border; 
-        })
+            return vbox(filler() , vbox({
+                hflow(paragraphAlignCenter(output)) | size(HEIGHT, GREATER_THAN, 25) | border   // Параграф внизу
+            }));
+        }) 
     });
 
     screen.Loop(all_container);
