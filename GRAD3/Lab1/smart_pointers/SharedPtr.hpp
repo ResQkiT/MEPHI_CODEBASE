@@ -1,119 +1,152 @@
 #pragma once
+#include "WeakPtr.hpp"
+#include "iostream"
 
 template <typename T>
-class WeekPtr;
+class WeakPtr;
 
 template <typename T>
 class SharedPtr {
 private:
     struct RefCounter {
-        size_t count;
-        RefCounter() : count(1) {}
+        size_t shared_count;
+        size_t weak_count;
+        RefCounter() : shared_count(1) , weak_count(0) {}
+
+        size_t use_count(){
+            return shared_count;
+        }
     };
 
     T* ptr;
-    RefCounter* refCounter;
+    RefCounter* ref_counter;
+
+    bool deleteCounterIfValid(){
+        if (ref_counter && --ref_counter->shared_count == 0) {
+            delete ptr;
+
+            return true;
+        }
+        return false;
+    } 
 
 public:
-    SharedPtr() : ptr(nullptr), refCounter(nullptr) {}
 
-    explicit SharedPtr(T* p) : ptr(p), refCounter(p ? new RefCounter() : nullptr) {}
+    SharedPtr() : ptr(nullptr), ref_counter(nullptr) {}
 
-    SharedPtr(const SharedPtr& other) : ptr(other.ptr), refCounter(other.refCounter) {
-        if (refCounter) {
-            ++refCounter->count;
+    explicit SharedPtr(T* p) : ptr(p), ref_counter(p ? new RefCounter() : nullptr) {}
+
+    SharedPtr(const SharedPtr& other) : ptr(other.ptr), ref_counter(other.ref_counter) {
+        if (ref_counter) {
+            ++ref_counter->shared_count;
         }
     }
 
-    SharedPtr(const WeekPtr<T>& other) : ptr(other.ptr), refCounter(other.refCounter) {
-        if (refCounter) {
-            ++refCounter->count;
+    SharedPtr(const WeakPtr<T>& other) : ptr(other.ptr), ref_counter(other.ref_counter) {
+        if (ref_counter) {
+            ++ref_counter->shared_count;
         }
     }
 
-    SharedPtr(SharedPtr&& other) : ptr(other.ptr), refCounter(other.refCounter) {
+    SharedPtr(SharedPtr&& other) noexcept : ptr(other.ptr), ref_counter(other.ref_counter) {
         other.ptr = nullptr;
-        other.refCounter = nullptr;
+        other.ref_counter = nullptr;
     }
 
     ~SharedPtr() {
-        if (refCounter && --refCounter->count == 0) {
-            delete ptr;
-            delete refCounter;
-        }
+        deleteCounterIfValid();
     }
 
     SharedPtr& operator=(const SharedPtr& other) {
         if (this == &other) {
             return *this;
         }
-        if (refCounter && --refCounter->count == 0) {
-            delete ptr;
-            delete refCounter;
-        }
+        
+        deleteCounterIfValid();
+
         ptr = other.ptr;
-        refCounter = other.refCounter;
-        if (refCounter) {
-            ++refCounter->count;
+        ref_counter = other.ref_counter;
+        if (ref_counter) {
+            ++ref_counter->shared_count;
         }
         return *this;
     }
 
     SharedPtr& operator=(SharedPtr&& other) noexcept {
         if (this != &other) {
-            if (refCounter && --refCounter->count == 0) {
-                delete ptr;
-                delete refCounter;
-            }
+            deleteCounterIfValid();
+
             ptr = other.ptr;
-            refCounter = other.refCounter;
+            ref_counter = other.ref_counter;
             other.ptr = nullptr;
-            other.refCounter = nullptr;
+            other.ref_counter = nullptr;
         }
         return *this;
     }
 
-    T& operator*() const { return *ptr; }
-    
-    T* operator->() const { return ptr; }
-    
-    T* get() const { return ptr; }
+    T& operator*() {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+        }
+        return *ptr;
+    }
 
+    const T& operator*() const {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+        }
+        return *ptr;
+    }
+
+    T* operator->() {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+        }
+        return ptr;
+    }
+
+    const T* operator->() const {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+        }
+        return ptr;
+    }
+
+    T* get() const {
+        return ptr;
+    }
+    
     bool operator!() const {
         return ptr == nullptr;
     }
+    
     bool operator!=(std::nullptr_t) const {
         return ptr != nullptr;
     }
 
     void reset() {
-        if (refCounter && --refCounter->count == 0) {
-            delete ptr;
-            delete refCounter;
-        }
+        deleteCounterIfValid();
+
         ptr = nullptr;
-        refCounter = nullptr;
+        ref_counter = nullptr;
     }
 
     void reset(T* newPtr) {
-        if (refCounter && --refCounter->count == 0) {
-            delete ptr;
-            delete refCounter;
-        }
+        deleteCounterIfValid();
         ptr = newPtr;
-        refCounter = newPtr ? new RefCounter() : nullptr;
+        ref_counter = newPtr ? new RefCounter() : nullptr;
     }
 
-    RefCounter* get_ref_counter() const { return refCounter; }
+    RefCounter* get_ref_counter() const { return ref_counter; }
 
-    size_t get_ref_count() const {
-        return refCounter ? refCounter->count : static_cast<size_t>(0);
+    size_t use_count() const {
+        return ref_counter ? ref_counter->shared_count : static_cast<size_t>(0);
     }
 
     operator bool() const {
         return ptr != nullptr;
     }
 
-    friend class WeekPtr<T>;
+    friend class WeakPtr<T>;
 };
 

@@ -5,7 +5,7 @@
 #include <cassert>
 
 #include "smart_pointers/SharedPtr.hpp"
-#include "smart_pointers/WeekPtr.hpp"
+#include "smart_pointers/WeakPtr.hpp"
 #include "smart_pointers/UniquePtr.hpp"
 #include "LinkedListSequence.hpp"
 
@@ -31,25 +31,25 @@ namespace test_case{
             SharedPtr<int> ptr2(ptr1);
             assert(ptr1.get() == ptr2.get());
             assert(*ptr2 == 5);
-            assert(ptr1.get_ref_count() == 2);
+            assert(ptr1.use_count() == 2);
 
             SharedPtr<int> ptr3;
             ptr3 = ptr1;
             assert(ptr3.get() == ptr1.get());
             assert(*ptr3 == 5);
-            assert(ptr1.get_ref_count() == 3);
+            assert(ptr1.use_count() == 3);
             output_stream << "OK\n";
         }
 
         {
-            output_stream << "  - WeekPtr: ";
+            output_stream << "  - WeakPtr: ";
             SharedPtr<int> SharedPtr(new int(10));
-            WeekPtr<int> weekPtr;
+            WeakPtr<int> weekPtr;
 
             weekPtr = SharedPtr;
             assert(!weekPtr.expired());
 
-            assert(*weekPtr == 10);
+            assert(*weekPtr.lock() == 10);
 
             SharedPtr.reset();
             output_stream << "OK\n";
