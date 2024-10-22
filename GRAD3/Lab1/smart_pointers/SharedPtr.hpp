@@ -25,8 +25,12 @@ private:
         if (ref_counter && --ref_counter->shared_count == 0) {
             delete ptr;
 
+            if(ref_counter->weak_count == 0){
+                delete ref_counter;
+            }
             return true;
         }
+        
         return false;
     } 
 
