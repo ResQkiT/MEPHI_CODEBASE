@@ -10,7 +10,7 @@ public:
 
     explicit UniquePtr(T* p) : ptr(p) {}
 
-    UniquePtr(UniquePtr&& other) noexcept : ptr(other.ptr) {
+    UniquePtr(UniquePtr&& other) noexcept : ptr(std::move(other.ptr)) {
         other.ptr = nullptr;
     }
 

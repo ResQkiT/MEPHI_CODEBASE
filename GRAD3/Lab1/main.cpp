@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>  // for std::stoi, std::stod
 #include <sstream> 
+#include <cstring> // для функции strcmp
 
 #include "ftxui/component/captured_mouse.hpp"     // for ftxui
 #include "ftxui/component/component.hpp"          // for Input, Renderer, Vertical
@@ -104,7 +105,12 @@ public:
     }
 };
 
-int main() {
+int main(int argc, char* argv[]) {
+
+    if (argc == 2 && strcmp(argv[1], "t") == 0) { // сравнение строк
+        run_tests(std::cout);
+        return 0;
+    } 
     std::string enter = "";
     auto enter_label = Input(&enter);  // Поле ввода
 

@@ -54,8 +54,7 @@ public:
             if (ref_counter) {
                 ref_counter->weak_count++;
             }
-            other.ptr = nullptr;
-            other.ref_counter = nullptr;
+            
         }
         return *this;
     }
