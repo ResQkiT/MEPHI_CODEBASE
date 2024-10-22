@@ -15,14 +15,18 @@ public:
     WeakPtr() : ptr(nullptr), ref_counter(nullptr) {}
 
     WeakPtr(const SharedPtr<T>& other) : ptr(other.ptr), ref_counter(other.ref_counter) {
-        this->ref_counter->weak_count++;
+        if(ref_counter){
+            ref_counter->weak_count++;
+        }
     }
 
-    WeakPtr(const WeakPtr& other) : ptr(other.ptr), ref_counter(other.ref_counter){
-        ref_counter->weak_count++;
+    WeakPtr(const WeakPtr<T>& other) : ptr(other.ptr), ref_counter(other.ref_counter){
+        if(ref_counter){
+            ref_counter->weak_count++;
+        }
     }
 
-    WeakPtr& operator=(const WeakPtr& other){
+    WeakPtr<T>& operator=(const WeakPtr<T>& other){
         if (this != &other) {
             if (ref_counter) {
                 ref_counter->weak_count--;
@@ -38,7 +42,25 @@ public:
         return *this;
     }
 
-    WeakPtr(WeakPtr&& other) noexcept : ptr(other.ptr), ref_counter(other.ref_counter) {
+    WeakPtr<T>& operator=(WeakPtr<T>&& other) noexcept {
+        if (this != &other) {
+            if (ref_counter) {
+                ref_counter->weak_count--;
+            }
+
+            ptr = std::move(other.ptr);
+            ref_counter = std::move(other.ref_counter);
+            
+            if (ref_counter) {
+                ref_counter->weak_count++;
+            }
+            other.ptr = nullptr;
+            other.ref_counter = nullptr;
+        }
+        return *this;
+    }
+
+    WeakPtr(WeakPtr<T>&& other) noexcept : ptr(other.ptr), ref_counter(other.ref_counter) {
         other.ptr = nullptr;
         other.ref_counter = nullptr;
     }

@@ -90,33 +90,37 @@ public:
 
     T& operator*() {
         if (!ptr) {
-            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+            throw std::runtime_error("Trying to dereference a null SharedPtr");
         }
         return *ptr;
     }
 
     const T& operator*() const {
         if (!ptr) {
-            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+            throw std::runtime_error("Trying to dereference a null SharedPtr");
         }
         return *ptr;
     }
 
     T* operator->() {
         if (!ptr) {
-            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+            throw std::runtime_error("Trying to dereference a null SharedPtr");
         }
         return ptr;
     }
 
     const T* operator->() const {
         if (!ptr) {
-            throw std::runtime_error("Trying to dereference a null ShrdPtr");
+            throw std::runtime_error("Trying to dereference a null SharedPtr");
         }
         return ptr;
     }
 
-    T* get() const {
+    T* get(){
+        return ptr;
+    }
+
+    const T* get() const {
         return ptr;
     }
     
@@ -140,8 +144,6 @@ public:
         ptr = newPtr;
         ref_counter = newPtr ? new RefCounter() : nullptr;
     }
-
-    RefCounter* get_ref_counter() const { return ref_counter; }
 
     size_t use_count() const {
         return ref_counter ? ref_counter->shared_count : static_cast<size_t>(0);

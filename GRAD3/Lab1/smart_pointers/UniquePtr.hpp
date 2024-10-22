@@ -30,11 +30,42 @@ public:
     UniquePtr(const UniquePtr&) = delete;
     UniquePtr& operator=(const UniquePtr&) = delete;
 
-    T& operator*() const { return *ptr; }
-    T* operator->() const { return ptr; }
+    T& operator*() {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null UniquePtr");
+        }
+        return *ptr;
+    }
 
-    T* get() const { return ptr; }
+    const T& operator*() const {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null UniquePtr");
+        }
+        return *ptr;
+    }
 
+    T* operator->() {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null UniquePtr");
+        }
+        return ptr;
+    }
+
+    const T* operator->() const {
+        if (!ptr) {
+            throw std::runtime_error("Trying to dereference a null UniquePtr");
+        }
+        return ptr;
+    }
+
+    T* get(){
+        return ptr;
+    }
+
+    const T* get() const {
+        return ptr;
+    }
+    
     void swap(UniquePtr& other) noexcept {
         std::swap(ptr, other.ptr);
     }

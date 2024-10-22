@@ -93,6 +93,17 @@ public:
         }
         return current->data;
     }
+    
+    const T& get(size_t index) const {
+        if (index < 0 || index >= length) {
+            throw std::out_of_range("IndexOutOfRange");
+        }
+        SharedPtr<Node> current = head;
+        for (size_t i = 0; i < index; ++i) {
+            current = current->next;
+        }
+        return current->data;
+    }
 
     SharedPtr<LinkedList<T>> get_sublist(size_t begin_index, size_t end_index) const {
         if (begin_index < 0 || begin_index >= length || end_index < 0 || end_index >= length) {
