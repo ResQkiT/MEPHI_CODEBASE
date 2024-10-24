@@ -49,10 +49,7 @@ public:
             throw std::out_of_range("Invalid index range for get_subsequence");
         }
 
-        // Получаем подсписок сразу как UniquePtr
         UniquePtr<LinkedList<T>> subList = list->get_sublist(startIndex, endIndex);
-        std::cout << subList->size();
-        // Создаем и возвращаем объект LinkedListSequence, передавая владение указателем subList
         return UniquePtr<Sequence<T>>(new LinkedListSequence<T>(std::move(subList)));
     }
 

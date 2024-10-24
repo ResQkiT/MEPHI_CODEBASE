@@ -1,6 +1,5 @@
 #pragma once
 
-#include "iostream"
 #include "smart_pointers/SharedPtr.hpp"
 #include "smart_pointers/UniquePtr.hpp"
 
@@ -143,17 +142,27 @@ public:
     UniquePtr<LinkedList<T>> get_sublist(size_t begin_index, size_t end_index) const
     {
         UniquePtr<LinkedList<T>> sublist(new LinkedList<T>());
-        SharedPtr<Node> current = head;
-        for (size_t i = 0; i < end_index; ++i)
+        SharedPtr<Node> currentOld = head;
+
+        for (size_t i = 0; i < begin_index; i++)
         {
-            if (i >= begin_index)
-            {
-                sublist->push_back(current->data);
-            }
-            current = current->next;
+            currentOld = currentOld->next;
         }
+
+        sublist->head = SharedPtr<Node>(new Node(currentOld->data));
+        SharedPtr<Node> currentNew = sublist->head;
+        currentOld = currentOld->next;
+
+        for (size_t i = begin_index + 1; i < end_index; ++i)
+        {
+            currentNew->next = SharedPtr<Node>(new Node(currentOld->data));
+            currentNew = currentNew->next;
+            currentOld = currentOld->next;
+        }
+        sublist->length = end_index - begin_index;
         return sublist;
     }
+
 
     void push_back(const T &item)
     {

@@ -107,7 +107,7 @@ public:
 
 int main(int argc, char* argv[]) {
 
-    if (argc == 2 && strcmp(argv[1], "t") == 0) { // сравнение строк
+    if (argc == 2 && strcmp(argv[1], "-t") == 0) { // сравнение строк
         run_tests(std::cout);
         return 0;
     } 
