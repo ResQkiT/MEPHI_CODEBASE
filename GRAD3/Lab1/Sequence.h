@@ -11,6 +11,7 @@ public:
     virtual T get_first() const = 0;
     virtual T get_last() const = 0;
     virtual T get(size_t index) const = 0;
+    virtual void pop_front() = 0;
     virtual size_t get_length() const = 0;
     virtual ~Sequence() = default;
 };

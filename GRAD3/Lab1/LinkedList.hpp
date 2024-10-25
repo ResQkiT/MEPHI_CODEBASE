@@ -22,7 +22,7 @@ private:
 public:
     LinkedList() : length{0} {}
 
-    LinkedList(const LinkedList<T> &list) : LinkedList()
+    LinkedList(const LinkedList<T> &list) : length{list.length}
     {
         if (!list.head)
         {
@@ -40,11 +40,18 @@ public:
         }
     }
 
-    LinkedList(const T *items, size_t count) : length{0}
+    LinkedList(const T *items, size_t count) : LinkedList()
     {
-        for (size_t i = 0; i < count; ++i)
+        if (count == 0)
+            return;
+
+        length = count;
+        head = SharedPtr<Node>(new Node(items[0]));
+        SharedPtr<Node> currentNew = head;
+        for (size_t i = 1; i < count; i++)
         {
-            push_back(items[i]);
+            currentNew->next = SharedPtr<Node>(new Node(items[i]));
+            currentNew = currentNew->next;
         }
     }
 
@@ -138,9 +145,11 @@ public:
         }
         return current->data;
     }
-
     UniquePtr<LinkedList<T>> get_sublist(size_t begin_index, size_t end_index) const
     {
+        if (begin_index > end_index)
+            throw new std::runtime_error("Invalid indexes");
+
         UniquePtr<LinkedList<T>> sublist(new LinkedList<T>());
         SharedPtr<Node> currentOld = head;
 
@@ -162,7 +171,6 @@ public:
         sublist->length = end_index - begin_index;
         return sublist;
     }
-
 
     void push_back(const T &item)
     {
@@ -221,8 +229,8 @@ public:
         if (is_empty())
             throw std::out_of_range("List is empty");
 
+        length--;
         T temp = T(head->data);
-
         SharedPtr<Node> newHead = head->next;
         head = newHead;
 
