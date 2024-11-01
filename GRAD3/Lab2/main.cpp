@@ -9,12 +9,25 @@
 
 using namespace std;   
 
+struct Person
+{
+    string name;
+    int age;
+    friend std::ostream &operator<<(std::ostream &os, const Person &p);
+};
 
-int main() {
-    DynamicArray<int > array({10 , 9, 8, 7, 6, 5, 5, 5, 4, 3, 2, 1, -99});
-    QuickSorter<int> sorter;
+std::ostream &operator<<(std::ostream &os, const Person &p)
+{
+    os << p.name << " " << p.age << '\n';
+    return os;
+}
 
-    sorter.sort(array.begin(), array.end(), sorter.REVERSE);
+int main(){
+    //TODO: некоторые сортировки не работают с Person, исправьте это
+    DynamicArray<Person> array({Person("Vasya", 20), Person("Petya", 30), Person("Kolya", 25), Person("Vanya", 15), Person("Dima", 40)});
+    QuickSorter<Person> sorter;
+
+    sorter.sort(array.begin(), array.end(), [](Person a, Person b) { return a.age - b.age; });
     
     for (auto b: array){
         cout << b << " ";

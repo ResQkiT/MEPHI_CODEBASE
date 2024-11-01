@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ISorter.hpp"
+#include "../../../GRAD2/Lab2/DynamicArray.h"
+
 template<class T>
 class InsertionSorter : public ISorter<T> {
 public:
