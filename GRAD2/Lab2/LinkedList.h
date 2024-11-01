@@ -50,6 +50,14 @@ public:
         }
     }
 
+    LinkedList(std::initializer_list<T> list) : head{nullptr}, tail{nullptr}, size{0}
+    {
+        for (const T &value : list)
+        {
+            push_back(value);
+        }
+    }
+
     LinkedList(const LinkedList<T> &other) : head{nullptr}, tail{nullptr}, size{0}
     {
         *this = other;
@@ -230,14 +238,20 @@ public:
 
         return *this;
     }
-    
+
     class Iterator
     {
     private:
         Node<T> *cur;
 
     public:
-        Iterator(Node<T> *head) : cur(head) {}
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T *;
+        using reference = T &;
+
+        Iterator(Node<T> *node) : cur(node) {}
 
         Iterator &operator++()
         {
@@ -248,13 +262,11 @@ public:
             return *this;
         }
 
-        Iterator &operator++(int)
+        Iterator operator++(int)
         {
-            if (cur != nullptr)
-            {
-                cur = cur->next;
-            }
-            return *this;
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
         }
 
         Iterator &operator--()
@@ -265,13 +277,12 @@ public:
             }
             return *this;
         }
-        Iterator &operator--(int)
+
+        Iterator operator--(int)
         {
-            if (cur != nullptr)
-            {
-                cur = cur->prev;
-            }
-            return *this;
+            Iterator tmp = *this;
+            --(*this);
+            return tmp;
         }
 
         bool operator!=(const Iterator &other) const
@@ -284,14 +295,14 @@ public:
             return cur == other.cur;
         }
 
-        T &operator*()
+        reference operator*()
         {
             if (cur == nullptr)
-                throw std::runtime_error("Iterator refer to null");
+                throw std::runtime_error("Iterator refers to null");
             return cur->data;
         }
 
-        T *operator->()
+        pointer operator->()
         {
             return &cur->data;
         }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Sequence.h"
 #include "LinkedList.h"
 
@@ -117,5 +118,52 @@ public:
     LinkedListSequence<T> &operator=(const LinkedListSequence<T> & other){
         impl = other.impl;
         return *this;
+    }
+
+    class Iterator
+    {
+    private:
+        typename LinkedList<T>::Iterator it;
+
+    public:
+        Iterator(typename LinkedList<T>::Iterator iter) : it(iter) {}
+
+        Iterator &operator++()
+        {
+            ++it;
+            return *this;
+        }
+
+        Iterator operator++(int)
+        {
+            Iterator temp = *this;
+            ++it;
+            return temp;
+        }
+
+        T &operator*()
+        {
+            return *it;
+        }
+
+        bool operator!=(const Iterator &other) const
+        {
+            return it != other.it;
+        }
+
+        bool operator==(const Iterator &other) const
+        {
+            return it == other.it;
+        }
+    };
+
+    Iterator begin()
+    {
+        return Iterator(impl.begin());
+    }
+
+    Iterator end()
+    {
+        return Iterator(impl.end());
     }
 };

@@ -7,7 +7,6 @@
 template <typename T>
 class DynamicArray : public IConcatable<T>
 {
-//что то написал в виме. Удалить
 private:
     T *data;
     size_t size;
@@ -57,6 +56,14 @@ public:
             throw std::invalid_argument("DynamicArray constructor must take not null arguments");
         this->data = new T[capacity];
         std::copy(data, data + size, this->data);
+    }
+
+    DynamicArray(const std::initializer_list<T> &list) : data{nullptr}, size{list.size()}, capacity{2 * size}
+    {
+        if (list.size() < 0)
+            throw std::invalid_argument("Cannot create DynamicArray with negative size");
+        this->data = new T[capacity];
+        std::copy(list.begin(), list.end(), this->data);
     }
 
     DynamicArray(const DynamicArray<T> &other) : data{nullptr}, size{other.size}, capacity{other.capacity}
@@ -193,53 +200,39 @@ public:
     class Iterator
     {
         friend DynamicArray;
-
     private:
         T *cur;
         size_t index;
         DynamicArray<T> *ptr;
 
+    public:
+        Iterator() : cur{nullptr}, index{0}, ptr{nullptr} {}
         Iterator(T *first, size_t index, DynamicArray<T> *self) : cur{first}, index{index}, ptr{self} {}
         Iterator(const Iterator &other) : cur{other.cur}, index{other.index}, ptr{other.ptr} {}
 
-    public:
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = std::ptrdiff_t;
         using value_type = T;
         using pointer = T *;
         using reference = T &;
 
-        Iterator operator+(difference_type n)
+        Iterator operator+(difference_type n) const
         {
-            // для отрицательных т так же работает поскольку положительный 0 - n = maxInt - n;
             if (index + n > ptr->size)
                 throw std::out_of_range("Iterator out of working zone(+)");
             return Iterator(cur + n, index + n, ptr);
         }
 
-        Iterator operator-(difference_type n)
+        Iterator operator-(difference_type n) const
         {
-            if (index - n < ptr->size)
+            if (index < n)
                 throw std::out_of_range("Iterator out of working zone(-)");
-            return operator+(-n);
+            return Iterator(cur - n, index - n, ptr);
         }
 
-        Iterator &operator++(int)
+        difference_type operator-(const Iterator &other) const
         {
-            if (index + 1 > ptr->size)
-                throw std::out_of_range("Iterator out of working zone(|++)");
-            index++;
-            cur++;
-            return *this;
-        }
-
-        Iterator &operator--(int)
-        {
-            if (index - 1 > ptr->size)
-                throw std::out_of_range("Iterator out of working zone(|--)");
-            index--;
-            cur--;
-            return *this;
+            return cur - other.cur;
         }
 
         Iterator &operator++()
@@ -251,17 +244,53 @@ public:
             return *this;
         }
 
+        Iterator operator++(int)
+        {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         Iterator &operator--()
         {
-            if (index - 1 > ptr->size)
+            if (index == 0)
                 throw std::out_of_range("Iterator out of working zone(--|)");
             --index;
             --cur;
             return *this;
         }
 
+        Iterator operator--(int)
+        {
+            Iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        Iterator &operator+=(difference_type n)
+        {
+            if (index + n > ptr->size)
+                throw std::out_of_range("Iterator out of working zone(+=)");
+            index += n;
+            cur += n;
+            return *this;
+        }
+
+        Iterator &operator-=(difference_type n)
+        {
+            if (index < n)
+                throw std::out_of_range("Iterator out of working zone(-=)");
+            index -= n;
+            cur -= n;
+            return *this;
+        }
+
         bool operator!=(const Iterator &it) const { return cur != it.cur; }
         bool operator==(const Iterator &it) const { return cur == it.cur; }
+        bool operator<(const Iterator &it) const { return cur < it.cur; }
+        bool operator<=(const Iterator &it) const { return cur <= it.cur; }
+        bool operator>(const Iterator &it) const { return cur > it.cur; }
+        bool operator>=(const Iterator &it) const { return cur >= it.cur; }
 
         reference operator*()
         {
@@ -270,11 +299,27 @@ public:
             else
                 throw std::runtime_error("Iterator refer to null");
         }
+
+        pointer operator->()
+        {
+            if (cur != nullptr)
+                return cur;
+            else
+                throw std::runtime_error("Iterator refer to null");
+        }
+
+        reference operator[](difference_type n) const
+        {
+            if (index + n >= ptr->size)
+                throw std::out_of_range("Iterator out of working zone([])");
+            return *(cur + n);
+        }
     };
 
+public:
     Iterator begin() { return Iterator(data, 0, this); }
 
     Iterator end() { return Iterator(data + size, size, this); }
-    
+
     friend Iterator;
 };
