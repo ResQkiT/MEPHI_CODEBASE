@@ -2,23 +2,11 @@
 #include <functional>
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 
-template <typename T>
+template <class T>
 class MergeSorter : public ISorter<T>
 {
-public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<int(T, T)> comp) override
-    {
-        if (begin + 1 == end)
-        {
-            return;
-        }
-        auto middle = begin + (end - begin) / 2;
-        sort(begin, middle, comp);
-        sort(middle, end, comp);
-        merge(begin, middle, end, comp);
-    }
-
-    void merge(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator middle, DynamicArray<T>::Iterator end, std::function<int(T, T)> comp)
+private:
+    void merge(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator middle, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>())
     {
         DynamicArray<T> left(middle - begin);
         DynamicArray<T> right(end - middle);
@@ -53,5 +41,18 @@ public:
             ++right_iter;
             ++current;
         }
+    }
+
+public:
+    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
+    {
+        if (begin + 1 == end)
+        {
+            return;
+        }
+        auto middle = begin + (end - begin) / 2;
+        sort(begin, middle, comp);
+        sort(middle, end, comp);
+        merge(begin, middle, end, comp);
     }
 };

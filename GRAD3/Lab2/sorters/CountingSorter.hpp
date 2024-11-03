@@ -1,21 +1,21 @@
 #include <functional>
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 
-template <typename T>
+template <class T>
 class CountingSorter : public ISorter<T>
 {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<int(T, T)> comp) override
+    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
     {
         T max = *begin;
         T min = *begin;
         for (auto i = begin; i != end; ++i)
         {
-            if (comp(*i, max) > 0)
+            if (!comp(*i, max))
             {
                 max = *i;
             }
-            if (comp(*i, min) < 0)
+            if (comp(*i, min))
             {
                 min = *i;
             }

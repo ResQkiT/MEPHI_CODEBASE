@@ -1,11 +1,14 @@
 #include <iostream>
-#include "../../GRAD2/Lab2/DynamicArray.h"
 #include <algorithm>
+#include <string.h>
+
+#include "../../GRAD2/Lab2/DynamicArray.h"
 #include "sorters/BubbleSorter.hpp"
 #include "sorters/InsertionSorter.hpp"
 #include "sorters/CountingSorter.hpp"
 #include "sorters/MergeSorter.hpp"
 #include "sorters/QuickSorter.hpp"
+#include "tests.h"
 
 using namespace std;   
 
@@ -22,7 +25,12 @@ std::ostream &operator<<(std::ostream &os, const Person &p)
     return os;
 }
 
-int main(){
+int main(int argc, char* argv[]) {
+    if (argc == 2 && strcmp(argv[1], "-t") == 0) { // сравнение строк
+        run_tests(std::cout);
+        return 0;
+    } 
+    
     //TODO: некоторые сортировки не работают с Person, исправьте это
     DynamicArray<Person> array({Person("Vasya", 20), Person("Petya", 30), Person("Kolya", 25), Person("Vanya", 15), Person("Dima", 40)});
     QuickSorter<Person> sorter;

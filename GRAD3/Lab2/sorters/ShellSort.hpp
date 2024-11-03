@@ -2,11 +2,11 @@
 #include <functional>
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 
-template <typename T>
+template <class T>
 class ShellSort : public ISorter<T>
 {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<int(T, T)> comp) override
+    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
     {
         for (auto gap = (end - begin) / 2; gap > 0; gap /= 2)
         {
@@ -14,9 +14,10 @@ public:
             {
                 auto temp = *i;
                 auto j = i;
-                for (; j >= begin + gap && comp(*(j - gap), temp) > 0; j -= gap)
+                while (j >= begin + gap && comp(temp, *(j - gap)))
                 {
                     *j = *(j - gap);
+                    j -= gap;
                 }
                 *j = temp;
             }
