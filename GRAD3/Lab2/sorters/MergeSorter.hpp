@@ -2,6 +2,14 @@
 #include <functional>
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 
+
+/*
+    Сортировка слиянием
+    Принцип работы:
+    1. Разбиваем массив на две части
+    2. Рекурсивно сортируем каждую часть
+    3. Сливаем два отсортированных массива
+*/
 template <class T>
 class MergeSorter : public ISorter<T>
 {
@@ -17,7 +25,7 @@ private:
         auto current = begin;
         while (left_iter != left.end() && right_iter != right.end())
         {
-            if (comp(*left_iter, *right_iter) < 0)
+            if (comp(*left_iter, *right_iter))
             {
                 *current = *left_iter;
                 ++left_iter;

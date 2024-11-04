@@ -36,6 +36,8 @@ private:
     }
 
 public:
+    using value_type = T;
+    
     DynamicArray() : data{nullptr}, size{0}, capacity{4}
     {
         this->data = new T[this->capacity];
@@ -46,6 +48,7 @@ public:
         if (size < 0)
             throw std::invalid_argument("Cannot create DynamicArray with negative size");
         this->data = new T[capacity];
+        for (size_t i = 0; i < size; i++) data[i] = T();    
     }
 
     DynamicArray(const T *data, size_t size) : data{nullptr}, size{size}, capacity{2 * size}
@@ -315,8 +318,7 @@ public:
             return *(cur + n);
         }
     };
-
-public:
+    
     Iterator begin() { return Iterator(data, 0, this); }
 
     Iterator end() { return Iterator(data + size, size, this); }

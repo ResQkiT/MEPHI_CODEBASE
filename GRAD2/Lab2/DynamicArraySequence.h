@@ -254,17 +254,17 @@ public:
             return it >= other.it;
         }
 
-        reference operator*() const
+        reference operator*()
         {
             return *it;
         }
 
-        pointer operator->() const
+        pointer operator->()
         {
             return &(*it);
         }
 
-        reference operator[](difference_type n) const
+        reference operator[](difference_type n)
         {
             return it[n];
         }

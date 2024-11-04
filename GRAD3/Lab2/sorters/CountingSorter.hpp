@@ -1,37 +1,42 @@
+#pragma once
+
 #include <functional>
 #include "../../../GRAD2/Lab2/DynamicArray.h"
+#include <map>
 
 template <class T>
 class CountingSorter : public ISorter<T>
 {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
+    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T &, const T &)> comp = std::less<T>()) override
     {
-        T max = *begin;
-        T min = *begin;
+        std::map<T, int> freq;
         for (auto i = begin; i != end; ++i)
         {
-            if (!comp(*i, max))
+            freq[*i]++;
+        }
+        auto current = begin;
+
+        if(comp(0, 1))
+        {
+            for(auto current_pair = freq.begin(); current_pair != freq.end(); ++current_pair)
             {
-                max = *i;
-            }
-            if (comp(*i, min))
-            {
-                min = *i;
+                for (int i = 0; i < current_pair->second; ++i)
+                {
+                    *current = current_pair->first;
+                    ++current;
+                }
             }
         }
-        DynamicArray<T> count(max - min + 1);
-        for (auto i = begin; i != end; ++i)
+        else
         {
-            count[*i - min]++;
-        }
-        auto j = begin;
-        for (size_t i = 0; i < count.get_size(); i++)
-        {
-            for (size_t k = 0; k < count[i]; k++)
+            for(auto current_pair = freq.rbegin(); current_pair != freq.rend(); ++current_pair)
             {
-                *j = i + min;
-                ++j;
+                for (int i = 0; i < current_pair->second; ++i)
+                {
+                    *current = current_pair->first;
+                    ++current;
+                }
             }
         }
     }

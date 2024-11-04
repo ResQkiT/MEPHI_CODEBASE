@@ -2,6 +2,14 @@
 #include <functional>
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 
+
+/*
+    Сортировка Шелла
+    Принцип работы:
+    1. Выбираем шаг h
+    2. Сортируем массивы с шагом h
+    3. Уменьшаем шаг и повторяем
+*/
 template <class T>
 class ShellSort : public ISorter<T>
 {
