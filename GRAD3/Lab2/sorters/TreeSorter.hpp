@@ -14,15 +14,12 @@
     3. Копируем отсортированные элементы обратно в массив
 */
 
-template<class T>
+template<class T> requires std::is_arithmetic<T>::value // относится к тому же костылю, что и в CountingSorter
 class TreeSorter : public ISorter<T> {
-private:
-
-
 public:
     void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override {
         
-        //ужасный костыль, но без него надо перелопачевать все дерево из 4 лабораторки прошлого семестра
+        //ужасный костыль, но без него надо перелопачевать все дерево из 4 лабораторки второго семестра
         int magic_constant = comp(0, 1) ? 1 : -1; //если компаратор сравнивает по возрастанию, то magic_constant = 1, иначе -1
 
         BinaryTree<T> tree;

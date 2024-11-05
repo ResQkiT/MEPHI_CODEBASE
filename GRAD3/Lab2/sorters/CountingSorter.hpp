@@ -4,7 +4,7 @@
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 #include <map>
 
-template <class T>
+template <class T> requires std::is_arithmetic<T>::value
 class CountingSorter : public ISorter<T>
 {
 public:
@@ -17,7 +17,7 @@ public:
         }
         auto current = begin;
 
-        if(comp(0, 1))
+        if(comp(0, 1)) 
         {
             for(auto current_pair = freq.begin(); current_pair != freq.end(); ++current_pair)
             {
