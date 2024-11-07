@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         }
 
         // Выбор порядка сортировки
-        if (orders[selected_order] == "Ascending") {
+        if (selected_order == 0) {
             sorter->sort(dynamic_array.begin(), dynamic_array.end(), std::less<int>());
         } else {
             sorter->sort(dynamic_array.begin(), dynamic_array.end(), std::greater<int>());
