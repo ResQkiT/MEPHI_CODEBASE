@@ -13,6 +13,7 @@
 #include "sorters/MergeSorter.hpp"
 #include "sorters/QuickSorter.hpp"
 #include "tests.h"
+#include "DataGenerator.h"
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
@@ -25,6 +26,10 @@ using namespace ftxui;
 int main(int argc, char* argv[]) {
     if (argc == 2 && strcmp(argv[1], "-t") == 0) {
         run_tests(std::cout);
+        return 0;
+    }else if (argc == 2 && strcmp(argv[1], "-g") == 0) {
+        DataGenerator generator;
+        generator.generate_random_data_file("data.txt", 1000, 0, 1000);
         return 0;
     }
 
