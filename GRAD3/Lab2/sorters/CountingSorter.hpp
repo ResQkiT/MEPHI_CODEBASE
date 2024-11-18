@@ -8,7 +8,7 @@ template <class T> requires std::is_arithmetic<T>::value
 class CountingSorter : public ISorter<T>
 {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T &, const T &)> comp = std::less<T>()) override
+    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
     {
         std::map<T, int> freq;
         for (auto i = begin; i != end; ++i)

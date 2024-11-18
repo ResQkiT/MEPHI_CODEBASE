@@ -47,27 +47,21 @@ int main(int argc, char *argv[])
         generator.generate_random_data_file("data.txt", 1000, 0, 1000);
         return 0;
     }
-    
     auto screen = ScreenInteractive::TerminalOutput();
 
-    // Переменные для интерфейса
     std::vector<int> array;
     std::string array_input;
     int selected_sorter = 0;
     int selected_order = 0;
     std::string result;
     std::string filename_input;
-    std::string sequence_size = "100"; // Размер последовательности по умолчанию
+    std::string sequence_size = "100";
     std::vector<std::string> files;
     int selected_file = 0;
 
 
     DataGenerator data_generator;
 
-    
-
-
-    // Компоненты интерфейса
     auto array_input_component = Input(&array_input, "Введите числа через пробел");
     auto result_component = Renderer([&]
                                      { return text(result); });
@@ -119,7 +113,6 @@ int main(int argc, char *argv[])
             }
         }
 
-        // Выбор сортировщика
         std::unique_ptr<ISorter<int>> sorter;
         if (sorters[selected_sorter] == "BubbleSorter") {
             sorter = std::make_unique<BubbleSorter<int>>();

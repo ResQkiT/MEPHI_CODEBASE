@@ -15,7 +15,7 @@ template <class T>
 class BinSearchInsertionSort : public ISorter<T> {
 
 private:
-     DynamicArray<T>::Iterator bin_search( DynamicArray<T>::Iterator begin,  DynamicArray<T>::Iterator end, const T& key, std::function<bool(const T&, const T&)> comp) {
+     ISorter<T>::Iterator bin_search( ISorter<T>::Iterator begin,  ISorter<T>::Iterator end, const T& key, ISorter<T>::Comparator comp) {
         auto left = begin;
         auto right = end;
         while (left < right) {
@@ -30,7 +30,7 @@ private:
     }
     
 public:
-    void sort( DynamicArray<T>::Iterator begin,  DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override {
+    void sort( ISorter<T>::Iterator begin,  ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override {
         for (auto i = begin + 1; i != end; ++i) {
             T key = *i;
             auto index = bin_search(begin, i, key, comp);

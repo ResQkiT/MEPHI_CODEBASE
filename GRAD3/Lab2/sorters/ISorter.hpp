@@ -8,6 +8,10 @@ template <class T>
 class ISorter
 {
 public:
+    using Comparator = std::function<bool(const T&, const T&)>;
+    using Iterator = DynamicArray<T>::Iterator;
+
     virtual ~ISorter() = default;
-    virtual void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) = 0;
-};;
+
+    virtual void sort(Iterator begin, Iterator end, Comparator comp = std::less<T>()) = 0;
+};

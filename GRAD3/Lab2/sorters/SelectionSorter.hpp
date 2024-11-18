@@ -13,7 +13,7 @@ template <class T>
 class SelectionSorter : public ISorter<T>
 {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
+    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
     {
         for (auto i = begin; i != end; ++i)
         {

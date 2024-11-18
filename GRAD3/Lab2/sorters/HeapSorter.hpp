@@ -13,7 +13,7 @@
 template<class T>
 class HeapSorter : public ISorter<T> {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override {
+    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override {
         DynamicArray<T> array;
         std::copy(begin, end, std::back_inserter(array));
 
@@ -31,7 +31,7 @@ public:
     }
 
 private:
-    void heapify(DynamicArray<T>& array, int n, int i, std::function<bool(const T&, const T&)> comp) {
+    void heapify(DynamicArray<T>& array, int n, int i, ISorter<T>::Comparator comp) {
         int largest = i;
         int left = 2 * i + 1;
         int right = 2 * i + 2;

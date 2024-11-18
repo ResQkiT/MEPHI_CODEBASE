@@ -14,7 +14,7 @@ template <class T>
 class MergeSorter : public ISorter<T>
 {
 private:
-    void merge(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator middle, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>())
+    void merge(ISorter<T>::Iterator begin, ISorter<T>::Iterator middle, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>())
     {
         DynamicArray<T> left(middle - begin);
         DynamicArray<T> right(end - middle);
@@ -52,7 +52,7 @@ private:
     }
 
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
+    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
     {
         if (begin + 1 == end)
         {

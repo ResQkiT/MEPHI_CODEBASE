@@ -13,13 +13,13 @@ template <class T>
 class QuickSorter : public ISorter<T>
 {
 public:
-    void sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> comp = std::less<T>()) override
+    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
     {
         quick_sort(begin, end, comp);
     }
 
 private:
-    void quick_sort(DynamicArray<T>::Iterator begin, DynamicArray<T>::Iterator end, std::function<bool(const T&, const T&)> & comp)
+    void quick_sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator & comp)
     {
         if (begin + 1 >= end)
         {

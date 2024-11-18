@@ -125,12 +125,12 @@ public:
         impl = new_array;
     }
 
-    typename DynamicArray<T>::Iterator get_begin()
+    typename ISorter<T>::Iterator get_begin()
     {
         return impl.begin();
     }
 
-    typename DynamicArray<T>::Iterator get_end()
+    typename ISorter<T>::Iterator get_end()
     {
         return impl.end();
     }
@@ -160,7 +160,7 @@ public:
     class Iterator
     {
     private:
-        typename DynamicArray<T>::Iterator it;
+        typename ISorter<T>::Iterator it;
 
     public:
         using iterator_category = std::random_access_iterator_tag;
@@ -169,7 +169,7 @@ public:
         using pointer = T*;
         using reference = T&;
 
-        Iterator(typename DynamicArray<T>::Iterator iterator) : it(iterator) {}
+        Iterator(typename ISorter<T>::Iterator iterator) : it(iterator) {}
 
         Iterator& operator++()
         {
