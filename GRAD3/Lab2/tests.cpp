@@ -60,6 +60,7 @@ namespace tests
         }
 
         out << name << " test passed!" << std::endl;
+        
     }
 
     void performance_test_sorter(const std::string & name, const std::shared_ptr<ISorter<int>> &sorter, std::ostream &out)
@@ -72,6 +73,91 @@ namespace tests
         }
 
         measure_time(name, [&](){ sorter->sort(arr.begin(), arr.end()); }, out);
+    }
+
+
+    struct User
+    {
+        std::string name;
+        int age;
+
+        bool operator==(const User &other) const
+        {
+            return name == other.name && age == other.age;
+        }
+    };
+
+
+    void read_users_from_file(const std::string &file_path, DynamicArray<User> &users)
+    {
+        std::ifstream input_file(file_path);
+        if (!input_file.is_open())
+        {
+            throw std::runtime_error("Could not open file for reading: " + file_path);
+        }
+
+        std::string line;
+        while (std::getline(input_file, line))
+        {
+            std::istringstream iss(line);
+            User user;
+
+            std::string first_name, last_name;
+            if (iss >> first_name >> last_name >> user.age)
+            {
+                user.name = first_name + " " + last_name;
+                users.push_back(user);
+            }
+        }
+    }
+
+
+    void write_users_to_file(const std::string &file_path, DynamicArray<User> &users)
+    {
+        std::ofstream output_file(file_path);
+        if (!output_file.is_open())
+        {
+            throw std::runtime_error("Could not open file for writing: " + file_path);
+        }
+
+        for (auto user : users)
+        {
+            output_file << user.name << " " << user.age << "\n";
+        }
+    }
+
+    void test_user_sorting(std::ostream &out)
+    {
+        const std::string input_file = "../test_data_sort/user_input.txt";
+        const std::string output_file = "../test_data_sort/user_output.txt";
+
+        auto comp = [](const User &first, const User &second) {
+                        return first.age < second.age;
+                };
+
+        DynamicArray<User> users;
+        read_users_from_file(input_file, users);
+
+
+        std::vector<User> std_sorted_users;
+        for (auto b: users)
+        {
+            std_sorted_users.push_back(b);
+        }
+        
+        std::sort(std_sorted_users.begin(), std_sorted_users.end(), comp);
+
+        DynamicArray<User> custom_sorted_users(users);
+
+        std::shared_ptr<ISorter<User>> sorter = std::make_shared<QuickSorter<User>>();
+        
+        sorter->sort(custom_sorted_users.begin(), custom_sorted_users.end(), comp);
+
+        assert(custom_sorted_users.get_size() == std_sorted_users.size());
+        
+        write_users_to_file(output_file, custom_sorted_users);
+        
+        out << "User sorting test passed!" << std::endl;
     }
 
     void run_all_tests(std::ostream &out)
@@ -88,6 +174,9 @@ namespace tests
         {
             performance_test_sorter(pair.first, pair.second, out);
         }
+
+        out << "Running user sorting tests..." << std::endl;
+        test_user_sorting(out);
     }
 }
 
