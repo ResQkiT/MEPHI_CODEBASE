@@ -48,7 +48,7 @@ namespace tests
     };
 
 
-    void test_sorter(const std::string & name, const std::shared_ptr<ISorter<int>> &sorter, std::ostream &out)
+    void test_sorter(const std::string & name, std::shared_ptr<ISorter<int>> sorter, std::ostream &out)
     {
         DynamicArray<int> arr = {5, 4, 3, 2, 1};
         
@@ -63,7 +63,7 @@ namespace tests
         
     }
 
-    void performance_test_sorter(const std::string & name, const std::shared_ptr<ISorter<int>> &sorter, std::ostream &out)
+    void performance_test_sorter(const std::string & name, std::shared_ptr<ISorter<int>> sorter, std::ostream &out)
     {
         DynamicArray<int> arr;
         DataGenerator generator;
@@ -138,22 +138,16 @@ namespace tests
         DynamicArray<User> users;
         read_users_from_file(input_file, users);
 
-
-        std::vector<User> std_sorted_users;
-        for (auto b: users)
-        {
-            std_sorted_users.push_back(b);
-        }
-        
-        std::sort(std_sorted_users.begin(), std_sorted_users.end(), comp);
-
         DynamicArray<User> custom_sorted_users(users);
-
+    
         std::shared_ptr<ISorter<User>> sorter = std::make_shared<QuickSorter<User>>();
         
         sorter->sort(custom_sorted_users.begin(), custom_sorted_users.end(), comp);
 
-        assert(custom_sorted_users.get_size() == std_sorted_users.size());
+        for(int i = 0; i < custom_sorted_users.get_size() - 1; i++)
+        {
+            assert(! comp(custom_sorted_users[i+1], custom_sorted_users[i])); //  Выполнено отношение частичной упорядоченности
+        }
         
         write_users_to_file(output_file, custom_sorted_users);
         
