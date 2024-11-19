@@ -4,12 +4,11 @@
 #include "../../../GRAD2/Lab2/DynamicArray.h"
 
 
-template <class T> 
+template <class T, class Iterator = typename DynamicArray<T>::Iterator>
 class ISorter
 {
 public:
     using Comparator = std::function<bool(const T&, const T&)>;
-    using Iterator = DynamicArray<T>::Iterator;
 
     virtual ~ISorter() = default;
 

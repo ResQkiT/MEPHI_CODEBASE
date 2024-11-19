@@ -9,17 +9,17 @@
     2. Разбиваем массив на две части, в одной все элементы меньше опорного, в другой больше
     3. Рекурсивно сортируем каждую часть
 */
-template <class T>
-class QuickSorter : public ISorter<T>
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+class QuickSorter : public ISorter<T, Iterator>
 {
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
+    void sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override
     {
         quick_sort(begin, end, comp);
     }
 
 private:
-    void quick_sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator & comp)
+    void quick_sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>())
     {
         if (begin + 1 >= end)
         {

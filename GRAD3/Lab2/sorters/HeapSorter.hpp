@@ -10,10 +10,10 @@
     2. Первый элемент - максимальный, меняем его с последним
     3. Перестраиваем пирамиду
 */
-template<class T>
-class HeapSorter : public ISorter<T> {
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+class HeapSorter : public ISorter<T, Iterator> {
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override {
+    void sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override {
         DynamicArray<T> array;
         std::copy(begin, end, std::back_inserter(array));
 
@@ -31,7 +31,7 @@ public:
     }
 
 private:
-    void heapify(DynamicArray<T>& array, int n, int i, ISorter<T>::Comparator comp) {
+    void heapify(DynamicArray<T>& array, int n, int i, typename ISorter<T, Iterator>::Comparator comp) {
         int largest = i;
         int left = 2 * i + 1;
         int right = 2 * i + 2;

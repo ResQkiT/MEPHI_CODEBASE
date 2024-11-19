@@ -121,18 +121,7 @@ public:
         {
             new_array.push_back(impl[i]);
         }
-        // alert двойное копирование
         impl = new_array;
-    }
-
-    typename ISorter<T>::Iterator get_begin()
-    {
-        return impl.begin();
-    }
-
-    typename ISorter<T>::Iterator get_end()
-    {
-        return impl.end();
     }
 
     DynamicArraySequence<T> operator+(const DynamicArraySequence<T> &other) const
@@ -160,7 +149,7 @@ public:
     class Iterator
     {
     private:
-        typename ISorter<T>::Iterator it;
+        typename DynamicArray<T>::Iterator it;
 
     public:
         using iterator_category = std::random_access_iterator_tag;
@@ -169,7 +158,7 @@ public:
         using pointer = T*;
         using reference = T&;
 
-        Iterator(typename ISorter<T>::Iterator iterator) : it(iterator) {}
+        Iterator(typename DynamicArray<T>::Iterator iterator) : it(iterator) {}
 
         Iterator& operator++()
         {

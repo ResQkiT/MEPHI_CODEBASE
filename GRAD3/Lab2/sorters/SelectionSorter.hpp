@@ -9,11 +9,11 @@
     2. Меняем его местами с первым элементом
     3. Повторяем для оставшегося массива
 */
-template <class T>
-class SelectionSorter : public ISorter<T>
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+class SelectionSorter : public ISorter<T, Iterator>
 {
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
+    void sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override
     {
         for (auto i = begin; i != end; ++i)
         {

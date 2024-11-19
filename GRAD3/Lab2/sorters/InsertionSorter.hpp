@@ -9,10 +9,10 @@
     2. Если он меньше предыдущего, то он сдвигается влево
     3. Повторяем для всех элементов
 */
-template<class T>
-class InsertionSorter : public ISorter<T> {
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+class InsertionSorter : public ISorter<T, Iterator> {
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override {
+    void sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override {
         for (auto i = begin + 1; i != end; ++i) {
             T key = *i;
             auto j = i;

@@ -10,11 +10,11 @@
     2. Сортируем массивы с шагом h
     3. Уменьшаем шаг и повторяем
 */
-template <class T>
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
 class ShellSort : public ISorter<T>
 {
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
+    void sort(Iterator begin, Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
     {
         for (auto gap = (end - begin) / 2; gap > 0; gap /= 2)
         {

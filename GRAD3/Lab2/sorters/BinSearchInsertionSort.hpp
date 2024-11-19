@@ -11,11 +11,10 @@
     2. Если он меньше предыдущего, то он сдвигается влево на позицию определяемую бинарным поиском
     3. Повторяем для всех элементов
 */
-template <class T>
-class BinSearchInsertionSort : public ISorter<T> {
-
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+class BinSearchInsertionSort : public ISorter<T, Iterator> {
 private:
-     ISorter<T>::Iterator bin_search( ISorter<T>::Iterator begin,  ISorter<T>::Iterator end, const T& key, ISorter<T>::Comparator comp) {
+    Iterator bin_search(Iterator begin, Iterator end, const T& key, typename ISorter<T, Iterator>::Comparator comp ) {
         auto left = begin;
         auto right = end;
         while (left < right) {
@@ -30,7 +29,7 @@ private:
     }
     
 public:
-    void sort( ISorter<T>::Iterator begin,  ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override {
+    void sort(Iterator begin,  Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override {
         for (auto i = begin + 1; i != end; ++i) {
             T key = *i;
             auto index = bin_search(begin, i, key, comp);

@@ -10,11 +10,11 @@
     2. Рекурсивно сортируем каждую часть
     3. Сливаем два отсортированных массива
 */
-template <class T>
-class MergeSorter : public ISorter<T>
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+class MergeSorter : public ISorter<T, Iterator>
 {
 private:
-    void merge(ISorter<T>::Iterator begin, ISorter<T>::Iterator middle, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>())
+    void merge(Iterator begin, Iterator middle, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>())
     {
         DynamicArray<T> left(middle - begin);
         DynamicArray<T> right(end - middle);
@@ -52,7 +52,7 @@ private:
     }
 
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override
+    void sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override
     {
         if (begin + 1 == end)
         {

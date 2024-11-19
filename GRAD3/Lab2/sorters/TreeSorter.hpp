@@ -14,10 +14,11 @@
     3. Копируем отсортированные элементы обратно в массив
 */
 
-template<class T> requires std::is_arithmetic<T>::value 
+template<class T, class Iterator = typename DynamicArray<T>::Iterator>
+requires std::is_arithmetic<T>::value 
 class TreeSorter : public ISorter<T> {
 public:
-    void sort(ISorter<T>::Iterator begin, ISorter<T>::Iterator end, ISorter<T>::Comparator comp = std::less<T>()) override {
+    void sort(Iterator begin, Iterator end, typename ISorter<T, Iterator>::Comparator comp = std::less<T>()) override {
         
         int magic_constant = comp(0, 1) ? 1 : -1;
 

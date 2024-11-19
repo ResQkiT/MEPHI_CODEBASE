@@ -126,20 +126,17 @@ int main(int argc, char *argv[])
             sorter = std::make_unique<QuickSorter<int>>();
         }
 
-        // Сортировка массива
         DynamicArray<int> dynamic_array(array.size());
         for (size_t i = 0; i < array.size(); ++i) {
             dynamic_array[i] = array[i];
         }
 
-        // Выбор порядка сортировки
         if (selected_order == 0) {
             sorter->sort(dynamic_array.begin(), dynamic_array.end(), std::less<int>());
         } else {
             sorter->sort(dynamic_array.begin(), dynamic_array.end(), std::greater<int>());
         }
 
-        // Преобразование результата в строку
         result.clear();
         for (const auto& elem : dynamic_array) {
             result += std::to_string(elem) + " ";
