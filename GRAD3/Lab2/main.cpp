@@ -66,7 +66,6 @@ int main(int argc, char *argv[])
     auto result_component = Renderer([&]
                                      { return text(result); });
 
-    std::vector<std::string> sorters = {"BubbleSorter", "InsertionSorter", "CountingSorter", "MergeSorter", "QuickSorter"};
 
     std::map<std::string, std::shared_ptr<ISorter<int>>> sorters_map = {
         {"BubbleSorter", std::make_shared<BubbleSorter<int>>()},
@@ -75,7 +74,13 @@ int main(int argc, char *argv[])
         {"MergeSorter", std::make_shared<MergeSorter<int>>()},
         {"QuickSorter", std::make_shared<QuickSorter<int>>()}
     };
-
+    
+    std::vector<std::string> sorters;
+    
+    for(const auto& pair : sorters_map){
+        sorters.push_back(pair.first);
+    }
+    
     auto sorter_selector = Radiobox(&sorters, &selected_sorter);
 
     std::vector<std::string> orders = {"Ascending", "Descending"};
