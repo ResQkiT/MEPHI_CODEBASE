@@ -67,6 +67,15 @@ int main(int argc, char *argv[])
                                      { return text(result); });
 
     std::vector<std::string> sorters = {"BubbleSorter", "InsertionSorter", "CountingSorter", "MergeSorter", "QuickSorter"};
+
+    std::map<std::string, std::shared_ptr<ISorter<int>>> sorters_map = {
+        {"BubbleSorter", std::make_shared<BubbleSorter<int>>()},
+        {"InsertionSorter", std::make_shared<InsertionSorter<int>>()},
+        {"CountingSorter", std::make_shared<CountingSorter<int>>()},
+        {"MergeSorter", std::make_shared<MergeSorter<int>>()},
+        {"QuickSorter", std::make_shared<QuickSorter<int>>()}
+    };
+
     auto sorter_selector = Radiobox(&sorters, &selected_sorter);
 
     std::vector<std::string> orders = {"Ascending", "Descending"};
@@ -113,18 +122,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        std::unique_ptr<ISorter<int>> sorter;
-        if (sorters[selected_sorter] == "BubbleSorter") {
-            sorter = std::make_unique<BubbleSorter<int>>();
-        } else if (sorters[selected_sorter] == "InsertionSorter") {
-            sorter = std::make_unique<InsertionSorter<int>>();
-        } else if (sorters[selected_sorter] == "CountingSorter") {
-            sorter = std::make_unique<CountingSorter<int>>();
-        } else if (sorters[selected_sorter] == "MergeSorter") {
-            sorter = std::make_unique<MergeSorter<int>>();
-        } else if (sorters[selected_sorter] == "QuickSorter") {
-            sorter = std::make_unique<QuickSorter<int>>();
-        }
+        std::shared_ptr<ISorter<int>> sorter = sorters_map[sorters[selected_sorter]] ;
 
         DynamicArray<int> dynamic_array(array.size());
         for (size_t i = 0; i < array.size(); ++i) {

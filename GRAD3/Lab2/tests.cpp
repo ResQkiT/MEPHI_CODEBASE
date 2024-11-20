@@ -18,7 +18,6 @@
 #include "sorters/SelectionSorter.hpp"
 #include "sorters/ShellSort.hpp"
 #include "sorters/HeapSorter.hpp"
-#include "sorters/TreeSorter.hpp"
 #include "DataGenerator.h"
 
 namespace tests
@@ -43,8 +42,7 @@ namespace tests
         {"BinSearchInsertionSort", std::make_shared<BinSearchInsertionSort<int>>()},
         {"ShellSort", std::make_shared<ShellSort<int>>()},
         {"QuickSorter", std::make_shared<QuickSorter<int>>()},
-        {"HeapSorter", std::make_shared<HeapSorter<int>>()},
-        {"TreeSorter", std::make_shared<TreeSorter<int>>()}
+        {"HeapSorter", std::make_shared<HeapSorter<int>>()}
     };
 
 
