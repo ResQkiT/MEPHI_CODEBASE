@@ -53,6 +53,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+.vscode/
+
 GRAD2/build
 GRAD2/Lab2/output
 GRAD2/Lab2/build
@@ -62,3 +64,4 @@ GRAD2/ExtendedMenu/build
 GRAD2/Lab4/build
 GRAD3/Lab1/build
 GRAD3/Lab2/build
+GRAD3/Lab3/build
