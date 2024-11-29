@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include <forward_list>
@@ -43,26 +44,23 @@ private:
         size_t hash = Hash{}(key);
         size_t index = get_index_from_hash(hash);
 
-        // Проверяем, существует ли уже элемент с таким ключом
         for (auto& item : hash_table[index]) {
             if (item.first == key) {
                 return item.second;
             }
         }
 
-        // Если элемент не найден, добавляем новый
         if (bucket_size(hash_table[index]) == 0) {
             ++non_empty_buckets_count;
         }
 
-        // Вставляем новый элемент
         hash_table[index].push_front({std::move(key), V()});
         ++total_elements;
 
-        // Проводим перерасчет, если требуется
+
         rehash();
 
-        return hash_table[index].front().second; // Возвращаем значение нового элемента
+        return hash_table[index].front().second;
     }
 
     size_t bucket_size(const std::forward_list<value_type>& bucket) const {
