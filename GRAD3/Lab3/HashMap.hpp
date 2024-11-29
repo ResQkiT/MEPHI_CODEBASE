@@ -18,17 +18,18 @@ private:
 
     void rehash() {
         if ((float) non_empty_buckets_count / get_bucket_count() > load_factor) {
-            std::vector<std::forward_list<value_type>> new_table(hash_table.size() * 2);
+            size_t new_size = std::max(hash_table.size() * 2, size_t(2)); 
+            std::vector<std::forward_list<value_type>> new_table(new_size);
             size_t new_non_empty = 0;
             size_t new_total = 0;
             for (auto& bucket : hash_table) {
                 for (auto& item : bucket) {
                     size_t hash = Hash{}(item.first);
-                    size_t index = hash % new_table.size();
-                    if (new_table[index].empty()) {
+                    size_t index = hash % new_size; 
+                    if (bucket_size(new_table[index]) == 0) {
                         ++new_non_empty;
                     }
-                    new_table[index].push_front(std::move(item));
+                    new_table[index].emplace_front(std::move(item));
                     ++new_total;
                 }
             }
@@ -36,6 +37,36 @@ private:
             non_empty_buckets_count = new_non_empty;
             total_elements = new_total;
         }
+    }
+
+    V& insert_or_get(K&& key) {
+        size_t hash = Hash{}(key);
+        size_t index = get_index_from_hash(hash);
+
+        // Проверяем, существует ли уже элемент с таким ключом
+        for (auto& item : hash_table[index]) {
+            if (item.first == key) {
+                return item.second;
+            }
+        }
+
+        // Если элемент не найден, добавляем новый
+        if (bucket_size(hash_table[index]) == 0) {
+            ++non_empty_buckets_count;
+        }
+
+        // Вставляем новый элемент
+        hash_table[index].push_front({std::move(key), V()});
+        ++total_elements;
+
+        // Проводим перерасчет, если требуется
+        rehash();
+
+        return hash_table[index].front().second; // Возвращаем значение нового элемента
+    }
+
+    size_t bucket_size(const std::forward_list<value_type>& bucket) const {
+        return std::distance(bucket.begin(), bucket.end());
     }
 
     size_t get_bucket_count() const {
@@ -54,10 +85,10 @@ public:
             for (const auto& item : bucket) {
                 size_t hash = Hash{}(item.first);
                 size_t index = get_index_from_hash(hash);
-                if (!hash_table[index].empty()) {
+                if (bucket_size(hash_table[index]) == 1) {
                     ++non_empty_buckets_count;
                 }
-                hash_table[index].push_back(item);
+                hash_table[index].emplace_front(item);
                 ++total_elements;
             }
         }
@@ -90,22 +121,13 @@ public:
     }
 
     V& operator[](const K& key) {
-        size_t hash = Hash{}(key);
-        size_t index = get_index_from_hash(hash);
-        for (auto& item : hash_table[index]) {
-            if (item.first == key) {
-                return item.second;
-            }
-        }
-
-        hash_table[index].push_front({key, V()});
-        if (!hash_table[index].empty()) {
-                    ++non_empty_buckets_count;
-        }
-        ++total_elements;
-        rehash();
-        return hash_table[index].front().second;
+        return insert_or_get(K(key));  
     }
+
+    V& operator[](K&& key) {
+        return insert_or_get(std::move(key));  
+    }
+
 
     ~HashMap() = default;
 
@@ -116,36 +138,32 @@ public:
         std::swap(load_factor, other.load_factor);
     }
 
-    value_type* find(const K& k) {
+    std::optional<std::reference_wrapper<value_type>> find(const K& k) {
         size_t hash = Hash{}(k);
         size_t index = get_index_from_hash(hash);
         for (auto& item : hash_table[index]) {
             if (item.first == k) {
-                return &item;
+                return item;
             }
         }
-        return nullptr;
+        return std::nullopt;
     }
 
     void add_or_edit(const K& k, V&& v) {
         size_t hash = Hash{}(k);
         size_t index = get_index_from_hash(hash);
-        bool found = false;
         for (auto& item : hash_table[index]) {
             if (item.first == k) {
                 item.second = std::forward<V>(v);
-                found = true;
-                break;
+                return;
             }
         }
-        if (!found) {
-            hash_table[index].push_front({k, std::forward<V>(v)});
-            if (!hash_table[index].empty()) {
-                ++non_empty_buckets_count;
-            }
-            ++total_elements;
-            rehash();
+        hash_table[index].push_front({k, std::forward<V>(v)});
+        ++total_elements;
+        if (bucket_size(hash_table[index]) == 1) {
+            ++non_empty_buckets_count;
         }
+        rehash();
     }
 
     void erase(const K& k) {
@@ -153,15 +171,17 @@ public:
         size_t index = get_index_from_hash(hash);
         auto& bucket = hash_table[index];
         auto it = bucket.before_begin();
-        while (++it != bucket.end()) {
-            if (it->first == k) {
-                bucket.erase_after(it);
+        for (auto next = bucket.begin(); next != bucket.end(); ) {
+            if (next->first == k) {
+                next = bucket.erase_after(it);
                 --total_elements;
-                if (bucket.empty()) {
-                    --non_empty_buckets_count;
-                }
-                it = bucket.before_begin();
+            } else {
+                ++it;
+                ++next;
             }
+        }
+        if (bucket.empty()) {
+            --non_empty_buckets_count;
         }
     }
 
