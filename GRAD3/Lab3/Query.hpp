@@ -10,16 +10,21 @@
 template <typename T>
 class Query {
 private:
+    std::string unique_name; 
     std::vector<std::function<bool(const T&)>> conditions;
 
 public:
-    Query() = default;
 
-    Query(const std::vector<std::function<bool(const T&)>>& initial_conditions) 
-        : conditions(initial_conditions) {}
+    Query() = delete;
 
-    Query(std::initializer_list<std::function<bool(const T&)>> init_list) 
-        : conditions(init_list) {}
+    Query(const std::string& name) : unique_name(name) {}
+
+
+    Query(const std::string& name, const std::vector<std::function<bool(const T&)>>& initial_conditions) 
+        : unique_name(name), conditions(initial_conditions) {}
+
+    Query(const std::string& name, std::initializer_list<std::function<bool(const T&)>> init_list) 
+        : unique_name(name), conditions(init_list) {}
 
     void add_condition(std::function<bool(const T&)> condition) {
         conditions.push_back(condition);
@@ -34,13 +39,22 @@ public:
         return true;
     }
 
+    bool operator==(const Query<T>& other) const {
+        return unique_name == other.unique_name; 
+    }
+
+    bool operator!=(const Query<T>& other) const {
+        return !(*this == other);
+    }
+
+    const std::string& get_unique_name() const {
+        return unique_name;
+    }
+
+
     struct Hash {
         std::size_t operator()(const Query<T>& query) const {
-            std::size_t seed = 0;
-            for (const auto& condition : query.conditions) {
-                seed ^= reinterpret_cast<std::size_t>(&condition) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-            }
-            return seed;
+            return std::hash<std::string>()(query.unique_name);
         }
     };
 };

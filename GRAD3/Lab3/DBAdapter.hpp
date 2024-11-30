@@ -8,30 +8,30 @@
 #include "Query.hpp"
 
 template <typename T, typename = void>
-class BDAadapter;
+class DBAdapter;
 
 template <typename T>
-class BDAadapter<T, std::enable_if_t<std::is_constructible_v<T, std::string>>> {
+class DBAdapter<T, std::enable_if_t<std::is_constructible_v<T, std::string>>> {
 private:
     std::string m_filename;
     std::ifstream m_file;
 
 public:
-    BDAadapter(const std::string& filename) : m_filename(filename) {
+    DBAdapter(const std::string& filename) : m_filename(filename) {
         m_file.open(filename);
         if (!m_file.is_open()) {
             throw std::runtime_error("Could not open file: " + filename);
         }
     }
 
-    ~BDAadapter() {
+    ~DBAdapter() {
         if (m_file.is_open()) {
             m_file.close();
         }
     }
 
-    BDAadapter(const BDAadapter&) = delete;
-    BDAadapter& operator=(const BDAadapter&) = delete;
+    DBAdapter(const DBAdapter&) = delete;
+    DBAdapter& operator=(const DBAdapter&) = delete;
 
     void resetFile() {
         m_file.clear();
@@ -64,7 +64,7 @@ public:
     }
 
 
-    std::vector<T> find(const Query<T>& query) {
+    virtual std::vector<T> find(const Query<T>& query) {
         if (!m_file.is_open()) {
             throw std::runtime_error("File is not open.");
         }
