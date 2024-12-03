@@ -1,7 +1,7 @@
-import random
 import sys
+import random
+import os
 
-# List of sample first names
 first_names = [
     "Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace",
     "Hank", "Ivy", "Jack", "Kate", "Luke", "Mia", "Nate", "Olivia",
@@ -13,7 +13,6 @@ first_names = [
     "Yasmine", "Zane"
 ]
 
-# List of sample last names
 last_names = [
     "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis",
     "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas",
@@ -27,38 +26,31 @@ last_names = [
     "Cook", "Morgan", "Bell", "Murphy", "Bailey", "Rivera"
 ]
 
-# Default values
-num_records = 1000
-min_age = 1
-max_age = 99
-filename = "/home/resk/main/c/C_MEPHI/GRAD3/Lab3/test_data/small_data.txt"
+def generate_data(filename, num_records, min_age, max_age):
+    try:
+        with open(filename, 'w') as file:
+            records = []
+            for _ in range(num_records):
+                first_name = random.choice(first_names)
+                last_name = random.choice(last_names)
+                age = random.randint(min_age, max_age)
+                records.append(f"{age},{first_name} {last_name}")
+            file.write("\n".join(records) + "\n")
+    except Exception as e:
+        print(f"An error occurred while writing to {filename}: {e}")
 
-# Check for command line arguments
-if len(sys.argv) > 1:
-    num_records = int(sys.argv[1])
-if len(sys.argv) > 2:
-    min_age = int(sys.argv[2])
-if len(sys.argv) > 3:
-    max_age = int(sys.argv[3])
-if len(sys.argv) > 4:
-    filename = sys.argv[4]
+def main():
+    num_records_large = 10000000
+    num_records_small = 10000
+    min_age = 1
+    max_age = 99
 
-# Generate and write records to the file
-try:
-    with open(filename, 'w') as file:
-        records = []
-        for _ in range(num_records):
-            # Select a random first name and last name
-            first_name = random.choice(first_names)
-            last_name = random.choice(last_names)
-            # Generate a random age
-            age = random.randint(min_age, max_age)
-            # Append the record to the list
-            records.append(f"{age},{first_name} {last_name}")
-        
-        # Write all records to the file at once
-        file.write("\n".join(records) + "\n")
+    script_dir = os.path.dirname(os.path.abspath(__file__)) + "/test_data/"
+    large_filename = os.path.join(script_dir, "data.txt")
+    small_filename = os.path.join(script_dir, "small_data.txt")
 
-    print(f"{num_records} records have been written to {filename}.")
-except Exception as e:
-    print(f"An error occurred while writing to the file: {e}")
+    generate_data(large_filename, num_records_large, min_age, max_age)
+    generate_data(small_filename, num_records_small, min_age, max_age)
+
+if __name__ == "__main__":
+    main()
