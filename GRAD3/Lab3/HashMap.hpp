@@ -138,7 +138,6 @@ public:
 
     std::optional<std::reference_wrapper<value_type>> find(const K& k) {
         size_t hash = Hash{}(k);
-        std::cout << "hash" << hash<< "\n";
         size_t index = get_index_from_hash(hash);
         for (auto& item : hash_table[index]) {
             if (item.first == k) {

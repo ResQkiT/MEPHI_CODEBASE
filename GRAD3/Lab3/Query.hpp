@@ -19,7 +19,6 @@ public:
 
     Query(const std::string& name) : unique_name(name) {}
 
-
     Query(const std::string& name, const std::vector<std::function<bool(const T&)>>& initial_conditions) 
         : unique_name(name), conditions(initial_conditions) {}
 

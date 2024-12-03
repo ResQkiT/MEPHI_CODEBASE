@@ -21,15 +21,13 @@ public:
         : DBAdapter<T>(filename), max_cache_size(cache_size) {}
 
     std::vector<T> find(const Query<T>& query) override {
-        std::cout <<"new method\n";
         auto answer = cache.find(query); 
         if (answer.has_value()) {
-            std::cout << "in cache!"<< '\n';
             return answer.value().get().second;
         }
 
         std::vector<T> results = DBAdapter<T>::find(query);
-        cache.add_or_edit(query, std::move(results));
+        cache[query] = results;
         cached_queue.push(query);
 
 
