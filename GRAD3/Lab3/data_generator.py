@@ -28,10 +28,10 @@ last_names = [
 ]
 
 # Default values
-num_records = 10000000
+num_records = 1000
 min_age = 1
 max_age = 99
-filename = "/home/resk/main/c/C_MEPHI/GRAD3/Lab3/test_data/data.txt"
+filename = "/home/resk/main/c/C_MEPHI/GRAD3/Lab3/test_data/small_data.txt"
 
 # Check for command line arguments
 if len(sys.argv) > 1:

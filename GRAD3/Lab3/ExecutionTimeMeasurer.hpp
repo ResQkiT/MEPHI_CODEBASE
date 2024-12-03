@@ -8,7 +8,7 @@
 template <typename Func>
 class ExecutionTimeMeasurer {
 public:
-    static double measure(Func func, int n) {
+        static double measure(Func func, int n) {
         double total_time = 0.0;
 
         for (int i = 0; i < n; ++i) {

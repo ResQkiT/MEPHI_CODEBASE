@@ -3,7 +3,13 @@
 #include <functional>
 #include <string>
 #include <cassert>
+#include <memory>
+#include <iomanip> 
 #include "HashMap.hpp"
+#include "DBAdapter.hpp"
+#include "CachedDBAdapter.hpp"
+#include "ExecutionTimeMeasurer.hpp"
+#include "Query.hpp"
 
 namespace test{
     class User {
@@ -140,6 +146,63 @@ namespace test{
         assert(map.size() == 1);
     }
 
+    struct Record {
+        int age;
+        std::string name;
+        Record(const std::string& line) {
+            size_t commaPos = line.find(',');
+            if (commaPos != std::string::npos) {
+                age = std::stoi(line.substr(0, commaPos));
+                name = line.substr(commaPos + 1);
+            } else {
+                throw std::invalid_argument("Invalid record format.");
+            }
+        }
+    };
+
+    void run_performance_test(){
+        std::cout << "\n";
+        std::unique_ptr<DBAdapter<Record>> dbAdapter = std::make_unique<DBAdapter<Record>>("../test_data/small_data.txt");
+        std::unique_ptr<CachedDBAdapter<Record>> cachedAdapter = std::make_unique<CachedDBAdapter<Record>>("../test_data/small_data.txt", 10);
+
+        std::map<std::string, Query<Record>> queries = {
+            {"Name starts with A", Query<Record>("Name starts with A", {[](const Record& x) { return x.name[0] == 'A'; }})},
+            {"Age greater than 60", Query<Record>("Age greater than 60", {[](const Record& x) { return x.age > 60; }})},
+            {"Age less than 19", Query<Record>("Age less than 19", {[](const Record& x) { return x.age < 19; }})},
+            {"Age between 20 and 30", Query<Record>("Age between 20 and 30", {[](const Record& x) { return x.age >= 20 && x.age <= 30; }})}
+        };
+
+        std::cout << std::setw(30) << "Query" << std::setw(20) << "DBAdapter (s)" << std::setw(20) << "CachedDBAdapter (s)" << std::endl;
+        std::cout << std::string(70, '-') << std::endl;
+        const int num_cycles = 10; 
+        
+        for (const auto& query : queries) {
+            
+            double total_dbAdapterTime = 0;
+            double total_cachedAdapterTime = 0;
+
+            for (int cycle = 0; cycle < num_cycles; ++cycle){
+                auto lambda = [&]() {
+                    dbAdapter->find(query.second);
+                };
+                auto lambda2 = [&]() {
+                    cachedAdapter->find(query.second);
+                };
+                double dbAdapterTime = ExecutionTimeMeasurer<decltype(lambda)>::measure(lambda, 1);
+
+                double cachedAdapterTime = ExecutionTimeMeasurer<decltype(lambda2)>::measure(lambda2, 1);
+
+                total_dbAdapterTime += dbAdapterTime;
+                total_cachedAdapterTime += cachedAdapterTime;
+            }
+
+            double avg_dbAdapterTime = total_dbAdapterTime / num_cycles;
+            double avg_cachedAdapterTime = total_cachedAdapterTime / num_cycles;
+
+            std::cout << std::setw(30) << query.first << std::setw(20) << avg_dbAdapterTime << std::setw(20) << avg_cachedAdapterTime << std::endl;
+        };
+    }
+
     int all_test() {
         std::map<std::string, std::function<void()>> testMap = {
             {"Insert and Retrieve", testInsertAndRetrieve},
@@ -153,7 +216,8 @@ namespace test{
             {"Overwrite User Value", testOverwriteUserValue},
             {"Find User Method", testFindUserMethod},
             {"Erase User Method", testEraseUserMethod},
-            {"Empty and Size User", testEmptyAndSizeUser}
+            {"Empty and Size User", testEmptyAndSizeUser},
+            {"PERFORMANCE TEST", run_performance_test}
         };
 
         for (const auto& [testName, testFunc] : testMap) {
