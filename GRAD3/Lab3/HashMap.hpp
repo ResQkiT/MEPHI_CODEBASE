@@ -1,4 +1,6 @@
 #pragma once
+#include "../../GRAD2/Lab2/DynamicArray.h"
+#include "../../GRAD2/Lab2/LinkedList.h"
 #include <iostream>
 #include <vector>
 #include <forward_list>
@@ -11,34 +13,58 @@ class HashMap {
 private:
     using value_type = std::pair<const K, V>;
 
+    // DynamicArray<LinkedList<value_type>> hash_table;    
     std::vector<std::forward_list<value_type>> hash_table;
     size_t non_empty_buckets_count;
     size_t total_elements;
 
     float load_factor;
 
-    void rehash() {
-        if ((float) non_empty_buckets_count / get_bucket_count() > load_factor) {
-            size_t new_size = std::max(hash_table.size() * 2, size_t(2)); 
-            std::vector<std::forward_list<value_type>> new_table(new_size);
-            size_t new_non_empty = 0;
-            size_t new_total = 0;
-            for (auto& bucket : hash_table) {
-                for (auto& item : bucket) {
-                    size_t hash = Hash{}(item.first);
-                    size_t index = hash % new_size; 
-                    if (bucket_size(new_table[index]) == 0) {
-                        ++new_non_empty;
-                    }
-                    new_table[index].emplace_front(std::move(item));
-                    ++new_total;
-                }
-            }
-            hash_table = std::move(new_table);
-            non_empty_buckets_count = new_non_empty;
-            total_elements = new_total;
+    size_t next_prime(size_t n) {
+        while (!is_prime(n)) {
+            ++n;
         }
+        return n;
     }
+
+    bool is_prime(size_t n) {
+        if (n <= 1) return false;
+        if (n <= 3) return true;
+        if (n % 2 == 0 || n % 3 == 0) return false;
+        for (size_t i = 5; i * i <= n; i += 6) {
+            if (n % i == 0 || n % (i + 2) == 0) return false;
+        }
+        return true;
+    }
+
+    void rehash() {
+        if ((float) non_empty_buckets_count / get_bucket_count() <= load_factor) {
+            return;
+        }
+
+        size_t new_size = next_prime(hash_table.size() * 2); 
+        std::cout << "new hash size: " << new_size << std::endl;
+        std::vector<std::forward_list<value_type>> new_table(new_size);
+        size_t new_non_empty = 0;
+        size_t new_total = 0;
+
+        for (auto& bucket : hash_table) {
+            for (auto& item : bucket) {
+                size_t hash = Hash{}(item.first);
+                size_t index = hash % new_size; 
+                if (bucket_size(new_table[index]) == 0) {
+                    ++new_non_empty;
+                }
+                new_table[index].emplace_front(std::move(item));
+                ++new_total;
+            }
+        }
+
+        hash_table = std::move(new_table);
+        non_empty_buckets_count = new_non_empty;
+        total_elements = new_total;
+    }
+
 
     V& insert_or_get(K&& key) {
         size_t hash = Hash{}(key);
@@ -173,6 +199,7 @@ public:
             if (next->first == k) {
                 next = bucket.erase_after(it);
                 --total_elements;
+                break;
             } else {
                 ++it;
                 ++next;
