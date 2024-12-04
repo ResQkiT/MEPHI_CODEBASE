@@ -159,6 +159,11 @@ public:
         resize(0);
     }
 
+    bool empty() const
+    {
+        return size == 0;
+    }
+
     T &operator[](size_t index)
     {
         if (index >= size)

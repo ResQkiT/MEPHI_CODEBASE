@@ -10,6 +10,7 @@
 #include "CachedDBAdapter.hpp"
 #include "ExecutionTimeMeasurer.hpp"
 #include "Query.hpp"
+#include "PriorityQueue.hpp"    
 
 namespace test{
     class User {
@@ -146,6 +147,56 @@ namespace test{
         assert(map.size() == 1);
     }
 
+    void testPriorityQueuePush() {
+        PriorityQueue<int> pq;
+        pq.push(10, 1);
+        pq.push(20, 2);
+        pq.push(5, 0);
+        assert(pq.top() == 20);
+    }
+
+    void testPriorityQueuePop() {
+        PriorityQueue<int> pq;
+        pq.push(10, 1);
+        pq.push(20, 2);
+        pq.push(5, 0);
+        pq.pop();
+        assert(pq.top() == 10);
+        pq.pop();
+        assert(pq.top() == 5);
+    }
+
+    void testPriorityQueueTop() {
+        PriorityQueue<int> pq;
+        pq.push(10, 1);
+        pq.push(20, 2);
+        pq.push(5, 0);
+        assert(pq.top() == 20);
+        pq.pop();
+        assert(pq.top() == 10);
+    }
+
+    void testPriorityQueueEmpty() {
+        PriorityQueue<int> pq;
+        assert(pq.empty());
+        pq.push(10, 1);
+        assert(!pq.empty());
+        pq.pop();
+        assert(pq.empty());
+    }
+
+    void testPriorityQueueSize() {
+        PriorityQueue<int> pq;
+        assert(pq.size() == 0);
+        pq.push(10, 1);
+        pq.push(20, 2);
+        assert(pq.size() == 2);
+        pq.pop();
+        assert(pq.size() == 1);
+    
+    }
+
+
     struct Record {
         int age;
         std::string name;
@@ -217,6 +268,12 @@ namespace test{
             {"Find User Method", testFindUserMethod},
             {"Erase User Method", testEraseUserMethod},
             {"Empty and Size User", testEmptyAndSizeUser},
+            {"PriorityQueue Push", testPriorityQueuePush},
+            {"PriorityQueue Pop", testPriorityQueuePop},
+            {"PriorityQueue Top", testPriorityQueueTop},
+            {"PriorityQueue Empty", testPriorityQueueEmpty},
+            {"PriorityQueue Size", testPriorityQueueSize},
+
             {"PERFORMANCE TEST", run_performance_test}
         };
 

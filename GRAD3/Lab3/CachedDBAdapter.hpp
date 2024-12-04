@@ -8,12 +8,27 @@
 #include "Query.hpp"
 #include "HashMap.hpp"
 #include <utility>
+#include <memory>
+#include "PriorityQueue.hpp"
 
 template <class T>
 class CachedDBAdapter : public DBAdapter<T> { 
 private:
-    HashMap<Query<T>, std::vector<T>, typename Query<T>::Hash> cache; 
-    std::queue<Query<T>> cached_queue; 
+    struct CacheEntry {
+        Query<T> query;
+        std::vector<T> results;
+        uint64_t access_count; 
+
+        CacheEntry(Query<T> q, std::vector<T> r) 
+            : query(std::move(q)), results(std::move(r)), access_count(1) {}
+
+        bool operator<(const CacheEntry& other) const {
+            return access_count < other.access_count;
+        }
+    };
+
+    HashMap<Query<T>, std::shared_ptr<CacheEntry>, typename Query<T>::Hash> cache_map;
+    PriorityQueue<std::shared_ptr<CacheEntry>> cache_queue; 
     size_t max_cache_size; 
 
 public:
@@ -21,20 +36,28 @@ public:
         : DBAdapter<T>(filename), max_cache_size(cache_size) {}
 
     std::vector<T> find(const Query<T>& query) override {
-        auto answer = cache.find(query); 
+        auto answer = cache_map.find(query);
+
         if (answer.has_value()) {
-            return answer.value().get().second;
+          
+            answer.value().get().second->access_count++;
+          
+            return answer.value().get().second->results;
         }
 
         std::vector<T> results = DBAdapter<T>::find(query);
-        cache[query] = results;
-        cached_queue.push(query);
 
+        auto entry = std::make_shared<CacheEntry>(query, results);
 
-        if (cached_queue.size() > max_cache_size) {
-            Query<T> oldest_query = cached_queue.front();
-            cached_queue.pop();
-            cache.erase(oldest_query); 
+        cache_map[query] = entry;
+
+        cache_queue.push(entry, 1);
+
+        while (cache_queue.size() > max_cache_size) {
+            std::shared_ptr<CacheEntry> least_used = cache_queue.pop_min();
+
+            cache_map.erase(least_used->query);
+
         }
 
         return results;

@@ -43,7 +43,7 @@ private:
         }
 
         size_t new_size = next_prime(hash_table.size() * 2); 
-        std::cout << "new hash size: " << new_size << std::endl;
+        //std::cout << "new hash size: " << new_size << std::endl;
         std::vector<std::forward_list<value_type>> new_table(new_size);
         size_t new_non_empty = 0;
         size_t new_total = 0;
