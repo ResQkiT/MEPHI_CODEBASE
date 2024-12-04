@@ -39,7 +39,7 @@ public:
         auto answer = cache_map.find(query);
 
         if (answer.has_value()) {
-          
+            std::cout << "Cache hit\n";
             answer.value().get().second->access_count++;
           
             return answer.value().get().second->results;

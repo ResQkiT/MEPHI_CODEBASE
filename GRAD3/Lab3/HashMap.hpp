@@ -13,8 +13,8 @@ class HashMap {
 private:
     using value_type = std::pair<const K, V>;
 
-    // DynamicArray<LinkedList<value_type>> hash_table;    
-    std::vector<std::forward_list<value_type>> hash_table;
+    DynamicArray<LinkedList<value_type>> hash_table;    
+
     size_t non_empty_buckets_count;
     size_t total_elements;
 
@@ -42,20 +42,20 @@ private:
             return;
         }
 
-        size_t new_size = next_prime(hash_table.size() * 2); 
-        //std::cout << "new hash size: " << new_size << std::endl;
-        std::vector<std::forward_list<value_type>> new_table(new_size);
+        size_t new_size = next_prime(hash_table.get_size() * 2); 
+        DynamicArray<LinkedList<value_type>> new_table(new_size);
         size_t new_non_empty = 0;
         size_t new_total = 0;
 
-        for (auto& bucket : hash_table) {
-            for (auto& item : bucket) {
+        for (size_t i = 0; i < hash_table.get_size(); ++i) {
+            for (size_t j = 0; j < hash_table[i].get_size(); ++j) {
+                auto& item = hash_table[i].get(j);
                 size_t hash = Hash{}(item.first);
                 size_t index = hash % new_size; 
-                if (bucket_size(new_table[index]) == 0) {
+                if (new_table[index].is_empty()) {
                     ++new_non_empty;
                 }
-                new_table[index].emplace_front(std::move(item));
+                new_table[index].push_front(std::move(item));
                 ++new_total;
             }
         }
@@ -83,18 +83,17 @@ private:
         hash_table[index].push_front({std::move(key), V()});
         ++total_elements;
 
-
         rehash();
 
         return hash_table[index].front().second;
     }
 
-    size_t bucket_size(const std::forward_list<value_type>& bucket) const {
+    size_t bucket_size(LinkedList<value_type>& bucket) const {
         return std::distance(bucket.begin(), bucket.end());
     }
 
     size_t get_bucket_count() const {
-        return hash_table.size();
+        return hash_table.get_size();
     }
 
     size_t get_index_from_hash(size_t hash) const {
@@ -194,19 +193,15 @@ public:
         size_t hash = Hash{}(k);
         size_t index = get_index_from_hash(hash);
         auto& bucket = hash_table[index];
-        auto it = bucket.before_begin();
-        for (auto next = bucket.begin(); next != bucket.end(); ) {
-            if (next->first == k) {
-                next = bucket.erase_after(it);
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->first == k) {
+                bucket.erase(std::distance(bucket.begin(), it));
                 --total_elements;
-                break;
-            } else {
-                ++it;
-                ++next;
+                if (bucket.is_empty()) {
+                    --non_empty_buckets_count;
+                }
+                return;
             }
-        }
-        if (bucket.empty()) {
-            --non_empty_buckets_count;
         }
     }
 

@@ -202,6 +202,33 @@ public:
         }
         return *it;
     }
+    void erase(size_t index)
+    {
+        if (index >= size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        Node<T> *current = head;
+        for (size_t i = 0; i < index; ++i){
+            current = current->next;
+        }
+
+        if (current->prev){
+            current->prev->next = current->next;
+        }else{
+            head = current->next;
+        }
+
+        if (current->next){
+            current->next->prev = current->prev;
+        }else{
+            tail = current->prev;
+        }
+
+        delete current;
+        --size;
+    }
 
     void clear()
     {

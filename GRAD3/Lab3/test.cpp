@@ -193,9 +193,7 @@ namespace test{
         assert(pq.size() == 2);
         pq.pop();
         assert(pq.size() == 1);
-    
     }
-
 
     struct Record {
         int age;
@@ -210,6 +208,41 @@ namespace test{
             }
         }
     };
+    
+
+    void testReadAll() {
+        DBAdapter<Record> dbAdapter("../test_data/small_data.txt");
+        std::vector<Record> records = dbAdapter.readAll();
+        assert(!records.empty());
+    }
+
+    void testReadNext() {
+        DBAdapter<Record> dbAdapter("../test_data/small_data.txt");
+        Record record = dbAdapter.readNext();
+        assert(record.name != "");
+    }
+
+    void testFind() {
+        DBAdapter<Record> dbAdapter("../test_data/small_data.txt");
+
+        Query<Record> query("Age greater than 60");
+        query.add_condition([](const Record& x) { return x.age > 60; });
+
+        std::vector<Record> results = dbAdapter.find(query);
+        for (const auto& record : results) {
+            assert(record.age > 60);
+        }
+    }
+
+    void testFindNoMatches() {
+        DBAdapter<Record> dbAdapter("../test_data/small_data.txt");
+
+        Query<Record> query("Age greater than 200");
+        query.add_condition([](const Record& x) { return x.age > 200; });
+
+        std::vector<Record> results = dbAdapter.find(query);
+        assert(results.empty());
+    }
 
     void run_performance_test(){
         std::cout << "\n";
@@ -273,6 +306,11 @@ namespace test{
             {"PriorityQueue Top", testPriorityQueueTop},
             {"PriorityQueue Empty", testPriorityQueueEmpty},
             {"PriorityQueue Size", testPriorityQueueSize},
+
+            {"Read All", testReadAll},
+            {"Read Next", testReadNext},
+            {"Find", testFind},
+            {"Find No Matches", testFindNoMatches},
 
             {"PERFORMANCE TEST", run_performance_test}
         };
