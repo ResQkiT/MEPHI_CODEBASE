@@ -100,7 +100,7 @@ private:
     }
 
 public:
-    HashMap(float lf = 0.5f) : hash_table(3), non_empty_buckets_count(0), total_elements(0){}
+    HashMap() : hash_table(3), non_empty_buckets_count(0), total_elements(0){}
 
     HashMap(const HashMap& other) : hash_table(other.get_bucket_count()), non_empty_buckets_count(0), total_elements(0)
     {
