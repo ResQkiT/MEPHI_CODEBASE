@@ -143,7 +143,7 @@ public:
     }
 
     V& operator[](const K& key) {
-        return insert_or_get(K(key));  //вот тут плохо
+        return insert_or_get(K(key));
     }
 
     V& operator[](K&& key) {
