@@ -14,11 +14,8 @@ private:
     using value_type = std::pair<const K, V>;
 
     DynamicArray<LinkedList<value_type>> hash_table;    
-
     size_t non_empty_buckets_count;
     size_t total_elements;
-
-    float load_factor;
 
     size_t next_prime(size_t n) {
         while (!is_prime(n)) {
@@ -38,7 +35,7 @@ private:
     }
 
     void rehash() {
-        if ((float) non_empty_buckets_count / get_bucket_count() <= load_factor) {
+        if (size() != get_bucket_count()) {
             return;
         }
 
@@ -52,6 +49,7 @@ private:
                 auto& item = hash_table[i].get(j);
                 size_t hash = Hash{}(item.first);
                 size_t index = hash % new_size; 
+                
                 if (new_table[index].is_empty()) {
                     ++new_non_empty;
                 }
@@ -67,6 +65,7 @@ private:
 
 
     V& insert_or_get(K&& key) {
+
         size_t hash = Hash{}(key);
         size_t index = get_index_from_hash(hash);
 
@@ -84,7 +83,7 @@ private:
         ++total_elements;
 
         rehash();
-
+        index = get_index_from_hash(hash);
         return hash_table[index].front().second;
     }
 
@@ -101,9 +100,10 @@ private:
     }
 
 public:
-    HashMap(float lf = 0.5f) : hash_table(2), non_empty_buckets_count(0), total_elements(0), load_factor(lf) {}
+    HashMap(float lf = 0.5f) : hash_table(3), non_empty_buckets_count(0), total_elements(0){}
 
-    HashMap(const HashMap& other) : hash_table(other.get_bucket_count()), non_empty_buckets_count(0), total_elements(0), load_factor(other.load_factor) {
+    HashMap(const HashMap& other) : hash_table(other.get_bucket_count()), non_empty_buckets_count(0), total_elements(0)
+    {
         for (const auto& bucket : other.hash_table) {
             for (const auto& item : bucket) {
                 size_t hash = Hash{}(item.first);
@@ -118,7 +118,7 @@ public:
         rehash();
     }
 
-    HashMap(HashMap&& other) noexcept : hash_table(std::move(other.hash_table)), non_empty_buckets_count(other.non_empty_buckets_count), total_elements(other.total_elements), load_factor(other.load_factor) {
+    HashMap(HashMap&& other) noexcept : hash_table(std::move(other.hash_table)), non_empty_buckets_count(other.non_empty_buckets_count), total_elements(other.total_elements){
         other.non_empty_buckets_count = 0;
         other.total_elements = 0;
     }
@@ -136,7 +136,6 @@ public:
             hash_table = std::move(other.hash_table);
             non_empty_buckets_count = other.non_empty_buckets_count;
             total_elements = other.total_elements;
-            load_factor = other.load_factor;
             other.non_empty_buckets_count = 0;
             other.total_elements = 0;
         }
@@ -158,7 +157,6 @@ public:
         hash_table.swap(other.hash_table);
         std::swap(non_empty_buckets_count, other.non_empty_buckets_count);
         std::swap(total_elements, other.total_elements);
-        std::swap(load_factor, other.load_factor);
     }
 
     std::optional<std::reference_wrapper<value_type>> find(const K& k) {

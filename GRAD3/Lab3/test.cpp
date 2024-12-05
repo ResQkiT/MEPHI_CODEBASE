@@ -4,6 +4,8 @@
 #include <string>
 #include <cassert>
 #include <memory>
+#include <vector>
+#include <random>
 #include <iomanip> 
 #include "HashMap.hpp"
 #include "DBAdapter.hpp"
@@ -43,8 +45,11 @@ namespace test{
 
     void testInsertAndRetrieve() {
         HashMap<std::string, int> map;
+        std::cout << "inserting: " << 1 << "\n";
         map["one"] = 1;
+        std::cout << "inserting: " << 2 << "\n";
         map["two"] = 2;
+        std::cout << map["one"] << " " << map["two"] << '\n';
         assert(map["one"] == 1);
         assert(map["two"] == 2);
     }
@@ -149,10 +154,10 @@ namespace test{
 
     void testPriorityQueuePush() {
         PriorityQueue<int> pq;
-        pq.push(10, 1);
-        pq.push(20, 2);
-        pq.push(5, 0);
-        assert(pq.top() == 20);
+        pq.push(10, 1); 
+        pq.push(20, 2); 
+        pq.push(5, 0);  
+        assert(pq.top() == 5); 
     }
 
     void testPriorityQueuePop() {
@@ -162,8 +167,8 @@ namespace test{
         pq.push(5, 0);
         pq.pop();
         assert(pq.top() == 10);
-        pq.pop();
-        assert(pq.top() == 5);
+        pq.pop(); 
+        assert(pq.top() == 20); 
     }
 
     void testPriorityQueueTop() {
@@ -171,9 +176,9 @@ namespace test{
         pq.push(10, 1);
         pq.push(20, 2);
         pq.push(5, 0);
-        assert(pq.top() == 20);
-        pq.pop();
-        assert(pq.top() == 10);
+        assert(pq.top() == 5); 
+        pq.pop(); 
+        assert(pq.top() == 10); 
     }
 
     void testPriorityQueueEmpty() {
@@ -193,6 +198,32 @@ namespace test{
         assert(pq.size() == 2);
         pq.pop();
         assert(pq.size() == 1);
+    }
+
+    void testPriorityQueueUpdatePriority() {
+        PriorityQueue<int> pq;
+        pq.push(10, 10); 
+        pq.push(20, 20); 
+        pq.push(5, 5);  
+
+        assert(pq.top() == 5); 
+
+        pq.update_priority(20, 4);
+
+        assert(pq.top() == 20); 
+
+        pq.update_priority(10, 3);
+        assert(pq.top() == 10); 
+
+        pq.update_priority(5, 1);
+        assert(pq.top() == 5); 
+
+        try {
+            pq.update_priority(100, 1); 
+            assert(false); 
+        } catch (const std::runtime_error& e) {
+            assert(std::string(e.what()) == "Element not found in the priority queue");
+        }
     }
 
     struct Record {
@@ -244,48 +275,53 @@ namespace test{
         assert(results.empty());
     }
 
-    void run_performance_test(){
+    void run_performance_test() {
         std::cout << "\n";
         std::unique_ptr<DBAdapter<Record>> dbAdapter = std::make_unique<DBAdapter<Record>>("../test_data/small_data.txt");
-        std::unique_ptr<CachedDBAdapter<Record>> cachedAdapter = std::make_unique<CachedDBAdapter<Record>>("../test_data/small_data.txt", 10);
+        //размер кэша меньше числа потенциальных запросов
+        std::unique_ptr<CachedDBAdapter<Record>> cachedAdapter = std::make_unique<CachedDBAdapter<Record>>("../test_data/small_data.txt", 3);
 
-        std::map<std::string, Query<Record>> queries = {
-            {"Name starts with A", Query<Record>("Name starts with A", {[](const Record& x) { return x.name[0] == 'A'; }})},
-            {"Age greater than 60", Query<Record>("Age greater than 60", {[](const Record& x) { return x.age > 60; }})},
-            {"Age less than 19", Query<Record>("Age less than 19", {[](const Record& x) { return x.age < 19; }})},
-            {"Age between 20 and 30", Query<Record>("Age between 20 and 30", {[](const Record& x) { return x.age >= 20 && x.age <= 30; }})}
+        std::vector<Query<Record>> queries = {
+            Query<Record>("Name starts with A", {[](const Record& x) { return x.name[0] == 'A'; }}),
+            Query<Record>("Age greater than 60", {[](const Record& x) { return x.age > 60; }}),
+            Query<Record>("Age less than 19", {[](const Record& x) { return x.age < 19; }}),
+            Query<Record>("Age between 20 and 30", {[](const Record& x) { return x.age >= 20 && x.age <= 30; }})
         };
 
         std::cout << std::setw(30) << "Query" << std::setw(20) << "DBAdapter (s)" << std::setw(20) << "CachedDBAdapter (s)" << std::endl;
         std::cout << std::string(70, '-') << std::endl;
-        const int num_cycles = 10; 
-        
-        for (const auto& query : queries) {
-            
-            double total_dbAdapterTime = 0;
-            double total_cachedAdapterTime = 0;
+        const int num_cycles = 100; 
 
-            for (int cycle = 0; cycle < num_cycles; ++cycle){
-                auto lambda = [&]() {
-                    dbAdapter->find(query.second);
-                };
-                auto lambda2 = [&]() {
-                    cachedAdapter->find(query.second);
-                };
-                double dbAdapterTime = ExecutionTimeMeasurer<decltype(lambda)>::measure(lambda, 1);
+        std::random_device rd;  
+        std::mt19937 gen(rd()); 
+        std::uniform_int_distribution<> dis(0, queries.size() - 1);
+        double total_dbAdapterTime = 0;
+        double total_cachedAdapterTime = 0;
+        //выполним сто случайных запросов, замерим общее время ответа и среднее время ответа каждого адаптера
+        for (int cycle = 0; cycle < num_cycles; ++cycle) {
+            int random_index = dis(gen);
+            const auto& query = queries[random_index];
 
-                double cachedAdapterTime = ExecutionTimeMeasurer<decltype(lambda2)>::measure(lambda2, 1);
+            auto lambda = [&]() {
+                dbAdapter->find(query);
+            };
+            auto lambda2 = [&]() {
+                cachedAdapter->find(query);
+            };
 
-                total_dbAdapterTime += dbAdapterTime;
-                total_cachedAdapterTime += cachedAdapterTime;
-            }
+            double dbAdapterTime = ExecutionTimeMeasurer<decltype(lambda)>::measure(lambda, 1);
+            double cachedAdapterTime = ExecutionTimeMeasurer<decltype(lambda2)>::measure(lambda2, 1);
 
-            double avg_dbAdapterTime = total_dbAdapterTime / num_cycles;
-            double avg_cachedAdapterTime = total_cachedAdapterTime / num_cycles;
+            total_dbAdapterTime += dbAdapterTime;
+            total_cachedAdapterTime += cachedAdapterTime;
 
-            std::cout << std::setw(30) << query.first << std::setw(20) << avg_dbAdapterTime << std::setw(20) << avg_cachedAdapterTime << std::endl;
-        };
+            // std::cout << std::setw(30) << query_name << std::setw(20) << avg_dbAdapterTime << std::setw(20) << avg_cachedAdapterTime << std::endl;
+        }
+        std::cout << std::string(70, '-') << std::endl;
+        std::cout << std::setw(30) << "Total" << std::setw(20) << total_dbAdapterTime << std::setw(20) << total_cachedAdapterTime << std::endl;
+        std::cout << std::setw(30) << "Average" << std::setw(20) << total_dbAdapterTime / num_cycles << std::setw(20) << total_cachedAdapterTime / num_cycles << std::endl;
     }
+
 
     int all_test() {
         std::map<std::string, std::function<void()>> testMap = {
@@ -306,6 +342,7 @@ namespace test{
             {"PriorityQueue Top", testPriorityQueueTop},
             {"PriorityQueue Empty", testPriorityQueueEmpty},
             {"PriorityQueue Size", testPriorityQueueSize},
+            {"PriorityQueue update priority", testPriorityQueueUpdatePriority},
 
             {"Read All", testReadAll},
             {"Read Next", testReadNext},

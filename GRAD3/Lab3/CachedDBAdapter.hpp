@@ -26,6 +26,9 @@ private:
             return access_count < other.access_count;
         }
     };
+    void atomic_cash_insert(const T& value){
+        
+    }
 
     HashMap<Query<T>, std::shared_ptr<CacheEntry>, typename Query<T>::Hash> cache_map;
     PriorityQueue<std::shared_ptr<CacheEntry>> cache_queue; 
@@ -39,9 +42,7 @@ public:
         auto answer = cache_map.find(query);
 
         if (answer.has_value()) {
-            std::cout << "Cache hit\n";
-            answer.value().get().second->access_count++;
-          
+            cache_queue.update_priority(answer.value().get().second, ++answer.value().get().second->access_count);
             return answer.value().get().second->results;
         }
 
@@ -54,10 +55,9 @@ public:
         cache_queue.push(entry, 1);
 
         while (cache_queue.size() > max_cache_size) {
-            std::shared_ptr<CacheEntry> least_used = cache_queue.pop_min();
-
+            std::shared_ptr<CacheEntry> least_used = cache_queue.top();
+            cache_queue.pop();
             cache_map.erase(least_used->query);
-
         }
 
         return results;

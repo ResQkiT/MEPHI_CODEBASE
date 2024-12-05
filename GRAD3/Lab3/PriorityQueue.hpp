@@ -17,10 +17,11 @@ private:
         
         Element(T v, int p) : value(std::move(v)), priority(p) {}
 
-        bool operator>(const Element& other) const {
-            return priority > other.priority; 
+        bool operator<(const Element& other) const {
+            return priority < other.priority; 
         }
     };
+    
     DynamicArray<Element> data;
 
 public:
@@ -28,7 +29,7 @@ public:
     void sift_up(size_t index) {
         while (index > 0) {
             size_t parent = (index - 1) / 2;
-            if (data[index] > data[parent]) {
+            if (data[index] < data[parent]) {
                 std::swap(data[index], data[parent]);
                 index = parent;
             } else {
@@ -42,17 +43,17 @@ public:
         while (true) {
             size_t left = 2 * index + 1;
             size_t right = 2 * index + 2;
-            size_t largest = index;
+            size_t smallest = index;
 
-            if (left < size && data[left] > data[largest]) {
-                largest = left;
+            if (left < size && data[left] < data[smallest]) {
+                smallest = left;
             }
-            if (right < size && data[right] > data[largest]) {
-                largest = right;
+            if (right < size && data[right] < data[smallest]) {
+                smallest = right;
             }
-            if (largest != index) {
-                std::swap(data[index], data[largest]);
-                index = largest;
+            if (smallest != index) {
+                std::swap(data[index], data[smallest]);
+                index = smallest;
             } else {
                 break;
             }
@@ -65,7 +66,7 @@ public:
         sift_up(data.get_size() - 1); 
     }
 
-    void pop() {
+    void pop() { 
         if (data.empty()) {
             throw std::runtime_error("Priority queue is empty");
         }
@@ -81,28 +82,28 @@ public:
         return data[0].value; 
     }
 
-    T pop_min() {
-        if (data.empty()) {
-            throw std::runtime_error("Priority queue is empty");
-        }
+    void update_priority(const T& value, int new_priority) {
+        for (size_t i = 0; i < data.get_size(); ++i) {
+            if (data[i].value == value) {
+                int old_priority = data[i].priority;
+                data[i].priority = new_priority;
 
-        size_t min_index = 0;
-        for (size_t i = 1; i < data.get_size(); ++i) {
-            if (data[i].priority < data[min_index].priority) {
-                min_index = i;
+                if (new_priority < old_priority) {
+                    sift_up(i);
+                } else {
+                    sift_down(i);
+                }
+                return;
             }
         }
+        throw std::runtime_error("Element not found in the priority queue");
+    }
 
-        T min_value = data[min_index].value;
-
-        std::swap(data[min_index], data[data.get_size() - 1]);
-        data.pop_back();
-
-        if (min_index < data.get_size()) {
-            sift_down(min_index);
+    bool contains(const T& value){
+        for(const auto& object : data){
+            if(object.value == value) return true;
         }
-
-        return min_value;
+        return false;
     }
 
     bool empty() const {
@@ -111,5 +112,13 @@ public:
 
     size_t size() const {
         return data.get_size();
+    }
+
+    void print_queue(){
+        std::cout << "queue: ";
+        for(const auto& object : data){
+            std::cout << object.priority << " ";
+        }
+        std::cout << std::endl;
     }
 };

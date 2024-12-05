@@ -56,20 +56,17 @@ int main(int argc, char *argv[])
 
     auto screen = ScreenInteractive::TerminalOutput();
 
-    std::string query_input;
     int selected_adapter = 0;
     int selected_query = 0;
     std::deque<std::string> displayed_results;
     std::vector<std::string> all_results;
     std::vector<std::string> files;
-    int selected_file = 0;
     std::string save_filename;
     std::string new_query_name;
 
     std::unique_ptr<DBAdapter<Record>> dbAdapter = std::make_unique<DBAdapter<Record>>("../test_data/data.txt");
     std::unique_ptr<CachedDBAdapter<Record>> cachedAdapter = std::make_unique<CachedDBAdapter<Record>>("../test_data/data.txt", 10);
 
-    auto query_input_component = Input(&query_input, "Enter query condition");
     auto new_query_name_component = Input(&new_query_name, "Enter query name");
     auto result_component = Renderer([&] {
         std::string result;
@@ -178,7 +175,6 @@ int main(int argc, char *argv[])
     auto exit_button = Button("Exit", [&] { screen.ExitLoopClosure()(); });
 
     auto component = Container::Vertical({
-        query_input_component,
         new_query_name_component,
         conditions_checkboxes,
         save_query_button,
@@ -194,8 +190,6 @@ int main(int argc, char *argv[])
     auto renderer = Renderer(component, [&] {
         return vbox({
             text("Database Query Interface") | bold,
-            text("Enter Query Condition:"),
-            query_input_component->Render(),
             text("Enter Query Name:"),
             new_query_name_component->Render(),
             text("Select Conditions:"),
