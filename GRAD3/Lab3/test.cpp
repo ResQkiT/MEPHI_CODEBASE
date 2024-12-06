@@ -85,7 +85,7 @@ namespace test{
     }
 
     void testRehashing() {
-        HashMap<int, int> map(0.75);
+        HashMap<int, int> map;
         for (int i = 0; i < 100; ++i) {
             map[i] = i * i;
         }
