@@ -210,11 +210,82 @@ public:
         return total_elements == 0;
     }
 
-    void forEach(std::function<void(const K&, V&)> func) {
+    void for_each(std::function<void(const K&, V&)> func) {
         for (auto& bucket : hash_table) {
             for (auto& item : bucket) {
                 func(item.first, item.second);
             }
         }
+    }
+
+    class ConstIterator{
+    private:
+        const HashMap& ref;
+        typename DynamicArray<LinkedList<value_type>>::ConstIterator cur_bucket;
+        typename LinkedList<value_type>::ConstIterator cur_item;
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using pointer = const value_type*;
+        using reference = const value_type&;
+
+        ConstIterator(  const HashMap& ref, 
+                        typename DynamicArray<LinkedList<value_type>>::ConstIterator cur_bucket,
+                        typename LinkedList<value_type>::ConstIterator cur_item) 
+                    : ref{ref}, cur_bucket{cur_bucket}, cur_item{cur_item} {}
+
+        ConstIterator& operator++() {
+            if (cur_item != cur_bucket->end()) {
+                ++cur_item;
+            }
+            if (cur_item == cur_bucket->end()) {
+                ++cur_bucket;
+                while (cur_bucket != ref.hash_table.end() && cur_bucket->is_empty()) {
+                    ++cur_bucket;
+                }
+                if (cur_bucket != ref.hash_table.end()) {
+                    cur_item = cur_bucket->begin();
+                }
+            }
+            return *this;
+        }
+
+        ConstIterator operator++(int) {
+            ConstIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        reference operator*() const {
+            return *cur_item;
+        }
+
+        pointer operator->() const {
+            return &(*cur_item);
+        }
+
+        bool operator==(const ConstIterator& other) const {
+            return cur_bucket == other.cur_bucket && cur_item == other.cur_item;
+        }
+
+        bool operator!=(const ConstIterator& other) const {
+            return !(*this == other);
+        }
+
+    };
+
+    ConstIterator begin() const {
+        auto bucket = hash_table.begin();
+        while (bucket != hash_table.end() && bucket->is_empty()) {
+            ++bucket;
+        }
+        if (bucket != hash_table.end()) {
+            return ConstIterator(*this, bucket, bucket->begin());
+        }
+        return end();
+    }
+
+    ConstIterator end() const {
+        return ConstIterator(*this, hash_table.end(), (*(--hash_table.end())).end());
     }
 };

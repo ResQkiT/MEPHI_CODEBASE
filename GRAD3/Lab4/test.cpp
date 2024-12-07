@@ -87,7 +87,7 @@ namespace test{
         Graph<int> graph;
         auto vertex1 = std::make_shared<Vertex<int>>("Vertex1");
         auto vertex2 = std::make_shared<Vertex<int>>("Vertex2");
-        auto edge = std::make_shared<Edge<int>>(vertex1, vertex2); // Предполагается, что конструктор Edge принимает вершины
+        auto edge = std::make_shared<Edge<int>>(vertex1, vertex2); 
 
         graph.add_vertex(vertex1);
         graph.add_vertex(vertex2);
@@ -165,6 +165,77 @@ namespace test{
         assert(anotherGraph.get_edge_by_vertices(vertex, vertex) == edge);
     }
 
+    void testGraphRemoveExistingVertex() {
+        Graph<int> graph;
+        auto vertex1 = std::make_shared<Vertex<int>>("Vertex1");
+        auto vertex2 = std::make_shared<Vertex<int>>("Vertex2");
+        graph.add_vertex(vertex1);
+        graph.add_vertex(vertex2);
+        graph.add_edge(vertex1, vertex2, std::make_shared<Edge<int>>());
+
+        graph.remove_vertex("Vertex1");
+
+        // Проверяем, что Vertex1 удален
+        assert(graph.get_vertex_by_name("Vertex1") == nullptr);
+        // Проверяем, что Vertex2 все еще существует
+        assert(graph.get_vertex_by_name("Vertex2") != nullptr);
+        // Проверяем, что ребро между Vertex1 и Vertex2 удалено
+        assert(graph.get_edge_by_vertices(vertex1, vertex2) == nullptr);
+    }
+
+    void testGraphRemoveNonExistentVertex() {
+        Graph<int> graph;
+        auto vertex1 = std::make_shared<Vertex<int>>("Vertex1");
+        graph.add_vertex(vertex1);
+
+        // Удаляем несуществующую вершину
+        graph.remove_vertex("NonExistent");
+
+        // Проверяем, что Vertex1 все еще существует
+        assert(graph.get_vertex_by_name("Vertex1") != nullptr);
+    }
+
+    void testGraphRemoveVertexWithEdges() {
+        Graph<int> graph;
+        auto vertex1 = std::make_shared<Vertex<int>>("Vertex1");
+        auto vertex2 = std::make_shared<Vertex<int>>("Vertex2");
+        graph.add_vertex(vertex1);
+        graph.add_vertex(vertex2);
+        graph.add_edge(vertex1, vertex2, std::make_shared<Edge<int>>(vertex1, vertex2));
+
+        graph.remove_vertex("Vertex1");
+
+        // Проверяем, что Vertex1 удален
+        assert(graph.get_vertex_by_name("Vertex1") == nullptr);
+        // Проверяем, что Vertex2 все еще существует
+        assert(graph.get_vertex_by_name("Vertex2") != nullptr);
+        // Проверяем, что ребро между Vertex1 и Vertex2 удалено
+        assert(graph.get_edge_by_vertices(vertex1, vertex2) == nullptr);
+    }
+
+    void testGraphRemoveVertexAndCheckEdges() {
+        Graph<int> graph;
+        auto vertex1 = std::make_shared<Vertex<int>>("Vertex1");
+        auto vertex2 = std::make_shared<Vertex<int>>("Vertex2");
+        auto vertex3 = std::make_shared<Vertex<int>>("Vertex3");
+        graph.add_vertex(vertex1);
+        graph.add_vertex(vertex2);
+        graph.add_vertex(vertex3);
+        graph.add_edge(vertex1, vertex2, std::make_shared<Edge<int>>(vertex1, vertex2));
+        graph.add_edge(vertex1, vertex3, std::make_shared<Edge<int>>(vertex1, vertex3));
+
+        graph.remove_vertex("Vertex1");
+
+        // Проверяем, что Vertex1 удален
+        assert(graph.get_vertex_by_name("Vertex1") == nullptr);
+        // Проверяем, что Vertex2 и Vertex3 все еще существуют
+        assert(graph.get_vertex_by_name("Vertex2") != nullptr);
+        assert(graph.get_vertex_by_name("Vertex3") != nullptr);
+        // Проверяем, что все ребра, связанные с Vertex1, удалены
+        assert(graph.get_edge_by_vertices(vertex1, vertex2) == nullptr);
+        assert(graph.get_edge_by_vertices(vertex1, vertex3) == nullptr);
+    }
+
     int all_test() {
         std::map<std::string, std::function<void()>> testMap = {    
             {"testVertexConstructor", testVertexConstructor},
@@ -184,8 +255,12 @@ namespace test{
             {"testGraphCopyConstructor", testGraphCopyConstructor},
             {"testGraphMoveConstructor", testGraphMoveConstructor},
             {"testGraphCopyAssignmentOperator", testGraphCopyAssignmentOperator},
-            {"testGraphMoveAssignmentOperator", testGraphMoveAssignmentOperator}
-            
+            {"testGraphMoveAssignmentOperator", testGraphMoveAssignmentOperator},
+
+            {"testGraphRemoveExistingVertex", testGraphRemoveExistingVertex},
+            {"testGraphRemoveNonExistentVertex", testGraphRemoveNonExistentVertex},
+            {"testGraphRemoveVertexWithEdges", testGraphRemoveVertexWithEdges},
+            {"testGraphRemoveVertexAndCheckEdges", testGraphRemoveVertexAndCheckEdges}
 
         };
 

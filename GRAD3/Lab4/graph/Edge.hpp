@@ -4,7 +4,7 @@
 #include <utility>
 #include <string>   
 
-#include "IHaveWeight.cpp"
+#include "IHaveWeight.h"
 #include "Vertex.hpp"
 
 template<class T>
