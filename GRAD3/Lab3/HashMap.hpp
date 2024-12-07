@@ -111,7 +111,7 @@ public:
                 if (bucket_size(hash_table[index]) == 1) {
                     ++non_empty_buckets_count;
                 }
-                hash_table[index].emplace_front(item);
+                hash_table[index].push_back(item);
                 ++total_elements;
             }
         }
@@ -153,7 +153,7 @@ public:
     ~HashMap() = default;
 
     void swap(HashMap& other) {
-        hash_table.swap(other.hash_table);
+        std::swap(hash_table, other.hash_table);
         std::swap(non_empty_buckets_count, other.non_empty_buckets_count);
         std::swap(total_elements, other.total_elements);
     }

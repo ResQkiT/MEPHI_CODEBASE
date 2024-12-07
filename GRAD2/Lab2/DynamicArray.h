@@ -74,11 +74,10 @@ public:
         *this = other;
     }
 
-    DynamicArray(DynamicArray<T> &&other) : size{std::move(other.size)}, capacity{std::move(other.capacity)}, data{std::move(other.data)}
-    {
-        other.capacity = 0;
-        other.size = 0;
+    DynamicArray(DynamicArray<T> &&other) noexcept : data{std::move(other.data)}, size{std::move(other.size)}, capacity{std::move(other.capacity)} {
         other.data = nullptr;
+        other.size = 0;
+        other.capacity = 0;
     }
 
     ~DynamicArray()
@@ -207,7 +206,6 @@ public:
 
     class Iterator
     {
-        friend DynamicArray;
     private:
         T *cur;
         size_t index;
@@ -323,6 +321,112 @@ public:
             return *(cur + n);
         }
     };
+
+    class ConstIterator
+    {
+    private:
+        const T *ptr;
+
+    public:
+        using iterator_category = std::random_access_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = const T *;
+        using reference = const T &;
+
+        ConstIterator(const T *ptr) : ptr(ptr) {}
+
+        reference operator*() const
+        {
+            return *ptr;
+        }
+
+        pointer operator->() const
+        {
+            return ptr;
+        }
+
+        ConstIterator &operator++()
+        {
+            ++ptr;
+            return *this;
+        }
+
+        ConstIterator operator++(int)
+        {
+            ConstIterator tmp = *this;
+            ++ptr;
+            return tmp;
+        }
+
+        ConstIterator &operator--()
+        {
+            --ptr;
+            return *this;
+        }
+
+        ConstIterator operator--(int)
+        {
+            ConstIterator tmp = *this;
+            --ptr;
+            return tmp;
+        }
+
+        ConstIterator operator+(difference_type n) const
+        {
+            return ConstIterator(ptr + n);
+        }
+
+        ConstIterator operator-(difference_type n) const
+        {
+            return ConstIterator(ptr - n);
+        }
+
+        difference_type operator-(const ConstIterator &other) const
+        {
+            return ptr - other.ptr;
+        }
+
+        bool operator==(const ConstIterator &other) const
+        {
+            return ptr == other.ptr;
+        }
+
+        bool operator!=(const ConstIterator &other) const
+        {
+            return ptr != other.ptr;
+        }
+
+        bool operator<(const ConstIterator &other) const
+        {
+            return ptr < other.ptr;
+        }
+
+        bool operator>(const ConstIterator &other) const
+        {
+            return ptr > other.ptr;
+        }
+
+        bool operator<=(const ConstIterator &other) const
+        {
+            return ptr <= other.ptr;
+        }
+
+        bool operator>=(const ConstIterator &other) const
+        {
+            return ptr >= other.ptr;
+        }
+    };
+
+    ConstIterator begin() const
+    {
+        return ConstIterator(data);
+    }
+
+    ConstIterator end() const
+    {
+        return ConstIterator(data + size);
+    }
     
     Iterator begin() { return Iterator(data, 0, this); }
 

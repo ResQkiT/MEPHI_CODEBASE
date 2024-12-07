@@ -335,6 +335,48 @@ public:
         }
     };
 
+    class ConstIterator {
+    private:
+        const Node<T>* cur;
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = const T*;
+        using reference = const T&;
+
+        ConstIterator(const Node<T>* node) : cur(node) {}
+
+        reference operator*() const {
+            if (cur == nullptr)
+                throw std::runtime_error("Iterator refers to null");
+            return cur->data;
+        }
+
+        ConstIterator& operator++() {
+            cur = cur->next;
+            return *this;
+        }
+
+        ConstIterator operator++(int) {
+            ConstIterator tmp = *this;
+            cur = cur->next;
+            return tmp;
+        }
+
+        bool operator==(const ConstIterator& other) const {
+            return cur == other.cur;
+        }
+
+        bool operator!=(const ConstIterator& other) const {
+            return cur != other.cur;
+        }
+
+        pointer operator->() const {
+            return &cur->data;
+        }
+    };
+
     Iterator begin()
     {
         return Iterator(head);
@@ -348,5 +390,19 @@ public:
         }
 
         return Iterator(tail->next);
+    }
+
+    ConstIterator begin() const 
+    {
+        return ConstIterator(head);
+    }
+
+    ConstIterator end() const 
+    {
+        if (tail == nullptr)
+        {
+            return ConstIterator(nullptr);
+        }
+        return ConstIterator(tail->next);
     }
 };
