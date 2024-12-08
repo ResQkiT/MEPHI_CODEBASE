@@ -62,6 +62,11 @@ public:
     }
 
     void add_vertex(std::shared_ptr<Vertex<T>> vertex) {
+        if (_vertices.find(vertex->get_name()).has_value())
+        {
+            return;
+        }
+        
         _vertices[vertex->get_name()] = vertex;
         _vertices_names.push_back(vertex->get_name());
     }
@@ -71,6 +76,9 @@ public:
         edge->setDestination(to);
 
         std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertex_pair = std::make_pair(from, to);
+        if(_edges.find(vertex_pair).has_value()){
+            return;
+        }
         _edges[vertex_pair] = edge;
     }
 
@@ -98,25 +106,30 @@ public:
         return _edges[vertex_pair];
     }
 
-    std::string get_rod_string() {
-        std::string result = "";
-        result += "\n graph \n{\n";
-        for(auto it = _vertices_names.begin(); it!=_vertices_names.end(); it++){
-            auto from_vertex = get_vertex_by_name(*it);
-            result += from_vertex->get_name() + ";\n";
-            for(auto it2 = _vertices_names.begin(); it2!= _vertices_names.end(); ++it2){
-                auto to_vertex = get_vertex_by_name(*it2);
+    std::string get_rod_string(bool is_directed) {
+        std::string infix = is_directed ? " -> " : " -- ";
+        std::string result = is_directed? "\ndigraph G {\n" : "\ngraph G {\n"; // Start with a directed graph
 
-                //std::cout << from_vertex->get_name() << " " << to_vertex->get_name();
+        for (const auto& vertex_name : _vertices_names) {
+            auto vertex = get_vertex_by_name(vertex_name);
+            result += vertex->get_name() + ";\n";
+        }
+
+        for (const auto& from_name : _vertices_names) {
+            auto from_vertex = get_vertex_by_name(from_name);
+            for (const auto& to_name : _vertices_names) {
+                auto to_vertex = get_vertex_by_name(to_name);
                 auto edge = get_edge_by_vertices(from_vertex, to_vertex);
-                if(edge){
-                    result += edge->to_string() + ";\n";
+                if (edge) {
+                    result += from_vertex->get_name() + infix + to_vertex->get_name() + ";\n"; // Directed edge
                 }
             }
         }
-        result += "}";
+
+        result += "}\n"; // Close the graph
         return result;
     }
+
 
     void remove_vertex(const std::string& name) {
         if (!_vertices.find(name).has_value()) {
@@ -126,7 +139,7 @@ public:
         std::cout << "All ok!";
         _vertices_names.erase(std::find(_vertices_names.begin(), _vertices_names.end(), name) - _vertices_names.begin());
         // remove all edges connected to this vertex
-        for (auto it = _edges.begin(); it != _edges.end(); ++it) {
+        for (auto it = _edges.begin(); it != _edges.end(); it++) {
             if (it->first.first->get_name() == name || it->first.second->get_name() == name) {
                 _edges.erase(it->first);
             }

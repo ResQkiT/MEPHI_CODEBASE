@@ -64,8 +64,8 @@ private:
     }
 
 
-    V& insert_or_get(K&& key) {
-
+    V& insert_or_get(const K& key) {
+        // Handle lvalue
         size_t hash = Hash{}(key);
         size_t index = get_index_from_hash(hash);
 
@@ -79,13 +79,37 @@ private:
             ++non_empty_buckets_count;
         }
 
-        hash_table[index].push_front({std::move(key), V()});
+        hash_table[index].push_front(std::make_pair<>(key, V()));
         ++total_elements;
 
         rehash();
         index = get_index_from_hash(hash);
         return hash_table[index].front().second;
     }
+
+    V& insert_or_get(K&& key) {
+        // Handle rvalue
+        size_t hash = Hash{}(key);
+        size_t index = get_index_from_hash(hash);
+
+        for (auto& item : hash_table[index]) {
+            if (item.first == key) {
+                return item.second;
+            }
+        }
+
+        if (bucket_size(hash_table[index]) == 0) {
+            ++non_empty_buckets_count;
+        }
+
+        hash_table[index].push_front(std::make_pair<>(std::move(key), V()));
+        ++total_elements;
+
+        rehash();
+        index = get_index_from_hash(hash);
+        return hash_table[index].front().second;
+    }
+
 
     size_t bucket_size(LinkedList<value_type>& bucket) const {
         return std::distance(bucket.begin(), bucket.end());
@@ -143,7 +167,7 @@ public:
     }
 
     V& operator[](const K& key) {
-        return insert_or_get(K(key));
+        return insert_or_get(key);
     }
 
     V& operator[](K&& key) {
@@ -197,6 +221,7 @@ public:
                 if (bucket.is_empty()) {
                     --non_empty_buckets_count;
                 }
+                rehash();
                 return;
             }
         }
@@ -218,50 +243,51 @@ public:
         }
     }
 
-    class ConstIterator{
+    class ConstIterator {
     private:
         const HashMap& ref;
         typename DynamicArray<LinkedList<value_type>>::ConstIterator cur_bucket;
         typename LinkedList<value_type>::ConstIterator cur_item;
+
     public:
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
         using pointer = const value_type*;
         using reference = const value_type&;
 
-        ConstIterator(  const HashMap& ref, 
-                        typename DynamicArray<LinkedList<value_type>>::ConstIterator cur_bucket,
-                        typename LinkedList<value_type>::ConstIterator cur_item) 
-                    : ref{ref}, cur_bucket{cur_bucket}, cur_item{cur_item} {}
+        ConstIterator(const HashMap& ref,
+                    typename DynamicArray<LinkedList<value_type>>::ConstIterator cur_bucket,
+                    typename LinkedList<value_type>::ConstIterator cur_item)
+            : ref(ref), cur_bucket(cur_bucket), cur_item(cur_item) {}
 
         ConstIterator& operator++() {
+            // Move to the next item in the current bucket
             if (cur_item != cur_bucket->end()) {
                 ++cur_item;
             }
-            if (cur_item == cur_bucket->end()) {
-                ++cur_bucket;
-                while (cur_bucket != ref.hash_table.end() && cur_bucket->is_empty()) {
-                    ++cur_bucket;
-                }
+
+            // If we reach the end of the current bucket, move to the next bucket
+            while (cur_bucket != ref.hash_table.end() && cur_item == cur_bucket->end()) {
+                ++cur_bucket; // Move to the next bucket
                 if (cur_bucket != ref.hash_table.end()) {
-                    cur_item = cur_bucket->begin();
+                    cur_item = cur_bucket->begin(); // Reset to the beginning of the new bucket
                 }
             }
             return *this;
         }
 
         ConstIterator operator++(int) {
-            ConstIterator tmp = *this;
-            ++(*this);
-            return tmp;
+            ConstIterator temp = *this; // Copy the current state
+            ++(*this); // Increment the current iterator
+            return temp; // Return the old state
         }
 
         reference operator*() const {
-            return *cur_item;
+            return *cur_item; // Dereference to get the value
         }
 
         pointer operator->() const {
-            return &(*cur_item);
+            return &(*cur_item); // Return pointer to the value
         }
 
         bool operator==(const ConstIterator& other) const {
@@ -271,7 +297,6 @@ public:
         bool operator!=(const ConstIterator& other) const {
             return !(*this == other);
         }
-
     };
 
     ConstIterator begin() const {
@@ -286,6 +311,8 @@ public:
     }
 
     ConstIterator end() const {
-        return ConstIterator(*this, hash_table.end(), (*(--hash_table.end())).end());
+        
+        return ConstIterator(*this, hash_table.end(), typename LinkedList<value_type>::ConstIterator(nullptr));
     }
+
 };

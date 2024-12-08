@@ -13,7 +13,7 @@ void ImageRenderer::render(QLabel& image_holder, const std::string& filename) {
 
         QSize labelSize = image_holder.size();
 
-        pixmap = pixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        //pixmap = pixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::FastTransformation);
 
         image_holder.setPixmap(pixmap);
     }

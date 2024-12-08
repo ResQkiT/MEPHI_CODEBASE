@@ -9,12 +9,13 @@
 
 template<class T>
 class Edge{
-private:
+protected:
     std::shared_ptr<Vertex<T>> _source;
     std::shared_ptr<Vertex<T>> _destination;
 
 public:
     Edge() = default;
+
     Edge(std::shared_ptr<Vertex<T>> source, std::shared_ptr<Vertex<T>> destination){
         this->_source = source;
         this->_destination = destination;
@@ -32,6 +33,10 @@ public:
 
     void setDestination(std::shared_ptr<Vertex<T>>  destination){
         this->_destination = destination;
+    }
+
+    virtual bool is_directed() const {
+        return false;
     }
 
     virtual std::string to_string() const {

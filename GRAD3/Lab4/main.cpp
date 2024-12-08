@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <QPixmap>
 #include <QLineEdit>
+#include <QCheckBox>
 
 #include "util/GraphRenderer.h"
 #include "util/ImageRenderer.h"
@@ -22,7 +23,7 @@
 #include "graph/Graph.hpp"
 #include "graph/Edge.hpp"
 #include "graph/Vertex.hpp"
-
+#include "graph/DirectedEdge.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -37,18 +38,21 @@ int main(int argc, char *argv[])
     QMainWindow mainWindow;
     mainWindow.setWindowTitle("Лабораторная работа №4");
     mainWindow.resize(1920, 1080);  
-
+    mainWindow.setStyleSheet("background-color: white;");
     //--------------------Utility
     auto graphRenderer = std::make_unique<GraphRenderer>("temp/");
     
 
     auto graph = std::make_unique<Graph<int>>();
+    bool is_graph_directed = false;
     //--------------------Interface Components
     auto centralWidget = std::make_unique<QWidget>(&mainWindow);
     auto mainLayout = std::make_unique<QHBoxLayout>(centralWidget.get());
     auto imageLabel = std::make_unique<QLabel>();
 
     auto menuLayout = std::make_unique<QVBoxLayout>();
+    
+    auto check_box_graph_directed = std::make_unique<QCheckBox>("Граф направленный?", centralWidget.get());
     
     auto layout_add_vertex_line = std::make_unique<QHBoxLayout>();
     auto button_add_vertex = std::make_unique<QPushButton>("Добавить вершину", centralWidget.get());
@@ -76,7 +80,7 @@ int main(int argc, char *argv[])
         
         graph->add_vertex(vertex);
         
-        graphRenderer->render(graph->get_rod_string(), "file1.png");
+        graphRenderer->render(graph->get_rod_string(is_graph_directed), "file1.png");
         ImageRenderer::render(*imageLabel.get(), "temp/file1.png");
     });
 
@@ -84,20 +88,31 @@ int main(int argc, char *argv[])
         QString from_name = enter_line_edge_name_from->text();
         QString to_name = enter_line_edge_name_to->text();
 
-        auto edge = std::make_shared<Edge<int>>();
+        
+        std::shared_ptr<Edge<int>> edge;
+
+        if (is_graph_directed) {
+            edge = std::make_shared<DirectedEdge<int>>();
+        } else {
+            edge = std::make_shared<Edge<int>>();
+        }
 
         graph->add_edge_by_names(from_name.toStdString(), to_name.toStdString(), edge);
-        std::cout << graph->get_rod_string() << "\n";
+        std::cout << graph->get_rod_string(is_graph_directed) << "\n";
 
-        graphRenderer->render(graph->get_rod_string(), "file1.png");
+        graphRenderer->render(graph->get_rod_string(is_graph_directed), "file1.png");
         ImageRenderer::render(*imageLabel.get(), "temp/file1.png");
     });
 
     QObject::connect(remove_vertex.get(), &QPushButton::clicked, [&]() {
         QString name = enter_line_remove_vertex_name->text();
         graph->remove_vertex(name.toStdString());
-        graphRenderer->render(graph->get_rod_string(), "file1.png");
+        graphRenderer->render(graph->get_rod_string(is_graph_directed), "file1.png");
         ImageRenderer::render(*imageLabel.get(), "temp/file1.png");
+    });
+
+    QObject::connect(check_box_graph_directed.get(), &QCheckBox::stateChanged, [&](int state) {
+        is_graph_directed  = state == Qt::Checked;
     });
     //--------------------Linking Components
     layout_add_edge_line->addWidget(button_add_vertex.get()); 
@@ -110,6 +125,7 @@ int main(int argc, char *argv[])
     layout_remove_vertex_line->addWidget(remove_vertex.get());
     layout_remove_vertex_line->addWidget(enter_line_remove_vertex_name.get());
 
+    menuLayout->addWidget(check_box_graph_directed.get());
     menuLayout->addLayout(layout_add_edge_line.get());
     menuLayout->addLayout(layout_add_vertex_line.get());
     menuLayout->addLayout(layout_remove_vertex_line.get());
