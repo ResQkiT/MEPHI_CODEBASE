@@ -27,5 +27,5 @@ void GraphRenderer::render(const std::string& dot_content, const std::string& ou
         throw std::runtime_error("Ошибка при выполнении команды Graphviz.");
     }
 
-    std::remove(dot_file.c_str());
+    // std::remove(dot_file.c_str());
 }

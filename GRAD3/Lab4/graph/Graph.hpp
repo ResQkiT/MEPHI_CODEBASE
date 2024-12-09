@@ -34,6 +34,31 @@ private:
     DynamicArray<std::string> _vertices_names;                                                              // vertices of the graph
 
 public:
+    static Graph<T> generate_graph(size_t count_of_vertex, double edge_probability, bool directed = false) {
+        Graph<T> graph;
+        std::string prefix = "Vertex";
+        // Add vertices
+        for (size_t i = 0; i < count_of_vertex; ++i) {
+            std::string name = prefix + std::to_string(i);
+            std::shared_ptr<Vertex<T>> vertex = std::make_shared<Vertex<T>>(name);
+            graph.add_vertex(vertex);
+        }
+        // Add edges
+        for (size_t i = 0; i < count_of_vertex; ++i) {
+            auto from_vertex = graph.get_vertex_by_name(prefix + std::to_string(i));
+            for (size_t j = 0; j < count_of_vertex; ++j) {
+                if (i == j) continue; 
+                auto to_vertex = graph.get_vertex_by_name(prefix + std::to_string(j));
+                if (directed || i < j) { 
+                    if (rand() / double(RAND_MAX) < edge_probability) {
+                        auto edge = std::make_shared<Edge<T>>(from_vertex, to_vertex);
+                        graph.add_edge_by_names(prefix + std::to_string(i), prefix + std::to_string(j), edge);
+                    }
+                }
+            }
+        }
+        return graph;
+    }
     Graph() : _vertices(), _edges(), _vertices_names(){}
 
     Graph(Graph& other) : _vertices(other._vertices), _edges(other._edges) , _vertices_names(other._vertices_names){}
@@ -85,7 +110,7 @@ public:
     void add_edge_by_names(const std::string& from_name, const std::string& to_name, std::shared_ptr<Edge<T>> edge) {
         auto from = get_vertex_by_name(from_name);
         auto to = get_vertex_by_name(to_name);
-        if (!from || !to) {
+        if (!from || !to || from->get_name() == to->get_name()) {
             return;
         }
         add_edge(from, to, edge);
@@ -104,46 +129,57 @@ public:
             return nullptr;
         }
         return _edges[vertex_pair];
-    }
-
-    std::string get_rod_string(bool is_directed) {
-        std::string infix = is_directed ? " -> " : " -- ";
-        std::string result = is_directed? "\ndigraph G {\n" : "\ngraph G {\n"; // Start with a directed graph
-
-        for (const auto& vertex_name : _vertices_names) {
-            auto vertex = get_vertex_by_name(vertex_name);
-            result += vertex->get_name() + ";\n";
         }
 
-        for (const auto& from_name : _vertices_names) {
-            auto from_vertex = get_vertex_by_name(from_name);
-            for (const auto& to_name : _vertices_names) {
-                auto to_vertex = get_vertex_by_name(to_name);
-                auto edge = get_edge_by_vertices(from_vertex, to_vertex);
-                if (edge) {
-                    result += from_vertex->get_name() + infix + to_vertex->get_name() + ";\n"; // Directed edge
+        std::string get_rod_string(bool is_directed) {
+        std::string infix = is_directed ? " -> " : " -- ";
+        std::string result = is_directed ? "digraph G {\n" : "graph G {\n";
+        
+        // Collect all vertex names into a DynamicArray
+        DynamicArray<std::string> vertexNames = _vertices_names;
+        
+        // Append each vertex name to the result
+        for (size_t i = 0; i < vertexNames.get_size(); ++i) {
+            std::string name = vertexNames[i];
+            auto vertex = get_vertex_by_name(name);
+            if (vertex != nullptr) {
+                result += vertex->get_name() + ";\n";
+            }
+        }
+        
+        // Collect all edges from _edges.hash_table
+        for (size_t bucketIndex = 0; bucketIndex < _edges.hash_table.get_size(); ++bucketIndex) {
+            auto bucket = _edges.hash_table[bucketIndex];
+            for (size_t itemIndex = 0; itemIndex < bucket.get_size(); ++itemIndex) {
+                std::pair<std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>>, std::shared_ptr<Edge<T>>> item = bucket.get(itemIndex);
+                std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertexPair = item.first;
+                if (vertexPair.first != nullptr && vertexPair.second != nullptr) {
+                    // To avoid duplicate edges in undirected graphs, ensure vertexPair.first < vertexPair.second
+                    if (!is_directed && vertexPair.first->get_name() > vertexPair.second->get_name()) {
+                        continue;
+                    }
+                    result += vertexPair.first->get_name() + infix + vertexPair.second->get_name() + ";\n";
                 }
             }
         }
-
-        result += "}\n"; // Close the graph
+        
+        result += "}\n";
+        std::cout << "result " << result<<'\n';
         return result;
     }
 
 
     void remove_vertex(const std::string& name) {
-        if (!_vertices.find(name).has_value()) {
-            return;
+        if (!_vertices.find(name).has_value()) return;
+        
+        std::vector<std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>>> edges_to_remove;
+        for (const auto& edge_pair : _edges) {
+            if (edge_pair.first.first->get_name() == name || edge_pair.first.second->get_name() == name)
+                edges_to_remove.push_back(edge_pair.first);
         }
+        
+        for (const auto& pair : edges_to_remove) _edges.erase(pair);
         _vertices.erase(name);
-        std::cout << "All ok!";
         _vertices_names.erase(std::find(_vertices_names.begin(), _vertices_names.end(), name) - _vertices_names.begin());
-        // remove all edges connected to this vertex
-        for (auto it = _edges.begin(); it != _edges.end(); it++) {
-            if (it->first.first->get_name() == name || it->first.second->get_name() == name) {
-                _edges.erase(it->first);
-            }
-        }
-
     }
 };

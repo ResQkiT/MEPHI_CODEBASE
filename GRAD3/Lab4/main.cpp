@@ -54,6 +54,13 @@ int main(int argc, char *argv[])
     
     auto check_box_graph_directed = std::make_unique<QCheckBox>("Граф направленный?", centralWidget.get());
     
+    auto layout_generate_graph_menu = std::make_unique<QHBoxLayout>();
+    auto count_of_vertex_label = std::make_unique<QLabel>("Количество вершин:");
+    auto enter_count_of_vertex = std::make_unique<QLineEdit>();
+    auto probability_of_edge = std::make_unique<QLabel>("Вероятность ребра:");
+    auto enter_probability_of_edge = std::make_unique<QLineEdit>();
+    auto button_generate_graph = std::make_unique<QPushButton>("Сгенерировать граф", centralWidget.get());
+
     auto layout_add_vertex_line = std::make_unique<QHBoxLayout>();
     auto button_add_vertex = std::make_unique<QPushButton>("Добавить вершину", centralWidget.get());
     auto enter_line_vertex_name = std::make_unique<QLineEdit>();
@@ -67,11 +74,16 @@ int main(int argc, char *argv[])
     auto remove_vertex = std::make_unique<QPushButton>("Удалить вершину", centralWidget.get());
     auto enter_line_remove_vertex_name = std::make_unique<QLineEdit>();
 
+
+
     //--------------------Interface initialization
     imageLabel->setFixedSize(1080, 1080);
     imageLabel->setStyleSheet("border: 1px solid black;");
     imageLabel->setAlignment(Qt::AlignCenter);
     menuLayout->setContentsMargins(10, 10, 10, 10); 
+    enter_count_of_vertex->setAlignment(Qt::AlignLeft);
+    enter_count_of_vertex->setFixedWidth(30);
+    enter_probability_of_edge->setFixedWidth(30);
 
     //--------------------Buttons functors    
     QObject::connect(button_add_vertex.get(), &QPushButton::clicked, [&]() {
@@ -114,7 +126,31 @@ int main(int argc, char *argv[])
     QObject::connect(check_box_graph_directed.get(), &QCheckBox::stateChanged, [&](int state) {
         is_graph_directed  = state == Qt::Checked;
     });
+    
+    QObject::connect(button_generate_graph.get(), &QPushButton::clicked, [&]() {
+        //генерация графа
+        std::string count = enter_count_of_vertex->text().toStdString();
+        std::string probability = enter_probability_of_edge->text().toStdString();
+
+        size_t vertex_count = std::stoi(count);
+        double edge_probability = std::stod(probability);
+
+        std::cout << vertex_count << " " << edge_probability<< " \n";
+        graph = std::make_unique<Graph<int>>(Graph<int>::generate_graph(vertex_count, edge_probability));
+        std::cout << graph->get_rod_string(is_graph_directed) << "\n";
+
+        graphRenderer->render(graph->get_rod_string(is_graph_directed), "file1.png");
+        ImageRenderer::render(*imageLabel.get(), "temp/file1.png");
+
+    });
     //--------------------Linking Components
+    layout_generate_graph_menu->addWidget(count_of_vertex_label.get());
+    layout_generate_graph_menu->addWidget(enter_count_of_vertex.get());
+    layout_generate_graph_menu->addWidget(probability_of_edge.get());
+    layout_generate_graph_menu->addWidget(enter_probability_of_edge.get());
+    layout_generate_graph_menu->addWidget(button_generate_graph.get());
+    layout_generate_graph_menu->addStretch();
+
     layout_add_edge_line->addWidget(button_add_vertex.get()); 
     layout_add_edge_line->addWidget(enter_line_vertex_name.get());
     
@@ -125,6 +161,7 @@ int main(int argc, char *argv[])
     layout_remove_vertex_line->addWidget(remove_vertex.get());
     layout_remove_vertex_line->addWidget(enter_line_remove_vertex_name.get());
 
+    menuLayout->addLayout(layout_generate_graph_menu.get());
     menuLayout->addWidget(check_box_graph_directed.get());
     menuLayout->addLayout(layout_add_edge_line.get());
     menuLayout->addLayout(layout_add_vertex_line.get());

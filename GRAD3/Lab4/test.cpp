@@ -258,9 +258,9 @@ namespace test{
             {"testGraphMoveAssignmentOperator", testGraphMoveAssignmentOperator},
 
             {"testGraphRemoveExistingVertex", testGraphRemoveExistingVertex},
-            // {"testGraphRemoveNonExistentVertex", testGraphRemoveNonExistentVertex},
-            // {"testGraphRemoveVertexWithEdges", testGraphRemoveVertexWithEdges},
-            // {"testGraphRemoveVertexAndCheckEdges", testGraphRemoveVertexAndCheckEdges}
+            {"testGraphRemoveNonExistentVertex", testGraphRemoveNonExistentVertex},
+            {"testGraphRemoveVertexWithEdges", testGraphRemoveVertexWithEdges},
+            {"testGraphRemoveVertexAndCheckEdges", testGraphRemoveVertexAndCheckEdges}
 
         };
 

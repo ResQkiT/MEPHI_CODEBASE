@@ -7,6 +7,10 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include "../../GRAD3/Lab4/graph/Graph.hpp"
+
+template<class T>
+class Graph;
 
 template <class K, class V, class Hash = std::hash<K>>
 class HashMap {
@@ -38,7 +42,7 @@ private:
         if (size() != get_bucket_count()) {
             return;
         }
-
+        std::cout << "rehashed\n";
         size_t new_size = next_prime(hash_table.get_size() * 2); 
         DynamicArray<LinkedList<value_type>> new_table(new_size);
         size_t new_non_empty = 0;
@@ -81,7 +85,6 @@ private:
 
         hash_table[index].push_front(std::make_pair<>(key, V()));
         ++total_elements;
-
         rehash();
         index = get_index_from_hash(hash);
         return hash_table[index].front().second;
@@ -104,7 +107,6 @@ private:
 
         hash_table[index].push_front(std::make_pair<>(std::move(key), V()));
         ++total_elements;
-
         rehash();
         index = get_index_from_hash(hash);
         return hash_table[index].front().second;
@@ -139,7 +141,6 @@ public:
                 ++total_elements;
             }
         }
-        rehash();
     }
 
     HashMap(HashMap&& other) noexcept : hash_table(std::move(other.hash_table)), non_empty_buckets_count(other.non_empty_buckets_count), total_elements(other.total_elements){
@@ -202,7 +203,7 @@ public:
                 return;
             }
         }
-        hash_table[index].push_front({k, std::forward<V>(v)});
+        hash_table[index].push_front(std::make_pair<>(k, std::forward<V>(v)));
         ++total_elements;
         if (bucket_size(hash_table[index]) == 1) {
             ++non_empty_buckets_count;
@@ -314,5 +315,6 @@ public:
         
         return ConstIterator(*this, hash_table.end(), typename LinkedList<value_type>::ConstIterator(nullptr));
     }
-
+    template<class T>
+    friend class Graph;
 };
