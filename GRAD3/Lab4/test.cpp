@@ -59,8 +59,8 @@ namespace test{
         auto source = std::make_shared<Vertex<int>>(80);
         auto destination = std::make_shared<Vertex<int>>(90);
         Edge<int> edge;
-        edge.setSource(source);
-        edge.setDestination(destination);
+        edge.set_source(source);
+        edge.set_destination(destination);
         auto endpoints = edge.endpoints();
         assert(endpoints.first == source);
         assert(endpoints.second == destination);

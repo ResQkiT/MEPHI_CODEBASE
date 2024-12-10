@@ -27,12 +27,20 @@ public:
         return std::make_pair(_source, _destination);
     }
 
-    void setSource(std::shared_ptr<Vertex<T>> source){
+    void set_source(std::shared_ptr<Vertex<T>> source){
         this->_source = source;
     }
+    
+    std::shared_ptr<Vertex<T>> get_source(){
+        return _source;
+    }
 
-    void setDestination(std::shared_ptr<Vertex<T>>  destination){
+    void set_destination(std::shared_ptr<Vertex<T>>  destination){
         this->_destination = destination;
+    }
+    
+    std::shared_ptr<Vertex<T>> get_destination(){
+        return _destination;
     }
 
     virtual bool is_directed() const {

@@ -24,6 +24,7 @@
 #include "graph/Edge.hpp"
 #include "graph/Vertex.hpp"
 #include "graph/DirectedEdge.hpp"
+#include "algorithms/GraphColoring.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
     auto remove_vertex = std::make_unique<QPushButton>("Удалить вершину", centralWidget.get());
     auto enter_line_remove_vertex_name = std::make_unique<QLineEdit>();
 
-
+    auto button_coloring_graph = std::make_unique<QPushButton>("Раскрасить гарф", centralWidget.get());
 
     //--------------------Interface initialization
     // imageLabel->setFixedSize(1080, 1080);
@@ -151,6 +152,14 @@ int main(int argc, char *argv[])
         ImageRenderer::render(*imageLabel.get(), "temp/file1.png");
 
     });
+
+    QObject::connect(button_coloring_graph.get(), &QPushButton::clicked, [&]() {
+        GraphColoring<int> coloring;
+        coloring.execute(*graph.get());
+
+        graphRenderer->render(graph->get_rod_string(is_graph_directed), "file1.png");
+        ImageRenderer::render(*imageLabel.get(), "temp/file1.png");
+    });
     //--------------------Linking Components
     layout_generate_graph_menu->addWidget(count_of_vertex_label.get());
     layout_generate_graph_menu->addWidget(enter_count_of_vertex.get());
@@ -175,6 +184,7 @@ int main(int argc, char *argv[])
     menuLayout->addLayout(layout_add_edge_line.get());
     menuLayout->addLayout(layout_add_vertex_line.get());
     menuLayout->addLayout(layout_remove_vertex_line.get());
+    menuLayout->addWidget(button_coloring_graph.get());
 
     menuLayout->addStretch();  
 

@@ -8,11 +8,13 @@
 #include "Edge.hpp"
 #include "Vertex.hpp"
 #include "../../../GRAD2/Lab2/DynamicArray.h"
+#include "../algorithms/IExecutable.hpp"
 
 #include <functional>
 #include <memory>
 #include <utility>
 #include <random>
+
 
 template<typename T>
 struct std::hash<std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>>> {
@@ -107,13 +109,18 @@ public:
     }
 
     void add_edge(std::shared_ptr<Vertex<T>> from, std::shared_ptr<Vertex<T>> to, std::shared_ptr<Edge<T>> edge) {
-        edge->setSource(from);
-        edge->setDestination(to);
+        edge->set_source(from);
+        edge->set_destination(to);
+        
+        from->add_output_edge(edge);
+        to->add_input_edge(edge);
 
-        std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertex_pair = std::make_pair(from, to);
+        auto vertex_pair = std::make_pair(from, to);
         if(_edges.find(vertex_pair).has_value()){
+            std::cout << "Not  added here!!!!" <<"\n";
             return;
         }
+        
         _edges[vertex_pair] = edge;
     }
 
@@ -121,9 +128,18 @@ public:
         auto from = get_vertex_by_name(from_name);
         auto to = get_vertex_by_name(to_name);
         if (!from || !to || from->get_name() == to->get_name()) {
+            std::cout << "Not  added!!!!" <<"\n";
             return;
         }
         add_edge(from, to, edge);
+    }
+    
+    std::shared_ptr<Edge<T>> get_edge_by_vertices(const std::shared_ptr<Vertex<T>> from, const std::shared_ptr<Vertex<T>> to) {
+        std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertex_pair = std::make_pair(from, to);
+        if (!_edges.find(vertex_pair).has_value()) {
+            return nullptr;
+        }
+        return _edges[vertex_pair];
     }
 
     std::shared_ptr<Vertex<T>> get_vertex_by_name(const std::string& name) {
@@ -133,15 +149,7 @@ public:
         return _vertices[name];
     }
 
-    std::shared_ptr<Edge<T>> get_edge_by_vertices(const std::shared_ptr<Vertex<T>>& from, const std::shared_ptr<Vertex<T>>& to) {
-        std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertex_pair = std::make_pair(from, to);
-        if (!_edges.find(vertex_pair).has_value()) {
-            return nullptr;
-        }
-        return _edges[vertex_pair];
-        }
-
-        std::string get_rod_string(bool is_directed) {
+    std::string get_rod_string(bool is_directed) {
         std::string infix = is_directed ? " -> " : " -- ";
         std::string result = is_directed ? "digraph G {\n" : "graph G {\n";
         result += "layout=\"sfdp\" beautify=true;\n";
@@ -151,19 +159,20 @@ public:
             std::string name = vertexNames[i];
             auto vertex = get_vertex_by_name(name);
             if (vertex != nullptr) {
-                result += vertex->get_name() + ";\n";
+                result += vertex->get_name() +"[color="+vertex->get_color()+"];\n";
             }
         }
         
         for (size_t bucketIndex = 0; bucketIndex < _edges.hash_table.get_size(); ++bucketIndex) {
             auto bucket = _edges.hash_table[bucketIndex];
             for (size_t itemIndex = 0; itemIndex < bucket.get_size(); ++itemIndex) {
-                std::pair<std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>>, std::shared_ptr<Edge<T>>> item = bucket.get(itemIndex);
+                auto item = bucket.get(itemIndex);
                 std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertexPair = item.first;
+
                 if (vertexPair.first != nullptr && vertexPair.second != nullptr) {
-                    if (!is_directed && vertexPair.first->get_name() > vertexPair.second->get_name()) {
-                        continue;
-                    }
+                    // if ((!is_directed && vertexPair.first->get_name() > vertexPair.second->get_name()) ){
+                    //     continue;
+                    // }
                     result += vertexPair.first->get_name() + infix + vertexPair.second->get_name() + ";\n";
                 }
             }
@@ -188,4 +197,7 @@ public:
         _vertices.erase(name);
         _vertices_names.erase(std::find(_vertices_names.begin(), _vertices_names.end(), name) - _vertices_names.begin());
     }
+
+    template<class U>
+    friend class GraphColoring;
 };
