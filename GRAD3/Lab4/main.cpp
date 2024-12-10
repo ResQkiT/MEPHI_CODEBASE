@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 
     auto graph = std::make_unique<Graph<int>>();
     bool is_graph_directed = false;
+    bool is_graph_bidirectional = false;
     //--------------------Interface Components
     auto centralWidget = std::make_unique<QWidget>(&mainWindow);
     auto mainLayout = std::make_unique<QHBoxLayout>(centralWidget.get());
@@ -52,8 +53,9 @@ int main(int argc, char *argv[])
 
     auto menuLayout = std::make_unique<QVBoxLayout>();
     
-    auto check_box_graph_directed = std::make_unique<QCheckBox>("Граф направленный?", centralWidget.get());
-    
+    auto check_box_graph_directed = std::make_unique<QCheckBox>("Граф направленный->", centralWidget.get());
+    auto check_box_graph_bidirectional = std::make_unique<QCheckBox>("Граф двунаправленный->", centralWidget.get());
+
     auto layout_generate_graph_menu = std::make_unique<QHBoxLayout>();
     auto count_of_vertex_label = std::make_unique<QLabel>("Количество вершин:");
     auto enter_count_of_vertex = std::make_unique<QLineEdit>();
@@ -77,13 +79,15 @@ int main(int argc, char *argv[])
 
 
     //--------------------Interface initialization
-    imageLabel->setFixedSize(1080, 1080);
+    // imageLabel->setFixedSize(1080, 1080);
     imageLabel->setStyleSheet("border: 1px solid black;");
+    imageLabel->setMaximumSize(1600, 1080);
+    imageLabel->setMinimumSize(1080, 1080);
     imageLabel->setAlignment(Qt::AlignCenter);
     menuLayout->setContentsMargins(10, 10, 10, 10); 
     enter_count_of_vertex->setAlignment(Qt::AlignLeft);
-    enter_count_of_vertex->setFixedWidth(30);
-    enter_probability_of_edge->setFixedWidth(30);
+    enter_count_of_vertex->setFixedWidth(50);
+    enter_probability_of_edge->setFixedWidth(50);
 
     //--------------------Buttons functors    
     QObject::connect(button_add_vertex.get(), &QPushButton::clicked, [&]() {
@@ -126,6 +130,10 @@ int main(int argc, char *argv[])
     QObject::connect(check_box_graph_directed.get(), &QCheckBox::stateChanged, [&](int state) {
         is_graph_directed  = state == Qt::Checked;
     });
+
+    QObject::connect(check_box_graph_bidirectional.get(), &QCheckBox::stateChanged, [&](int state) {
+        is_graph_bidirectional = state == Qt::Checked;
+    });
     
     QObject::connect(button_generate_graph.get(), &QPushButton::clicked, [&]() {
         //генерация графа
@@ -136,7 +144,7 @@ int main(int argc, char *argv[])
         double edge_probability = std::stod(probability);
 
         std::cout << vertex_count << " " << edge_probability<< " \n";
-        graph = std::make_unique<Graph<int>>(Graph<int>::generate_graph(vertex_count, edge_probability));
+        graph = std::make_unique<Graph<int>>(Graph<int>::generate_graph(vertex_count, edge_probability, is_graph_directed, is_graph_bidirectional));
         std::cout << graph->get_rod_string(is_graph_directed) << "\n";
 
         graphRenderer->render(graph->get_rod_string(is_graph_directed), "file1.png");
@@ -163,6 +171,7 @@ int main(int argc, char *argv[])
 
     menuLayout->addLayout(layout_generate_graph_menu.get());
     menuLayout->addWidget(check_box_graph_directed.get());
+    menuLayout->addWidget(check_box_graph_bidirectional.get());
     menuLayout->addLayout(layout_add_edge_line.get());
     menuLayout->addLayout(layout_add_vertex_line.get());
     menuLayout->addLayout(layout_remove_vertex_line.get());

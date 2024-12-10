@@ -12,7 +12,7 @@
 #include <functional>
 #include <memory>
 #include <utility>
-
+#include <random>
 
 template<typename T>
 struct std::hash<std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>>> {
@@ -34,23 +34,33 @@ private:
     DynamicArray<std::string> _vertices_names;                                                              // vertices of the graph
 
 public:
-    static Graph<T> generate_graph(size_t count_of_vertex, double edge_probability, bool directed = false) {
+    static Graph<T> generate_graph( size_t count_of_vertex, 
+                                    double edge_probability, 
+                                    bool directed = false, 
+                                    bool is_bidirectional = false) {
         Graph<T> graph;
         std::string prefix = "Vertex";
-        // Add vertices
-        for (size_t i = 0; i < count_of_vertex; ++i) {
+        is_bidirectional = is_bidirectional && directed; //ненаправленный граф не может быть двунаправленным
+        
+        
+        std::random_device rd;
+        std::mt19937 generator(rd());
+        std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+        for (size_t i = 1; i <= count_of_vertex; ++i) {
             std::string name = prefix + std::to_string(i);
             std::shared_ptr<Vertex<T>> vertex = std::make_shared<Vertex<T>>(name);
             graph.add_vertex(vertex);
         }
-        // Add edges
-        for (size_t i = 0; i < count_of_vertex; ++i) {
+
+
+        for (size_t i = 1; i <= count_of_vertex; ++i) {
             auto from_vertex = graph.get_vertex_by_name(prefix + std::to_string(i));
-            for (size_t j = 0; j < count_of_vertex; ++j) {
+            for (size_t j = 1; j <= count_of_vertex; ++j) {
                 if (i == j) continue; 
                 auto to_vertex = graph.get_vertex_by_name(prefix + std::to_string(j));
-                if (directed || i < j) { 
-                    if (rand() / double(RAND_MAX) < edge_probability) {
+                if (is_bidirectional || i < j) { 
+                    if (dist(generator) < edge_probability) {
                         auto edge = std::make_shared<Edge<T>>(from_vertex, to_vertex);
                         graph.add_edge_by_names(prefix + std::to_string(i), prefix + std::to_string(j), edge);
                     }
@@ -134,11 +144,9 @@ public:
         std::string get_rod_string(bool is_directed) {
         std::string infix = is_directed ? " -> " : " -- ";
         std::string result = is_directed ? "digraph G {\n" : "graph G {\n";
-        
-        // Collect all vertex names into a DynamicArray
+        result += "layout=\"sfdp\" beautify=true;\n";
         DynamicArray<std::string> vertexNames = _vertices_names;
         
-        // Append each vertex name to the result
         for (size_t i = 0; i < vertexNames.get_size(); ++i) {
             std::string name = vertexNames[i];
             auto vertex = get_vertex_by_name(name);
@@ -147,14 +155,12 @@ public:
             }
         }
         
-        // Collect all edges from _edges.hash_table
         for (size_t bucketIndex = 0; bucketIndex < _edges.hash_table.get_size(); ++bucketIndex) {
             auto bucket = _edges.hash_table[bucketIndex];
             for (size_t itemIndex = 0; itemIndex < bucket.get_size(); ++itemIndex) {
                 std::pair<std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>>, std::shared_ptr<Edge<T>>> item = bucket.get(itemIndex);
                 std::pair<std::shared_ptr<Vertex<T>>, std::shared_ptr<Vertex<T>>> vertexPair = item.first;
                 if (vertexPair.first != nullptr && vertexPair.second != nullptr) {
-                    // To avoid duplicate edges in undirected graphs, ensure vertexPair.first < vertexPair.second
                     if (!is_directed && vertexPair.first->get_name() > vertexPair.second->get_name()) {
                         continue;
                     }
