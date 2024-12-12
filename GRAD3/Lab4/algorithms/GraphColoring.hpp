@@ -22,14 +22,14 @@ public:
 
     std::vector<std::string> color_names = {
         "red", "green", "blue", "yellow", "purple",
-        "orange", "pink", "brown", "black", "white",
+        "orange", "pink", "brown", "black",
         "gray", "cyan", "magenta", "lime", "teal",
         "navy", "maroon", "olive", "gold", "violet"
     };
 
     virtual ~GraphColoring() = default;
 
-    virtual void execute(Graph<T>& graph) {
+    void execute(Graph<T>& graph) override {
 
         _queue.clear();
         for (const auto& v_name : graph._vertices_names) {
