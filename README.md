@@ -39,6 +39,6 @@
 - **[Lab3](https://github.com/ResQkiT/MEPHI_CODEBASE/tree/main/GRAD3/Lab3)**: Лабораторная работа 3 "Кэширование данных"
 - **[Lab4](https://github.com/ResQkiT/MEPHI_CODEBASE/tree/main/GRAD3/Lab4)**: Лабораторная работа 4 "Визуализация графов"
 
-Для сборки и запуска лабораторных работ используйте CMake.
+Для сборки и запуска лабораторных работ используйте CMake..
 
 тест
