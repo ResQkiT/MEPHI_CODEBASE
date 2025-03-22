@@ -7,7 +7,7 @@
 ## Структура репозитория
 
 ### GRAD1 - Работы на C за первый семестр.
-
+dev1
 
 - **[lab2](https://github.com/ResQkiT/MEPHI_CODEBASE/tree/main/GRAD1/lab2)**: Лабораторная работа 2
 - **[lab3](https://github.com/ResQkiT/MEPHI_CODEBASE/tree/main/GRAD1/lab3)**: Лабораторная работа 3
